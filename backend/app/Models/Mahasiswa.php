@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Mahasiswa extends Model
+{
+    use HasFactory;
+
+    protected $table = 'mahasiswa';
+
+    protected $fillable = [
+        'id_user',
+        'id_prodi',
+        'id_tahun_ajar',
+        'nim',
+        'nama_mahasiswa',
+        'ttd_mahasiswa',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
+
+    public function prodi()
+    {
+        return $this->belongsTo(Prodi::class, 'id_prodi');
+    }
+
+    public function tahunAjar()
+    {
+        return $this->belongsTo(TahunAjar::class, 'id_tahun_ajar');
+    }
+}

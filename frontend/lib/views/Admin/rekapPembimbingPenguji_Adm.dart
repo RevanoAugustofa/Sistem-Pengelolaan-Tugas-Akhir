@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ValidasiPembimbingAdminPage extends StatefulWidget {
-  const ValidasiPembimbingAdminPage({super.key});
+class RekapPembimbingPengujiAdminPage extends StatefulWidget {
+  const RekapPembimbingPengujiAdminPage({super.key});
 
   @override
-  State<ValidasiPembimbingAdminPage> createState() => _ValidasiPembimbingAdminPageState();
+  State<RekapPembimbingPengujiAdminPage> createState() => _RekapPembimbingPengujiAdminPageState();
 }
 
-class _ValidasiPembimbingAdminPageState extends State<ValidasiPembimbingAdminPage> {
+class _RekapPembimbingPengujiAdminPageState extends State<RekapPembimbingPengujiAdminPage> {
   final TextEditingController searchController = TextEditingController();
   String searchQuery = "";
 
@@ -24,7 +24,7 @@ class _ValidasiPembimbingAdminPageState extends State<ValidasiPembimbingAdminPag
           onPressed: () => Get.back(),
         ),
         title: const Text(
-          "Validasi Pembimbing",
+          "Rekap Pembimbing & Penguji",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,

@@ -206,7 +206,7 @@ class DashboardMhs extends StatelessWidget {
             height: 35,
             child: ElevatedButton(
               onPressed: () {
-                // Get.toNamed('/pendaftaranDosen');
+                Get.toNamed('/pendaftaranDosen');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFDE047),

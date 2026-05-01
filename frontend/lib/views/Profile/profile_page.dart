@@ -25,6 +25,16 @@ class ProfilPage extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         automaticallyImplyLeading: false,
+        leading: Obx(() {
+          String role = controller.userRole.value.toLowerCase().trim();
+          if (role == 'admin' || role == 'koorprodi') {
+            return IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Get.back(),
+            );
+          }
+          return const SizedBox.shrink();
+        }),
         backgroundColor: const Color.fromARGB(255, 0, 149, 255),
         centerTitle: true,
         elevation: 0,
@@ -110,7 +120,7 @@ class ProfilPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: const [
@@ -229,7 +239,7 @@ class ProfilPage extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(10),
         child: Container(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: isActive ? const Color.fromARGB(255, 0, 149, 255) : Colors.grey.shade100,
             borderRadius: BorderRadius.circular(10),

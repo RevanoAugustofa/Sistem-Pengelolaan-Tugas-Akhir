@@ -15,7 +15,7 @@ import 'package:frontend/views/Admin/Penilaian/hasil_Adm.dart';
 import 'package:frontend/views/Admin/Penilaian/rekap_Adm.dart';
 import 'package:frontend/views/Admin/Penilaian/rubrik_Adm.dart';
 import 'package:frontend/views/Admin/Proposal/proposal_Adm.dart';
-import 'package:frontend/views/Admin/Validasi/validasiPembimbing_Adm.dart';
+import 'package:frontend/views/Admin/rekapPembimbingPenguji_Adm.dart';
 import 'package:frontend/views/Admin/dashboard_Adm.dart';
 import 'package:frontend/views/Dosen/dashboard_Dsn.dart';
 import 'package:frontend/views/Dosen/detailProposal_Dsn.dart';
@@ -24,7 +24,9 @@ import 'package:frontend/views/Dosen/jadwal_Dsn.dart';
 import 'package:frontend/views/Dosen/logbook_Dsn.dart';
 import 'package:frontend/views/Dosen/tugasAkhir_Dsn.dart';
 import 'package:frontend/views/KoorProdi/dashboard_KP.dart';
+import 'package:frontend/views/KoorProdi/PengajuanPembimbing/pengajuanPembimbing.dart';
 import 'package:frontend/views/Mahasiswa/Jadwal/jadwal_Sempro_Mhs.dart';
+import 'package:frontend/views/Mahasiswa/daftar_dosenPembimbing_Mhs.dart';
 import 'package:frontend/views/Mahasiswa/kuota_pembimbing.dart';
 import 'package:frontend/views/Mahasiswa/pembimbing.dart';
 import 'package:frontend/views/Mahasiswa/proposal_Mhs.dart';
@@ -77,7 +79,7 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/pendaftaranSidangAdm', page: () => PendaftaranSidangAdminPage() ),
         GetPage(name: '/importDataMahasiswaAdm', page: () => ImportDataMahasiswaPage()),
         GetPage(name: '/importDataDosenAdm', page: () => ImportDataDosenPage()),
-        GetPage(name: '/validasiPembimbingAdm', page: () => ValidasiPembimbingAdminPage()),
+        GetPage(name: '/rekapPembimbingPengujiAdm', page: () => const RekapPembimbingPengujiAdminPage()),
         GetPage(name: '/jadwalAdm', page: () => JadwalAdminPage()),
         GetPage(name: '/tahunAjaranAdm', page: () => const IndexTahunAjarPage() ),
 
@@ -101,9 +103,11 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/riwayat_bimbingan', page: () => RiwayatBimbingan() ),
         GetPage(name: '/kuota_pembimbing', page: () => KuotaPembimbing() ),
         GetPage(name: '/data_pembimbing', page: () => PembimbingPage() ),
+        GetPage(name: '/pendaftaranDosen', page: () => const DaftarDosenPembimbingMhsPage() ),
 
         //koordinator prodi
         GetPage(name: '/dashboardKp', page: () => DashboardKp() ),
+        GetPage(name: '/pengajuanpembimbing_KP', page: () => PengajuanPembimbing() ),
 
 
         //umum

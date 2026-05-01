@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ruangan', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_ruangan');
-            $table->string('gedung');
-            $table->timestamps();
+        Schema::table('proposal', function (Blueprint $table) {
+            $table->foreign(['id_mahasiswa'], 'proposal_ibfk_1')->references(['id'])->on('mahasiswa')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ruangan');
+        Schema::table('proposal', function (Blueprint $table) {
+            $table->dropForeign('proposal_ibfk_1');
+        });
     }
 };

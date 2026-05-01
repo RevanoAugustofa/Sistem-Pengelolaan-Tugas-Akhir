@@ -18,6 +18,11 @@ use App\Http\Controllers\Admin\RuanganController;
 
 Route::post('/login',[AuthController::class, 'login']);
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/update-password', [AuthController::class, 'updatePassword']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+});
+
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/admin/users', [UserController::class, 'index']);
     Route::post('/admin/users', [UserController::class, 'store']);
@@ -62,8 +67,6 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
 Route::middleware('auth:sanctum', 'role:mahasiswa')->group(function () {
     Route::get('/mahasiswa/dashboard', [MhsController::class, 'index']);
-
-    Route::post('/logout',[AuthController::class, 'logout']);
 });
 
 

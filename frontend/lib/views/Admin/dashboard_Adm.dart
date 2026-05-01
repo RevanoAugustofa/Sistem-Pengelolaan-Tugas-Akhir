@@ -57,7 +57,7 @@ class _DashboardAdmState extends State<DashboardAdm> {
                 _buildMenuItem(Icons.verified_user_outlined, 'Validasi', onTap: () => Get.toNamed('/validasiPembimbingAdm')),
                 _buildMenuItem(Icons.upload_file_outlined, 'Imp. Mahasiswa', onTap: () => Get.toNamed('/importDataMahasiswaAdm')),
                 _buildMenuItem(Icons.upload_file_rounded, 'Imp. Dosen', onTap: () => Get.toNamed('/importDataDosenAdm')),
-                _buildMenuItem(Icons.settings_outlined, 'Pengaturan', onTap: () {}),
+                _buildMenuItem(Icons.settings_outlined, 'Profil', onTap: () =>  Get.toNamed('/profil', arguments: {'activeRole': 'admin'})),
               ],
             ),
             const SizedBox(height: 15),

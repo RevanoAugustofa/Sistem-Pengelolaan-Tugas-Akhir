@@ -341,7 +341,7 @@ class DashboardMhs extends StatelessWidget {
         } else if (index == 2) {
           Get.toNamed('/jadwalSemproMhs');
         } else if (index == 3) {
-          Get.toNamed('/profil');
+          Get.toNamed('/profil', arguments: {'activeRole': 'mahasiswa'});
         }
       },
 

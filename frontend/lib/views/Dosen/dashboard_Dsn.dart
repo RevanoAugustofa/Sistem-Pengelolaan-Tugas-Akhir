@@ -406,7 +406,7 @@ const DashboardDsn ({super.key});
         } else if (index == 2) {
           Get.toNamed('/jadwalDsn');
         } else if (index == 3) {
-          Get.toNamed('/profil');
+          Get.toNamed('/profil', arguments: {'activeRole': 'dosen'});
         }
       },
       

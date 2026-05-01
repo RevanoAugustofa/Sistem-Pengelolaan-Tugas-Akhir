@@ -61,15 +61,17 @@ class User extends Authenticatable
 
     public function getAvailableRolesAttribute()
     {
-        $roles = [$this->role->value];
+        $roles = [];
 
-        if ($this->isDosen() && $this->dosen) {
-            if ($this->dosen->jabatan) {
-                $roles[] = $this->dosen->jabatan->value;
-            }
+        // Masukkan jabatan dulu jika ada (admin/koorprodi)
+        if ($this->isDosen() && $this->dosen && $this->dosen->jabatan) {
+            $roles[] = $this->dosen->jabatan->value;
         }
 
-        return $roles;
+        // Masukkan role dasar (dosen/mahasiswa)
+        $roles[] = $this->role->value;
+
+        return array_values(array_unique($roles));
     }
 
     public function isAdmin()

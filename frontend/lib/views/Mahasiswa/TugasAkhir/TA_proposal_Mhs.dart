@@ -216,7 +216,7 @@ class TaProposalMhs extends StatelessWidget {
         } else if (index == 2) {
           Get.toNamed('/jadwalSemproMhs');
         } else if (index == 3) {
-          Get.toNamed('/profilMhs');
+          Get.toNamed('/profil');
         }
       },
       items: const [

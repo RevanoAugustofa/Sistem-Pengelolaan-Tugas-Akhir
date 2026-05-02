@@ -8,13 +8,20 @@ class KoorProdiController extends GetxController {
   final KoorProdiService _service = KoorProdiService();
 
   var isLoading = false.obs;
+  var isMoreLoading = false.obs;
   var listPengajuan = <PengajuanPembimbingModel>[].obs;
   var listDosen = <Dosen>[].obs;
   
+  // Pagination states
+  int currentPage = 1;
+  int lastPage = 1;
+  bool get hasMore => currentPage < lastPage;
+
   // Filter states
   var selectedDosen = <String>[].obs;
   var selectedTahunAjar = <String>[].obs;
   var selectedStatus = <String>[].obs;
+  String searchQuery = "";
 
   @override
   void onInit() {
@@ -37,7 +44,7 @@ class KoorProdiController extends GetxController {
       isLoading(true);
       bool success = await _service.updateSupervisor(id, idUtama, idPendamping);
       if (success) {
-        fetchPengajuan();
+        refreshData();
         Get.snackbar("Sukses", "Dosen pembimbing berhasil diperbarui",
             backgroundColor: Colors.green.withOpacity(0.8), colorText: Colors.white);
       } else {
@@ -50,7 +57,7 @@ class KoorProdiController extends GetxController {
     }
   }
 
-  // Get unique Dosen names from list
+  // Get unique Dosen names from list (Note: with server pagination, this only shows from loaded items)
   List<String> get availableDosen {
     var names = <String>{};
     for (var p in listPengajuan) {
@@ -60,7 +67,6 @@ class KoorProdiController extends GetxController {
     return names.toList()..sort();
   }
 
-  // Get unique Tahun Ajar from list
   List<String> get availableTahunAjar {
     var years = <String>{};
     for (var p in listPengajuan) {
@@ -77,42 +83,67 @@ class KoorProdiController extends GetxController {
     selectedDosen.assignAll(dosen);
     selectedTahunAjar.assignAll(tahunAjar);
     selectedStatus.assignAll(status);
+    refreshData();
   }
 
   void resetFilter() {
     selectedDosen.clear();
     selectedTahunAjar.clear();
     selectedStatus.clear();
+    refreshData();
   }
 
-  List<PengajuanPembimbingModel> get filteredPengajuan {
-    return listPengajuan.where((p) {
-      // Dosen Filter (Utama or Pendamping)
-      bool matchDosen = selectedDosen.isEmpty ||
-          selectedDosen.contains(p.pembimbingUtama?.namaDosen) ||
-          selectedDosen.contains(p.pembimbingPendamping?.namaDosen);
+  void updateSearch(String query) {
+    searchQuery = query;
+    // Debounce can be added here if needed, but for now we refresh immediately
+    refreshData();
+  }
 
-      // Tahun Ajar Filter
-      bool matchTahun = selectedTahunAjar.isEmpty ||
-          selectedTahunAjar.contains(p.mahasiswa?.angkatan);
-
-      // Status Filter
-      bool matchStatus = selectedStatus.isEmpty ||
-          selectedStatus.contains(p.status ?? "diajukan");
-
-      return matchDosen && matchTahun && matchStatus;
-    }).toList();
+  void refreshData() {
+    currentPage = 1;
+    listPengajuan.clear();
+    fetchPengajuan();
   }
 
   void fetchPengajuan() async {
+    if (isLoading.value) return;
     try {
       isLoading(true);
-      var data = await _service.getPengajuanPembimbing();
-      listPengajuan.assignAll(data);
+      var result = await _service.getPengajuanPembimbing(
+        page: currentPage,
+        search: searchQuery,
+        status: selectedStatus,
+        tahunAjar: selectedTahunAjar,
+      );
+      
+      listPengajuan.assignAll(result['items']);
+      currentPage = result['current_page'];
+      lastPage = result['last_page'];
     } catch (e) {
       Get.snackbar("Error", "Gagal mengambil data pengajuan: $e");
     } finally {
       isLoading(false);
+    }
+  }
+
+  void loadMore() async {
+    if (isMoreLoading.value || !hasMore) return;
+    try {
+      isMoreLoading(true);
+      var result = await _service.getPengajuanPembimbing(
+        page: currentPage + 1,
+        search: searchQuery,
+        status: selectedStatus,
+        tahunAjar: selectedTahunAjar,
+      );
+      
+      listPengajuan.addAll(result['items']);
+      currentPage = result['current_page'];
+      lastPage = result['last_page'];
+    } catch (e) {
+      Get.snackbar("Error", "Gagal mengambil data tambahan: $e");
+    } finally {
+      isMoreLoading(false);
     }
   }
 
@@ -121,7 +152,7 @@ class KoorProdiController extends GetxController {
       isLoading(true);
       bool success = await _service.validasiPengajuan(id, status);
       if (success) {
-        fetchPengajuan();
+        refreshData();
         Get.snackbar("Sukses", "Validasi berhasil diperbarui",
             backgroundColor: Colors.green.withOpacity(0.8), colorText: Colors.white);
       } else {
@@ -143,7 +174,7 @@ class KoorProdiController extends GetxController {
         if (success) successCount++;
       }
       
-      fetchPengajuan();
+      refreshData();
       if (successCount > 0) {
         Get.snackbar("Sukses", "$successCount data berhasil diperbarui",
             backgroundColor: Colors.green.withOpacity(0.8), colorText: Colors.white);

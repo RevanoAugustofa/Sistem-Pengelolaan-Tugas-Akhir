@@ -14,8 +14,24 @@ class PengajuanPembimbing extends StatefulWidget {
 class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
   final KoorProdiController controller = Get.put(KoorProdiController());
   final TextEditingController searchController = TextEditingController();
-  String searchQuery = "";
+  final ScrollController scrollController = ScrollController();
   final Set<int> selectedIds = {};
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+        controller.loadMore();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 
   void _showFilter() {
     Get.bottomSheet(
@@ -63,16 +79,10 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        // Gabungkan pencarian teks dengan filter lanjutan dari controller
-        var filteredList = controller.filteredPengajuan.where((p) {
-          final query = searchQuery.toLowerCase();
-          return (p.mahasiswa?.namaMahasiswa?.toLowerCase().contains(query) ?? false) ||
-                 (p.mahasiswa?.npm?.toLowerCase().contains(query) ?? false);
-        }).toList();
-
         return RefreshIndicator(
-          onRefresh: () async => controller.fetchPengajuan(),
+          onRefresh: () async => controller.refreshData(),
           child: SingleChildScrollView(
+            controller: scrollController,
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -89,9 +99,7 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
                   child: TextField(
                     controller: searchController,
                     onChanged: (value) {
-                      setState(() {
-                        searchQuery = value;
-                      });
+                      controller.updateSearch(value);
                     },
                     decoration: InputDecoration(
                       hintText: "Cari Mahasiswa",
@@ -131,7 +139,7 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
                         TextButton.icon(
                           onPressed: () {
                             var pendingIds = controller.listPengajuan
-                                .where((p) => p.status == "diajukan" || p.status == null)
+                                .where((p) => p.status == "diajukan")
                                 .map((p) => p.id!)
                                 .toList();
                             setState(() {
@@ -171,7 +179,7 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Filter - ${searchQuery.isEmpty ? 'All' : 'Hasil Pencarian'}",
+                            "Filter - ${controller.searchQuery.isEmpty ? 'All' : 'Hasil Pencarian'}",
                             style: const TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.w500),
                           ),
                           if (controller.selectedDosen.isNotEmpty || 
@@ -204,11 +212,23 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
                 
                 const SizedBox(height: 10),
 
-                if (filteredList.isEmpty)
-                  const Center(child: Text("Tidak ada data pengajuan")),
+                if (controller.listPengajuan.isEmpty)
+                  const Center(child: Padding(
+                    padding: EdgeInsets.only(top: 50.0),
+                    child: Text("Tidak ada data pengajuan"),
+                  )),
 
                 // --- List Card Mahasiswa ---
-                ...filteredList.map((p) => _buildStudentCard(p)).toList(),
+                ...controller.listPengajuan.map((p) => _buildStudentCard(p)).toList(),
+
+                // Loading indicator for more data
+                if (controller.isMoreLoading.value)
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
 
                 const SizedBox(height: 20),
               ],

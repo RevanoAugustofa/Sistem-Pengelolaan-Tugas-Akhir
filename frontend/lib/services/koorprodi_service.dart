@@ -13,10 +13,22 @@ class KoorProdiService {
     return prefs.getString('token');
   }
 
-  Future<List<PengajuanPembimbingModel>> getPengajuanPembimbing() async {
+  Future<Map<String, dynamic>> getPengajuanPembimbing({int page = 1, String? search, List<String>? status, List<String>? tahunAjar}) async {
     final token = await _getToken();
+    
+    Map<String, String> params = {
+      'page': page.toString(),
+      'per_page': '10',
+    };
+    
+    if (search != null && search.isNotEmpty) params['search'] = search;
+    if (status != null && status.isNotEmpty) params['status'] = status.join(',');
+    if (tahunAjar != null && tahunAjar.isNotEmpty) params['tahun_ajar'] = tahunAjar.join(',');
+
+    final uri = Uri.parse("$baseUrl/koorprodi/pengajuan-pembimbing").replace(queryParameters: params);
+    
     final response = await http.get(
-      Uri.parse("$baseUrl/koorprodi/pengajuan-pembimbing"),
+      uri,
       headers: {
         'Authorization': 'Bearer $token',
         'Accept': 'application/json',
@@ -24,8 +36,13 @@ class KoorProdiService {
     );
 
     if (response.statusCode == 200) {
-      List data = json.decode(response.body)['data'];
-      return data.map((e) => PengajuanPembimbingModel.fromJson(e)).toList();
+      var body = json.decode(response.body);
+      List data = body['data'];
+      return {
+        'items': data.map((e) => PengajuanPembimbingModel.fromJson(e)).toList(),
+        'last_page': body['last_page'],
+        'current_page': body['current_page'],
+      };
     }
     throw Exception("Gagal mengambil data pengajuan pembimbing");
   }

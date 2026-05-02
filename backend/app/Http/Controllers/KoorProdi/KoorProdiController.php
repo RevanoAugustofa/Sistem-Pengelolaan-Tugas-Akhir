@@ -21,10 +21,6 @@ class KoorProdiController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        // KoorProdi usually manages lecturers in their own prodi.
-        // For now, let's fetch all applications and we can filter by prodi if needed.
-        // Assuming we want to show applications from students in the same prodi as the KoorProdi.
-
         $idProdi = $user->dosen->prodi()->first()?->id;
 
         $query = PengajuanPembimbing::with(['mahasiswa.prodi', 'mahasiswa.proposal', 'pembimbingUtama', 'pembimbingPendamping']);
@@ -35,9 +31,33 @@ class KoorProdiController extends Controller
             });
         }
 
-        $data = $query->orderBy('created_at', 'desc')->get();
+        // Search Filter (Optional, but good for performance if done in backend)
+        if ($request->has('search')) {
+            $search = $request->query('search');
+            $query->whereHas('mahasiswa', function($q) use ($search) {
+                $q->where('nama_mahasiswa', 'like', "%$search%")
+                  ->orWhere('nim', 'like', "%$search%");
+            });
+        }
 
-        return response()->json(['data' => $data]);
+        // Advanced Filters from backend
+        if ($request->has('status')) {
+            $query->whereIn('status', explode(',', $request->query('status')));
+        }
+        
+        if ($request->has('tahun_ajar')) {
+            $years = explode(',', $request->query('tahun_ajar'));
+            $query->whereHas('mahasiswa', function($q) use ($years) {
+                $q->whereIn('id_tahun_ajar', function($sub) use ($years) {
+                    $sub->select('id')->from('tahun_ajar')->whereIn('tahun_ajar', $years);
+                });
+            });
+        }
+
+        $perPage = $request->query('per_page', 10);
+        $data = $query->orderBy('created_at', 'desc')->paginate($perPage);
+
+        return response()->json($data);
     }
 
     /**

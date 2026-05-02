@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\MahasiswaController;
 use App\Http\Controllers\Admin\ProdiController;
 use App\Http\Controllers\Admin\RuanganController;
 use App\Http\Controllers\Admin\DosenProdiController;
+use App\Http\Controllers\KoorProdi\KoorProdiController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -70,6 +71,12 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/admin/dosen-prodi/{id}', [DosenProdiController::class, 'show']);
     Route::put('/admin/dosen-prodi/{id}', [DosenProdiController::class, 'update']);
     Route::delete('/admin/dosen-prodi/{dosen_id}/{prodi_id}', [DosenProdiController::class, 'destroy']);
+});
+
+
+Route::middleware('auth:sanctum', 'role:koorprodi')->group(function () {
+    Route::get('/koorprodi/pengajuan-pembimbing', [KoorProdiController::class, 'index']);
+    Route::post('/koorprodi/pengajuan-pembimbing/{id}/validasi', [KoorProdiController::class, 'validatePengajuan']);
 });
 
 

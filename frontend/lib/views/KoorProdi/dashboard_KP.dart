@@ -174,7 +174,7 @@ class _DashboardKpState extends State<DashboardKp> {
                             _buildMenuItem(Icons.list_alt, 'Rubrik Nilai', onTap: () => Get.toNamed('/rubrikAdm')),
                             _buildMenuItem(Icons.calendar_month, 'Jadwal', onTap: () => Get.toNamed('/jadwalAdm')),
                             _buildMenuItem(Icons.history_edu_outlined, 'Logbook', onTap: () => Get.toNamed('/logbookAdm')),
-                            _buildMenuItem(Icons.verified_user_outlined, 'Validasi Pembimbing', onTap: () => Get.toNamed('/validasiPembimbingAdm')),
+                            _buildMenuItem(Icons.verified_user_outlined, 'Validasi Pembimbing', onTap: () => Get.toNamed('/pengajuanpembimbing_KP')),
                             _buildMenuItem(Icons.assignment_turned_in_outlined, 'Hasil Akhir', onTap: () => Get.toNamed('/hasilAdm')),
                             _buildMenuItem(Icons.more_horiz, 'Lainnya', color: const Color(0xFFEFE0FB), onTap: _showMoreMenu),
                           ],

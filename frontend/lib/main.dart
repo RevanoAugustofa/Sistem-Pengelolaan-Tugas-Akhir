@@ -25,7 +25,7 @@ import 'package:frontend/views/Dosen/jadwal_Dsn.dart';
 import 'package:frontend/views/Dosen/logbook_Dsn.dart';
 import 'package:frontend/views/Dosen/tugasAkhir_Dsn.dart';
 import 'package:frontend/views/KoorProdi/dashboard_KP.dart';
-import 'package:frontend/views/KoorProdi/PengajuanPembimbing/pengajuanPembimbing.dart';
+import 'package:frontend/views/KoorProdi/ValidasiPembimbing/pengajuanPembimbing.dart';
 import 'package:frontend/views/Mahasiswa/Jadwal/jadwal_Sempro_Mhs.dart';
 import 'package:frontend/views/Mahasiswa/daftar_dosenPembimbing_Mhs.dart';
 import 'package:frontend/views/Mahasiswa/kuota_pembimbing.dart';

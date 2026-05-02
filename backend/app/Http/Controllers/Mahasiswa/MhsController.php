@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dosen;
+use App\Models\PengajuanPembimbing;
+use App\Models\Proposal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MhsController extends Controller
 {
@@ -34,6 +37,56 @@ class MhsController extends Controller
         // Fallback jika bukan mahasiswa atau tidak ada data mahasiswa
         $dosen = Dosen::with('user')->get();
         return response()->json(['data' => $dosen]);
+    }
+
+    public function storeDaftarPembimbing(Request $request)
+    {
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'pembimbing1_id' => 'required|exists:dosen,id',
+            'pembimbing2_id' => 'required|exists:dosen,id|different:pembimbing1_id',
+        ]);
+
+        $user = $request->user();
+        if (!$user->mahasiswa) {
+            return response()->json(['message' => 'Data mahasiswa tidak ditemukan'], 404);
+        }
+
+        $idMahasiswa = $user->mahasiswa->id;
+
+        try {
+            DB::beginTransaction();
+
+            // 1. Simpan Judul ke tabel proposal
+            Proposal::updateOrCreate(
+                ['id_mahasiswa' => $idMahasiswa],
+                ['judul_proposal' => $request->judul]
+            );
+
+            // 2. Simpan Pengajuan Pembimbing
+            PengajuanPembimbing::updateOrCreate(
+                ['id_mahasiswa' => $idMahasiswa],
+                [
+                    'id_pembimbing_utama' => $request->pembimbing1_id,
+                    'id_pembimbing_pendamping' => $request->pembimbing2_id,
+                    'status' => 'proses',
+                ]
+            );
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pendaftaran pembimbing berhasil diajukan',
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     // Tambahkan fungsi manajemen user di sini nanti

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/pengajuan_pembimbing_model.dart';
+import '../models/dosen_model.dart';
 import '../services/koorprodi_service.dart';
 
 class KoorProdiController extends GetxController {
@@ -8,6 +9,7 @@ class KoorProdiController extends GetxController {
 
   var isLoading = false.obs;
   var listPengajuan = <PengajuanPembimbingModel>[].obs;
+  var listDosen = <Dosen>[].obs;
   
   // Filter states
   var selectedDosen = <String>[].obs;
@@ -18,6 +20,34 @@ class KoorProdiController extends GetxController {
   void onInit() {
     super.onInit();
     fetchPengajuan();
+    fetchDosen();
+  }
+
+  void fetchDosen() async {
+    try {
+      var data = await _service.getDosen();
+      listDosen.assignAll(data);
+    } catch (e) {
+      Get.snackbar("Error", "Gagal mengambil data dosen: $e");
+    }
+  }
+
+  Future<void> updateSupervisor(int id, int idUtama, int idPendamping) async {
+    try {
+      isLoading(true);
+      bool success = await _service.updateSupervisor(id, idUtama, idPendamping);
+      if (success) {
+        fetchPengajuan();
+        Get.snackbar("Sukses", "Dosen pembimbing berhasil diperbarui",
+            backgroundColor: Colors.green.withOpacity(0.8), colorText: Colors.white);
+      } else {
+        Get.snackbar("Error", "Gagal memperbarui dosen pembimbing");
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoading(false);
+    }
   }
 
   // Get unique Dosen names from list
@@ -80,7 +110,7 @@ class KoorProdiController extends GetxController {
       var data = await _service.getPengajuanPembimbing();
       listPengajuan.assignAll(data);
     } catch (e) {
-      print(e);
+      Get.snackbar("Error", "Gagal mengambil data pengajuan: $e");
     } finally {
       isLoading(false);
     }
@@ -94,6 +124,8 @@ class KoorProdiController extends GetxController {
         fetchPengajuan();
         Get.snackbar("Sukses", "Validasi berhasil diperbarui",
             backgroundColor: Colors.green.withOpacity(0.8), colorText: Colors.white);
+      } else {
+        Get.snackbar("Error", "Gagal memvalidasi pengajuan");
       }
     } catch (e) {
       Get.snackbar("Error", e.toString());

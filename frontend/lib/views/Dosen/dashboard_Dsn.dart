@@ -108,13 +108,6 @@ const DashboardDsn ({super.key});
                   _buildJadwalList(),
 
                   const SizedBox(height: 30),
-
-                  // --- 6. Aktivitas Terbaru Mahasiswa Section ---
-                  const Text("Aktivitas terbaru Mahasiswa", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 10),
-                  _buildAktivitasList(),
-
-                  const SizedBox(height: 30),
                 ],
               ),
             ),
@@ -338,57 +331,6 @@ const DashboardDsn ({super.key});
     );
   }
 
-  // List Aktivitas Terbaru
-  Widget _buildAktivitasList() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            decoration: const BoxDecoration(
-              color: Color(0xFF9E9E9E),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(9)),
-            ),
-            child: const Align(
-              alignment: Alignment.centerLeft,
-              child: Text("Aktivitas Mahasiswa", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(15),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text("Rina : Upload Logbook Bimbingan (20 Oktober)", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                      SizedBox(height: 10),
-                      Text("Dito : Minta Jadwal Bimbingan (Menunggu)", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                      SizedBox(height: 10),
-                      Text("Sari : Revisi Laporan TA Selesai", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                    ],
-                  ),
-                ),
-                // Indikator Scroll (Mockup)
-                Container(
-                  width: 6,
-                  height: 40,
-                  decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(10)),
-                )
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
 
   //  BOTTOM NAVIGATION BAR ==================================================
     Widget _buildBottomNav() {

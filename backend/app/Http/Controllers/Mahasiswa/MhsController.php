@@ -69,7 +69,7 @@ class MhsController extends Controller
                 [
                     'id_pembimbing_utama' => $request->pembimbing1_id,
                     'id_pembimbing_pendamping' => $request->pembimbing2_id,
-                    'status' => 'proses',
+                    'status' => 'diajukan',
                 ]
             );
 

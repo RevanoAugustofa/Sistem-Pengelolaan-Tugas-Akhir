@@ -4,6 +4,7 @@ namespace App\Http\Controllers\KoorProdi;
 
 use App\Http\Controllers\Controller;
 use App\Models\PengajuanPembimbing;
+use App\Models\Dosen;
 use Illuminate\Http\Request;
 
 class KoorProdiController extends Controller
@@ -14,7 +15,7 @@ class KoorProdiController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        
+
         // Ensure user is a Dosen and has a prodi (KoorProdi is a Dosen)
         if (!$user->dosen) {
             return response()->json(['message' => 'Unauthorized'], 403);
@@ -23,7 +24,7 @@ class KoorProdiController extends Controller
         // KoorProdi usually manages lecturers in their own prodi.
         // For now, let's fetch all applications and we can filter by prodi if needed.
         // Assuming we want to show applications from students in the same prodi as the KoorProdi.
-        
+
         $idProdi = $user->dosen->prodi()->first()?->id;
 
         $query = PengajuanPembimbing::with(['mahasiswa.prodi', 'mahasiswa.proposal', 'pembimbingUtama', 'pembimbingPendamping']);
@@ -40,12 +41,55 @@ class KoorProdiController extends Controller
     }
 
     /**
-     * Validate (approve/reject) a supervisor application.
+     * List all lecturers in the KoorProdi's department.
      */
+    public function dosenList(Request $request)
+    {
+        $user = $request->user();
+        if (!$user->dosen) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $idProdi = $user->dosen->prodi()->first()?->id;
+
+        $query = Dosen::query();
+        if ($idProdi) {
+            $query->whereHas('prodi', function ($q) use ($idProdi) {
+                $q->where('prodi.id', $idProdi);
+            });
+        }
+
+        $data = $query->get();
+        return response()->json(['data' => $data]);
+    }
+
+    /**
+     * Update supervisors for an application.
+     */
+    public function updateSupervisor(Request $request, $id)
+    {
+        $request->validate([
+            'id_pembimbing_utama' => 'required|exists:dosen,id',
+            'id_pembimbing_pendamping' => 'required|exists:dosen,id|different:id_pembimbing_utama',
+        ]);
+
+        $pengajuan = PengajuanPembimbing::findOrFail($id);
+        $pengajuan->update([
+            'id_pembimbing_utama' => $request->id_pembimbing_utama,
+            'id_pembimbing_pendamping' => $request->id_pembimbing_pendamping,
+            'status' => 'diajukan' // Reset to diajukan if reassigned
+        ]);
+
+        return response()->json([
+            'message' => 'Dosen pembimbing berhasil diperbarui',
+            'data' => $pengajuan->load(['mahasiswa.proposal', 'pembimbingUtama', 'pembimbingPendamping'])
+        ]);
+    }
+
     public function validatePengajuan(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:diterima,ditolak',
+            'status' => 'required|in:disetujui,diajukan',
         ]);
 
         $pengajuan = PengajuanPembimbing::findOrFail($id);

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('id_mahasiswa')->index('fk_mahasiswa');
             $table->integer('id_pembimbing_utama')->index('fk_pembimbing_utama');
             $table->integer('id_pembimbing_pendamping')->index('fk_pembimbing_pendamping');
-            $table->enum('status', ['proses', 'diterima', 'ditolak'])->nullable()->default('proses');
+            $table->enum('status', ['diajukan', 'disetujui'])->nullable()->default('diajukan');
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();
         });

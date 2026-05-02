@@ -235,9 +235,11 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
     BoxBorder? badgeBorder;
 
     if (statusStr == "diajukan") {
-      badgeColor = const Color(0xFFD1FADF);
+      badgeColor = const Color.fromARGB(255, 255, 255, 255);
+      badgeBorder = Border.all(color: Colors.green);
       textColor = const Color(0xFF12B76A);
     } else {
+      badgeBorder = Border.all(color: Color.fromARGB(255, 76, 162, 238));
       badgeColor = const Color.fromARGB(255, 255, 255, 255);
       textColor = const Color.fromARGB(255, 50, 142, 248);
     }
@@ -563,9 +565,8 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       onPressed: () {
-                        // Logika bawaan tidak dirubah
-                        controller.validasi(pengajuan.id!, "diajukan");
-                        Get.back();
+                        Get.back(); // Close validation dialog
+                        _showSelectSupervisorDialog(pengajuan);
                       },
                       child: const Text("PILIH ULANG", style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
@@ -577,6 +578,109 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
         ),
       ),
       barrierDismissible: false, // Opsional: agar tidak bisa ditutup dengan tap di luar area
+    );
+  }
+
+  void _showSelectSupervisorDialog(PengajuanPembimbingModel pengajuan) {
+    int? selectedUtama = pengajuan.idPembimbingUtama;
+    int? selectedPendamping = pengajuan.idPembimbingPendamping;
+
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        backgroundColor: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Center(
+                child: Text(
+                  "Pilih Dosen Pembimbing",
+                  style: TextStyle(
+                    color: Color(0xFF0D47A1),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Text("Pembimbing Utama", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<int>(
+                value: selectedUtama,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+                items: controller.listDosen.map((dosen) {
+                  return DropdownMenuItem<int>(
+                    value: dosen.id,
+                    child: Text(dosen.namaDosen ?? "-", style: const TextStyle(fontSize: 14)),
+                  );
+                }).toList(),
+                onChanged: (val) => selectedUtama = val,
+              ),
+              const SizedBox(height: 16),
+              const Text("Pembimbing Pendamping", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<int>(
+                value: selectedPendamping,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+                items: controller.listDosen.map((dosen) {
+                  return DropdownMenuItem<int>(
+                    value: dosen.id,
+                    child: Text(dosen.namaDosen ?? "-", style: const TextStyle(fontSize: 14)),
+                  );
+                }).toList(),
+                onChanged: (val) => selectedPendamping = val,
+              ),
+              const SizedBox(height: 32),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade300,
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      onPressed: () => Get.back(),
+                      child: const Text("BATAL"),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF3399FF),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      onPressed: () {
+                        if (selectedUtama != null && selectedPendamping != null) {
+                          if (selectedUtama == selectedPendamping) {
+                            Get.snackbar("Peringatan", "Pembimbing 1 dan 2 tidak boleh sama",
+                                backgroundColor: Colors.orange, colorText: Colors.white);
+                            return;
+                          }
+                          controller.updateSupervisor(pengajuan.id!, selectedUtama!, selectedPendamping!);
+                          Get.back();
+                        }
+                      },
+                      child: const Text("SIMPAN", style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

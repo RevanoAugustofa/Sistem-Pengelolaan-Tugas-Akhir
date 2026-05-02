@@ -76,6 +76,8 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
 Route::middleware('auth:sanctum', 'role:koorprodi')->group(function () {
     Route::get('/koorprodi/pengajuan-pembimbing', [KoorProdiController::class, 'index']);
+    Route::get('/koorprodi/dosen', [KoorProdiController::class, 'dosenList']);
+    Route::post('/koorprodi/pengajuan-pembimbing/{id}/update-supervisor', [KoorProdiController::class, 'updateSupervisor']);
     Route::post('/koorprodi/pengajuan-pembimbing/{id}/validasi', [KoorProdiController::class, 'validatePengajuan']);
 });
 

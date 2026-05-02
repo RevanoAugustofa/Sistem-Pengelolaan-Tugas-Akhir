@@ -10,6 +10,8 @@ class ProfileController extends GetxController {
   var userRole = "".obs;
   var userId = "".obs;
   var userEmail = "".obs;
+  var idProdi = 0.obs;
+  var prodiName = "".obs;
   var isLoading = false.obs;
   var availableRoles = <String>[].obs;
 
@@ -30,6 +32,8 @@ class ProfileController extends GetxController {
     
     userId.value = prefs.getString('user_id') ?? "0000000000";
     userEmail.value = prefs.getString('user_email') ?? "user@sipta.com";
+    idProdi.value = prefs.getInt('id_prodi') ?? 0;
+    prodiName.value = prefs.getString('prodi_name') ?? "";
     availableRoles.value = prefs.getStringList('available_roles') ?? [];
   }
 

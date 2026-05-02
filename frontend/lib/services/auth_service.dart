@@ -42,6 +42,14 @@ class AuthService {
 
           await prefs.setString('active_role', userRole);
           await prefs.setString('user_name', responseData['user']['name'] ?? '');
+
+          // Simpan ID Prodi jika mahasiswa
+          if (responseData['user']['mahasiswa'] != null) {
+            await prefs.setInt('id_prodi', responseData['user']['mahasiswa']['id_prodi']);
+            if (responseData['user']['mahasiswa']['prodi'] != null) {
+              await prefs.setString('prodi_name', responseData['user']['mahasiswa']['prodi']['nama_prodi']);
+            }
+          }
         }
       }
       

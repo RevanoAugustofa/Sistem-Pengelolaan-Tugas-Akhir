@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/mhs_controller.dart';
+import '../../../controllers/profile_controller.dart';
 import '../../../models/dosen_model.dart';
 
 class DaftarDosenPembimbingMhsPage extends StatefulWidget {
@@ -12,6 +13,7 @@ class DaftarDosenPembimbingMhsPage extends StatefulWidget {
 
 class _DaftarDosenPembimbingMhsPageState extends State<DaftarDosenPembimbingMhsPage> {
   final MhsController controller = Get.put(MhsController());
+  final ProfileController profileController = Get.find<ProfileController>();
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController judulController = TextEditingController();

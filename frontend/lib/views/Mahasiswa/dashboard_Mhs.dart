@@ -1,8 +1,11 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import '../../controllers/profile_controller.dart';
 
 class DashboardMhs extends StatelessWidget {
-  const DashboardMhs({super.key});
+  DashboardMhs({super.key});
+
+  final ProfileController profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {

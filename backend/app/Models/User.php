@@ -59,6 +59,11 @@ class User extends Authenticatable
         return $this->hasOne(Dosen::class, 'id_user');
     }
 
+    public function mahasiswa()
+    {
+        return $this->hasOne(Mahasiswa::class, 'id_user');
+    }
+
     public function getAvailableRolesAttribute()
     {
         $roles = [];

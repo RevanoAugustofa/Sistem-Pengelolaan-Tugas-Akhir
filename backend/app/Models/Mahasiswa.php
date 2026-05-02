@@ -34,4 +34,9 @@ class Mahasiswa extends Model
     {
         return $this->belongsTo(TahunAjar::class, 'id_tahun_ajar');
     }
+
+    public function proposal()
+    {
+        return $this->hasOne(Proposal::class, 'id_mahasiswa')->latestOfMany();
+    }
 }

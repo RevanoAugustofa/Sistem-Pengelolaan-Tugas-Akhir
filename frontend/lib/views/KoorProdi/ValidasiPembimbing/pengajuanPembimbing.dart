@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/koorprodi_controller.dart';
 import '../../../models/pengajuan_pembimbing_model.dart';
+import 'components/filter_pengajuan.dart';
 
 class PengajuanPembimbing extends StatefulWidget {
   const PengajuanPembimbing({super.key});
@@ -14,6 +15,31 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
   final KoorProdiController controller = Get.put(KoorProdiController());
   final TextEditingController searchController = TextEditingController();
   String searchQuery = "";
+  final Set<int> selectedIds = {};
+
+  void _showFilter() {
+    Get.bottomSheet(
+      const FilterPengajuan(),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+    );
+  }
+
+  void _toggleSelection(int id) {
+    setState(() {
+      if (selectedIds.contains(id)) {
+        selectedIds.remove(id);
+      } else {
+        selectedIds.add(id);
+      }
+    });
+  }
+
+  void _clearSelection() {
+    setState(() {
+      selectedIds.clear();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +63,8 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        var filteredList = controller.listPengajuan.where((p) {
+        // Gabungkan pencarian teks dengan filter lanjutan dari controller
+        var filteredList = controller.filteredPengajuan.where((p) {
           final query = searchQuery.toLowerCase();
           return (p.mahasiswa?.namaMahasiswa?.toLowerCase().contains(query) ?? false) ||
                  (p.mahasiswa?.npm?.toLowerCase().contains(query) ?? false);
@@ -66,21 +93,116 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
                         searchQuery = value;
                       });
                     },
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: "Cari Mahasiswa",
-                      hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                      suffixIcon: Icon(Icons.tune, color: Colors.blue),
-                      contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                      hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.tune, color: Colors.blue),
+                        onPressed: _showFilter,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                       border: InputBorder.none,
                     ),
                   ),
                 ),
                 const SizedBox(height: 15),
-                Text(
-                  "Filter - ${searchQuery.isEmpty ? 'All' : 'Hasil Pencarian'}",
-                  style: const TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(height: 20),
+
+                // --- Bulk Action Bar or Filter/Export Bar ---
+                if (selectedIds.isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue.shade200),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          "${selectedIds.length} Terpilih",
+                          style: const TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const Spacer(),
+                        TextButton.icon(
+                          onPressed: () {
+                            var pendingIds = controller.listPengajuan
+                                .where((p) => p.status == "diajukan" || p.status == null)
+                                .map((p) => p.id!)
+                                .toList();
+                            setState(() {
+                              selectedIds.addAll(pendingIds);
+                            });
+                          },
+                          icon: const Icon(Icons.select_all, size: 18),
+                          label: const Text("Semua", style: TextStyle(fontSize: 12)),
+                          style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                        ),
+                        const SizedBox(width: 4),
+                        ElevatedButton(
+                          onPressed: () => _showBulkValidationDialog(),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            minimumSize: const Size(0, 32),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                          ),
+                          child: const Text("Setujui", style: TextStyle(fontSize: 12)),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close, color: Colors.grey, size: 20),
+                          onPressed: _clearSelection,
+                          constraints: const BoxConstraints(),
+                          padding: const EdgeInsets.only(left: 8),
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Filter - ${searchQuery.isEmpty ? 'All' : 'Hasil Pencarian'}",
+                            style: const TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.w500),
+                          ),
+                          if (controller.selectedDosen.isNotEmpty || 
+                              controller.selectedTahunAjar.isNotEmpty || 
+                              controller.selectedStatus.isNotEmpty)
+                            const Text(
+                              "Advanced Filter Aktif",
+                              style: TextStyle(color: Colors.blue, fontSize: 11, fontWeight: FontWeight.bold),
+                            ),
+                        ],
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          Get.snackbar("Info", "Fitur Eksport sedang disiapkan",
+                              backgroundColor: Colors.blue.withOpacity(0.8), colorText: Colors.white);
+                        },
+                        icon: const Icon(Icons.download, size: 18, color: Colors.green),
+                        label: const Text(
+                          "Eksport Data",
+                          style: TextStyle(color: Colors.green, fontSize: 13, fontWeight: FontWeight.bold),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          backgroundColor: Colors.green.shade50,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        ),
+                      ),
+                    ],
+                  ),
+                
+                const SizedBox(height: 10),
 
                 if (filteredList.isEmpty)
                   const Center(child: Text("Tidak ada data pengajuan")),
@@ -99,6 +221,7 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
 
   // --- WIDGET HELPER: Card Mahasiswa ---
   Widget _buildStudentCard(PengajuanPembimbingModel pengajuan) {
+    bool isSelected = selectedIds.contains(pengajuan.id);
     String statusStr = pengajuan.status ?? "diajukan";
     String displayStatus;
     if (statusStr == "diajukan") {
@@ -114,112 +237,202 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
     if (statusStr == "diajukan") {
       badgeColor = const Color(0xFFD1FADF);
       textColor = const Color(0xFF12B76A);
-    } else{
+    } else {
       badgeColor = const Color.fromARGB(255, 255, 255, 255);
       textColor = const Color.fromARGB(255, 50, 142, 248);
     }
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Info Mahasiswa (Kiri)
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      pengajuan.mahasiswa?.namaMahasiswa ?? "-",
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "${pengajuan.mahasiswa?.npm ?? "-"}",
-                      style: const TextStyle(color: Colors.black54, fontSize: 12),
-                    ),
-                  ],
-                ),
-              ),
-              
-              // Badge & Tombol (Kanan)
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: badgeColor,
-                      borderRadius: BorderRadius.circular(4),
-                      border: badgeBorder,
-                    ),
-                    child: Text(
-                      displayStatus,
-                      style: TextStyle(
-                        color: textColor,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                      ),
+    return GestureDetector(
+      onLongPress: () {
+        if (statusStr == "diajukan") {
+          _toggleSelection(pengajuan.id!);
+        }
+      },
+      onTap: () {
+        if (selectedIds.isNotEmpty) {
+          if (statusStr == "diajukan") {
+            _toggleSelection(pengajuan.id!);
+          }
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.blue.shade50 : Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: isSelected ? Colors.blue : Colors.grey.shade200,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (selectedIds.isNotEmpty && statusStr == "diajukan")
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Icon(
+                      isSelected ? Icons.check_box : Icons.check_box_outline_blank,
+                      color: Colors.blue,
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  
-                  if (statusStr == "diajukan")
-                    SizedBox(
-                      height: 30,
-                      child: ElevatedButton(
-                        onPressed: () => _showValidationDialog(pengajuan),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF4FA5FF),
-                          elevation: 0,
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                        child: const Text(
-                          "validasi",
-                          style: TextStyle(color: Colors.white, fontSize: 12),
+                // Info Mahasiswa (Kiri)
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        pengajuan.mahasiswa?.namaMahasiswa ?? "-",
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "${pengajuan.mahasiswa?.npm ?? "-"}",
+                        style: const TextStyle(color: Colors.black54, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Badge & Tombol (Kanan)
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: badgeColor,
+                        borderRadius: BorderRadius.circular(4),
+                        border: badgeBorder,
+                      ),
+                      child: Text(
+                        displayStatus,
+                        style: TextStyle(
+                          color: textColor,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
+                    const SizedBox(width: 10),
+
+                    if (statusStr == "diajukan" && selectedIds.isEmpty)
+                      SizedBox(
+                        height: 30,
+                        child: ElevatedButton(
+                          onPressed: () => _showValidationDialog(pengajuan),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF4FA5FF),
+                            elevation: 0,
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          child: const Text(
+                            "validasi",
+                            style: TextStyle(color: Colors.white, fontSize: 12),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+            const Divider(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Pembimbing 1", style: TextStyle(fontSize: 10, color: Colors.grey)),
+                      Text(pengajuan.pembimbingUtama?.namaDosen ?? "-",
+                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Pembimbing 2", style: TextStyle(fontSize: 10, color: Colors.grey)),
+                      Text(pengajuan.pembimbingPendamping?.namaDosen ?? "-",
+                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showBulkValidationDialog() {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        backgroundColor: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Validasi Massal",
+                style: TextStyle(
+                  color: Color(0xFF0D47A1),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "Apakah Anda yakin ingin menyetujui ${selectedIds.length} pengajuan pembimbing yang dipilih?",
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade300,
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      onPressed: () => Get.back(),
+                      child: const Text("BATAL"),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF3399FF),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      onPressed: () {
+                        controller.validasiMassal(selectedIds.toList(), "disetujui");
+                        _clearSelection();
+                        Get.back();
+                      },
+                      child: const Text("SETUJU", style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ),
                 ],
               ),
             ],
           ),
-          const Divider(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text("Pembimbing 1", style: TextStyle(fontSize: 10, color: Colors.grey)),
-                    Text(pengajuan.pembimbingUtama?.namaDosen ?? "-", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text("Pembimbing 2", style: TextStyle(fontSize: 10, color: Colors.grey)),
-                    Text(pengajuan.pembimbingPendamping?.namaDosen ?? "-", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
-                  ],
-                ),
-              ),
-            ],
-          )
-        ],
+        ),
       ),
     );
   }

@@ -38,7 +38,7 @@ class PengajuanPembimbingModel {
     );
   }
 
-  get proposal => null;
+  get proposal => mahasiswa?.proposal;
 
-  get judulTa => null;
+  get judulTa => mahasiswa?.proposal?.judulProposal;
 }

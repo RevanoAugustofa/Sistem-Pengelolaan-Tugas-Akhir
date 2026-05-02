@@ -26,7 +26,7 @@ class KoorProdiController extends Controller
         
         $idProdi = $user->dosen->prodi()->first()?->id;
 
-        $query = PengajuanPembimbing::with(['mahasiswa.prodi', 'pembimbingUtama', 'pembimbingPendamping']);
+        $query = PengajuanPembimbing::with(['mahasiswa.prodi', 'mahasiswa.proposal', 'pembimbingUtama', 'pembimbingPendamping']);
 
         if ($idProdi) {
             $query->whereHas('mahasiswa', function ($q) use ($idProdi) {
@@ -55,7 +55,7 @@ class KoorProdiController extends Controller
 
         return response()->json([
             'message' => 'Validasi berhasil diperbarui',
-            'data' => $pengajuan->load(['mahasiswa', 'pembimbingUtama', 'pembimbingPendamping'])
+            'data' => $pengajuan->load(['mahasiswa.proposal', 'pembimbingUtama', 'pembimbingPendamping'])
         ]);
     }
 }

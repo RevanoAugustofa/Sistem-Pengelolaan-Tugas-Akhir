@@ -258,4 +258,53 @@ class AdminService {
     }
     throw Exception("Gagal mengambil data user");
   }
+
+  // --- DOSEN PRODI RELASI ---
+  Future<List<Dosen>> getDosenProdi() async {
+    final token = await _getToken();
+    final response = await http.get(Uri.parse("$baseUrl/admin/dosen-prodi"), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => Dosen.fromJson(e)).toList();
+    }
+    print("Error fetching DosenProdi: ${response.statusCode} - ${response.body}");
+    throw Exception("Gagal mengambil data relasi dosen prodi: ${response.statusCode}");
+  }
+
+  Future<bool> storeDosenProdi(int dosenId, int prodiId) async {
+    final token = await _getToken();
+    final response = await http.post(
+      Uri.parse("$baseUrl/admin/dosen-prodi"),
+      headers: {'Authorization': 'Bearer $token', 'Accept': 'application/json', 'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'id_dosen': dosenId,
+        'id_prodi': prodiId,
+      }),
+    );
+    return response.statusCode == 201;
+  }
+
+  Future<bool> updateDosenProdi(int dosenId, List<int> prodiIds) async {
+    final token = await _getToken();
+    final response = await http.put(
+      Uri.parse("$baseUrl/admin/dosen-prodi/$dosenId"),
+      headers: {'Authorization': 'Bearer $token', 'Accept': 'application/json', 'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'prodi_ids': prodiIds,
+      }),
+    );
+    return response.statusCode == 200;
+  }
+
+  Future<bool> deleteDosenProdi(int dosenId, int prodiId) async {
+    final token = await _getToken();
+    final response = await http.delete(
+      Uri.parse("$baseUrl/admin/dosen-prodi/$dosenId/$prodiId"),
+      headers: {'Authorization': 'Bearer $token', 'Accept': 'application/json'},
+    );
+    return response.statusCode == 200;
+  }
 }

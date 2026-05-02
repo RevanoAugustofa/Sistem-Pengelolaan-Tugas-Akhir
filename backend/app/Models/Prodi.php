@@ -12,4 +12,9 @@ class Prodi extends Model
         'kode_prodi',
         'nama_prodi',
     ];
+
+    public function dosen()
+    {
+        return $this->belongsToMany(Dosen::class, 'dosen_prodi', 'id_prodi', 'id_dosen');
+    }
 }

@@ -15,6 +15,7 @@ import 'package:frontend/views/Admin/Penilaian/hasil_Adm.dart';
 import 'package:frontend/views/Admin/Penilaian/rekap_Adm.dart';
 import 'package:frontend/views/Admin/Penilaian/rubrik_Adm.dart';
 import 'package:frontend/views/Admin/Proposal/proposal_Adm.dart';
+import 'package:frontend/views/Admin/DosenProdi/index_dosen_prodi.dart';
 import 'package:frontend/views/Admin/rekapPembimbingPenguji_Adm.dart';
 import 'package:frontend/views/Admin/dashboard_Adm.dart';
 import 'package:frontend/views/Dosen/dashboard_Dsn.dart';
@@ -82,6 +83,7 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/rekapPembimbingPengujiAdm', page: () => const RekapPembimbingPengujiAdminPage()),
         GetPage(name: '/jadwalAdm', page: () => JadwalAdminPage()),
         GetPage(name: '/tahunAjaranAdm', page: () => const IndexTahunAjarPage() ),
+        GetPage(name: '/dosenProdiAdm', page: () => const IndexDosenProdiPage() ),
 
         //Dosen
         GetPage(name: '/dashboardDsn', page: () => DashboardDsn() ),

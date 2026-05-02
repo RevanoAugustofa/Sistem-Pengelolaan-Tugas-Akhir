@@ -260,4 +260,59 @@ class AdminController extends GetxController {
       listUser.assignAll(data);
     } catch (e) { print(e); } finally { isLoadingUser(false); }
   }
+
+  // --- DOSEN PRODI RELASI ---
+  var isLoadingDosenProdi = false.obs;
+
+  void fetchDosenProdi() async {
+    try {
+      isLoadingDosenProdi(true);
+      var data = await _service.getDosenProdi();
+      listDosen.assignAll(data);
+    } catch (e) { print(e); } finally { isLoadingDosenProdi(false); }
+  }
+
+  Future<void> addDosenProdi(int dosenId, int prodiId) async {
+    try {
+      isLoadingDosenProdi(true);
+      if (await _service.storeDosenProdi(dosenId, prodiId)) {
+        fetchDosenProdi();
+        Get.back();
+        Get.snackbar("Sukses", "Relasi Dosen & Prodi berhasil ditambahkan");
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingDosenProdi(false);
+    }
+  }
+
+  Future<void> updateDosenProdi(int dosenId, List<int> prodiIds) async {
+    try {
+      isLoadingDosenProdi(true);
+      if (await _service.updateDosenProdi(dosenId, prodiIds)) {
+        fetchDosenProdi();
+        Get.back();
+        Get.snackbar("Sukses", "Relasi Dosen & Prodi berhasil diperbarui");
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingDosenProdi(false);
+    }
+  }
+
+  Future<void> deleteDosenProdi(int dosenId, int prodiId) async {
+    try {
+      isLoadingDosenProdi(true);
+      if (await _service.deleteDosenProdi(dosenId, prodiId)) {
+        fetchDosenProdi();
+        Get.snackbar("Sukses", "Relasi Dosen & Prodi dihapus");
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingDosenProdi(false);
+    }
+  }
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\DosenController;
 use App\Http\Controllers\Admin\MahasiswaController;
 use App\Http\Controllers\Admin\ProdiController;
 use App\Http\Controllers\Admin\RuanganController;
+use App\Http\Controllers\Admin\DosenProdiController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -62,6 +63,13 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/admin/ruangan/{id}', [RuanganController::class, 'show']);
     Route::put('/admin/ruangan/{id}', [RuanganController::class, 'update']);
     Route::delete('/admin/ruangan/{id}', [RuanganController::class, 'destroy']);
+
+    // Dosen Prodi Relasi CRUD
+    Route::get('/admin/dosen-prodi', [DosenProdiController::class, 'index']);
+    Route::post('/admin/dosen-prodi', [DosenProdiController::class, 'store']);
+    Route::get('/admin/dosen-prodi/{id}', [DosenProdiController::class, 'show']);
+    Route::put('/admin/dosen-prodi/{id}', [DosenProdiController::class, 'update']);
+    Route::delete('/admin/dosen-prodi/{dosen_id}/{prodi_id}', [DosenProdiController::class, 'destroy']);
 });
 
 

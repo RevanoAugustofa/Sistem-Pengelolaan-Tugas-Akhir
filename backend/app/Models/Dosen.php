@@ -32,4 +32,9 @@ class Dosen extends Model
     {
         return $this->belongsTo(User::class, 'id_user');
     }
+
+    public function prodi()
+    {
+        return $this->belongsToMany(Prodi::class, 'dosen_prodi', 'id_dosen', 'id_prodi');
+    }
 }

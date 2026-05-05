@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('rubrik_nilai', function (Blueprint $table) {
             $table->integer('id', true);
             $table->integer('id_prodi')->nullable()->index('id_prodi');
-            $table->enum('jenis_dosen', ['pembimbing', 'penguji'])->nullable();
+            $table->enum('jenis_dosen', ['pembimbing utama','pembimbing pendamping','penguji utama','penguji pendamping'])->nullable();
             $table->string('kelompok')->nullable();
             $table->string('kategori')->nullable();
             $table->integer('presentse')->nullable();

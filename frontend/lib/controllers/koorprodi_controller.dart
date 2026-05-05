@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/ruangan_model.dart';
+import 'package:frontend/models/rubrik_nilai_model.dart';
 import 'package:get/get.dart';
 import '../models/pengajuan_pembimbing_model.dart';
 import '../models/dosen_model.dart';
@@ -28,6 +29,10 @@ class KoorProdiController extends GetxController {
   var listRuangan = <Ruangan>[].obs;
   var isLoadingRuangan = false.obs;
 
+  // Rubrik Nilai management states
+  var listRubrikNilai = <RubrikNilai>[].obs;
+  var isLoadingRubrikNilai = false.obs;
+
   // Pagination states
   int currentPage = 1;
   int lastPage = 1;
@@ -48,6 +53,69 @@ class KoorProdiController extends GetxController {
     fetchTahunAjar();
     fetchDosenManajemen();
     fetchRuangan();
+    fetchRubrikNilai();
+  }
+
+  void fetchRubrikNilai() async {
+    try {
+      isLoadingRubrikNilai(true);
+      var data = await _service.getRubrikNilai();
+      listRubrikNilai.assignAll(data);
+    } catch (e) {
+      Get.snackbar("Error", "Gagal mengambil data rubrik nilai: $e");
+    } finally {
+      isLoadingRubrikNilai(false);
+    }
+  }
+
+  Future<void> addRubrikNilai(Map<String, dynamic> data) async {
+    try {
+      isLoadingRubrikNilai(true);
+      bool success = await _service.storeRubrikNilai(data);
+      if (success) {
+        fetchRubrikNilai();
+        Get.back();
+        Get.snackbar("Sukses", "Data Rubrik Nilai berhasil ditambahkan",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingRubrikNilai(false);
+    }
+  }
+
+  Future<void> updateRubrikNilai(int id, Map<String, dynamic> data) async {
+    try {
+      isLoadingRubrikNilai(true);
+      bool success = await _service.updateRubrikNilai(id, data);
+      if (success) {
+        fetchRubrikNilai();
+        Get.back();
+        Get.snackbar("Sukses", "Data Rubrik Nilai berhasil diperbarui",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingRubrikNilai(false);
+    }
+  }
+
+  Future<void> deleteRubrikNilai(int id) async {
+    try {
+      isLoadingRubrikNilai(true);
+      bool success = await _service.deleteRubrikNilai(id);
+      if (success) {
+        fetchRubrikNilai();
+        Get.snackbar("Sukses", "Data Rubrik Nilai berhasil dihapus",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingRubrikNilai(false);
+    }
   }
 
   void fetchRuangan() async {

@@ -36,7 +36,7 @@ class RubrikNilaiController extends Controller
         }
 
         $request->validate([
-            'jenis_dosen' => 'required|in:pembimbing,penguji',
+            'jenis_dosen' => 'required|in:pembimbing utama,pembimbing pendamping,penguji utama,penguji pendamping',
             'kelompok' => 'required|string',
             'kategori' => 'required|string',
             'presentse' => 'required|integer|min:0|max:100',
@@ -77,7 +77,7 @@ class RubrikNilaiController extends Controller
         }
 
         $request->validate([
-            'jenis_dosen' => 'required|in:pembimbing,penguji',
+            'jenis_dosen' => 'required|in:pembimbing utama,pembimbing pendamping,penguji utama,penguji pendamping',
             'kelompok' => 'required|string',
             'kategori' => 'required|string',
             'presentse' => 'required|integer|min:0|max:100',

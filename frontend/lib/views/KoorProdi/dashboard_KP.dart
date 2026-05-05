@@ -167,7 +167,7 @@ class _DashboardKpState extends State<DashboardKp> {
                           children: [
                             _buildMenuItem(Icons.people_outline, 'Mahasiswa', onTap: () => Get.toNamed('/dataMahasiswaKp')),
                             _buildMenuItem(Icons.supervisor_account, 'Dosen', onTap: () => Get.toNamed('/dataDosenKp')),
-                            _buildMenuItem(Icons.list_alt, 'Rubrik Nilai', onTap: () => Get.toNamed('/rubrikAdm')),
+                            _buildMenuItem(Icons.list_alt, 'Rubrik Nilai', onTap: () => Get.toNamed('/dataRubrikNilaiKp')),
                             _buildMenuItem(Icons.calendar_month, 'Jadwal', onTap: () => Get.toNamed('/jadwalAdm')),
                             _buildMenuItem(Icons.history_edu_outlined, 'Logbook', onTap: () => Get.toNamed('/logbookAdm')),
                             _buildMenuItem(Icons.verified_user_outlined, 'Validasi Pembimbing', onTap: () => Get.toNamed('/pengajuanpembimbing_KP')),

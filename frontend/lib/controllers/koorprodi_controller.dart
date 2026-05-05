@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/ruangan_model.dart';
 import 'package:get/get.dart';
 import '../models/pengajuan_pembimbing_model.dart';
 import '../models/dosen_model.dart';
+import '../models/mahasiswa_model.dart';
+import '../models/tahun_ajar_model.dart';
 import '../services/koorprodi_service.dart';
 
 class KoorProdiController extends GetxController {
@@ -12,6 +15,19 @@ class KoorProdiController extends GetxController {
   var listPengajuan = <PengajuanPembimbingModel>[].obs;
   var listDosen = <Dosen>[].obs;
   
+  // Mahasiswa management states
+  var listMahasiswa = <Mahasiswa>[].obs;
+  var listTahunAjar = <TahunAjar>[].obs;
+  var isLoadingMahasiswa = false.obs;
+
+  // Dosen management states
+  var listDosenManajemen = <Dosen>[].obs;
+  var isLoadingDosen = false.obs;
+
+  // Ruangan management states
+  var listRuangan = <Ruangan>[].obs;
+  var isLoadingRuangan = false.obs;
+
   // Pagination states
   int currentPage = 1;
   int lastPage = 1;
@@ -28,6 +44,205 @@ class KoorProdiController extends GetxController {
     super.onInit();
     fetchPengajuan();
     fetchDosen();
+    fetchMahasiswa();
+    fetchTahunAjar();
+    fetchDosenManajemen();
+    fetchRuangan();
+  }
+
+  void fetchRuangan() async {
+    try {
+      isLoadingRuangan(true);
+      var data = await _service.getRuangan();
+      listRuangan.assignAll(data);
+    } catch (e) {
+      Get.snackbar("Error", "Gagal mengambil data ruangan: $e");
+    } finally {
+      isLoadingRuangan(false);
+    }
+  }
+
+  Future<void> addRuangan(Map<String, dynamic> data) async {
+    try {
+      isLoadingRuangan(true);
+      bool success = await _service.storeRuangan(data);
+      if (success) {
+        fetchRuangan();
+        Get.back();
+        Get.snackbar("Sukses", "Data Ruangan berhasil ditambahkan",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingRuangan(false);
+    }
+  }
+
+  Future<void> updateRuangan(int id, Map<String, dynamic> data) async {
+    try {
+      isLoadingRuangan(true);
+      bool success = await _service.updateRuangan(id, data);
+      if (success) {
+        fetchRuangan();
+        Get.back();
+        Get.snackbar("Sukses", "Data Ruangan berhasil diperbarui",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingRuangan(false);
+    }
+  }
+
+  Future<void> deleteRuangan(int id) async {
+    try {
+      isLoadingRuangan(true);
+      bool success = await _service.deleteRuangan(id);
+      if (success) {
+        fetchRuangan();
+        Get.snackbar("Sukses", "Data Ruangan berhasil dihapus",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingRuangan(false);
+    }
+  }
+
+  void fetchDosenManajemen() async {
+    try {
+      isLoadingDosen(true);
+      var data = await _service.getDosenManajemen();
+      listDosenManajemen.assignAll(data);
+    } catch (e) {
+      Get.snackbar("Error", "Gagal mengambil data dosen: $e");
+    } finally {
+      isLoadingDosen(false);
+    }
+  }
+
+  Future<void> addDosen(Map<String, dynamic> data) async {
+    try {
+      isLoadingDosen(true);
+      bool success = await _service.storeDosen(data);
+      if (success) {
+        fetchDosenManajemen();
+        Get.back();
+        Get.snackbar("Sukses", "Data Dosen berhasil ditambahkan",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingDosen(false);
+    }
+  }
+
+  Future<void> updateDosen(int id, Map<String, dynamic> data) async {
+    try {
+      isLoadingDosen(true);
+      bool success = await _service.updateDosen(id, data);
+      if (success) {
+        fetchDosenManajemen();
+        Get.back();
+        Get.snackbar("Sukses", "Data Dosen berhasil diperbarui",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingDosen(false);
+    }
+  }
+
+  Future<void> deleteDosen(int id) async {
+    try {
+      isLoadingDosen(true);
+      bool success = await _service.deleteDosen(id);
+      if (success) {
+        fetchDosenManajemen();
+        Get.snackbar("Sukses", "Data Dosen berhasil dihapus",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingDosen(false);
+    }
+  }
+
+  void fetchMahasiswa() async {
+    try {
+      isLoadingMahasiswa(true);
+      var data = await _service.getMahasiswa();
+      listMahasiswa.assignAll(data);
+    } catch (e) {
+      Get.snackbar("Error", "Gagal mengambil data mahasiswa: $e");
+    } finally {
+      isLoadingMahasiswa(false);
+    }
+  }
+
+  void fetchTahunAjar() async {
+    try {
+      var data = await _service.getTahunAjar();
+      listTahunAjar.assignAll(data);
+    } catch (e) {
+      Get.snackbar("Error", "Gagal mengambil data tahun ajar: $e");
+    }
+  }
+
+  Future<void> addMahasiswa(Map<String, dynamic> data) async {
+    try {
+      isLoadingMahasiswa(true);
+      bool success = await _service.storeMahasiswa(data);
+      if (success) {
+        fetchMahasiswa();
+        Get.back();
+        Get.snackbar("Sukses", "Data Mahasiswa berhasil ditambahkan",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingMahasiswa(false);
+    }
+  }
+
+  Future<void> updateMahasiswa(int id, Map<String, dynamic> data) async {
+    try {
+      isLoadingMahasiswa(true);
+      bool success = await _service.updateMahasiswa(id, data);
+      if (success) {
+        fetchMahasiswa();
+        Get.back();
+        Get.snackbar("Sukses", "Data Mahasiswa berhasil diperbarui",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingMahasiswa(false);
+    }
+  }
+
+  Future<void> deleteMahasiswa(int id) async {
+    try {
+      isLoadingMahasiswa(true);
+      bool success = await _service.deleteMahasiswa(id);
+      if (success) {
+        fetchMahasiswa();
+        Get.snackbar("Sukses", "Data Mahasiswa berhasil dihapus",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingMahasiswa(false);
+    }
   }
 
   void fetchDosen() async {

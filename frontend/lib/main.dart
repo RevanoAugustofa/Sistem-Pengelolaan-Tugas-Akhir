@@ -26,6 +26,9 @@ import 'package:frontend/views/Dosen/logbook_Dsn.dart';
 import 'package:frontend/views/Dosen/tugasAkhir_Dsn.dart';
 import 'package:frontend/views/KoorProdi/dashboard_KP.dart';
 import 'package:frontend/views/KoorProdi/ValidasiPembimbing/pengajuanPembimbing.dart';
+import 'package:frontend/views/KoorProdi/Mahasiswa/index_mahasiswa.dart' as kp_mhs;
+import 'package:frontend/views/KoorProdi/Dosen/index_dosen.dart' as kp_dsn;
+import 'package:frontend/views/KoorProdi/Ruangan/index_ruangan.dart' as kp_ruangan;
 import 'package:frontend/views/Mahasiswa/Jadwal/jadwal_Sempro_Mhs.dart';
 import 'package:frontend/views/Mahasiswa/daftar_dosenPembimbing_Mhs.dart';
 import 'package:frontend/views/Mahasiswa/kuota_pembimbing.dart';
@@ -110,6 +113,9 @@ class MainApp extends StatelessWidget {
         //koordinator prodi
         GetPage(name: '/dashboardKp', page: () => DashboardKp() ),
         GetPage(name: '/pengajuanpembimbing_KP', page: () => PengajuanPembimbing() ),
+        GetPage(name: '/dataMahasiswaKp', page: () => const kp_mhs.IndexMahasiswaPage() ),
+        GetPage(name: '/dataDosenKp', page: () => const kp_dsn.IndexDosenPage() ),
+        GetPage(name: '/dataRuanganKp', page: () => const kp_ruangan.IndexRuanganPage() ),
 
 
         //umum

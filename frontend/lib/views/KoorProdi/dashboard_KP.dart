@@ -53,11 +53,7 @@ class _DashboardKpState extends State<DashboardKp> {
               childAspectRatio: 0.85,
               children: [
                 _buildMenuItem(Icons.settings_outlined, 'User', onTap: () =>  Get.toNamed('/profil')),
-                _buildMenuItem(Icons.settings_outlined, 'Prodi', onTap: () =>  Get.toNamed('/profil')),
-                _buildMenuItem(Icons.settings_outlined, 'Ruangan', onTap: () =>  Get.toNamed('/profil')),
-                _buildMenuItem(Icons.settings_outlined, 'Tahun Ajaran', onTap: () =>  Get.toNamed('/profil')),
-                _buildMenuItem(Icons.settings_outlined, 'Rubrik Nilai', onTap: () =>  Get.toNamed('/profil')),
-                _buildMenuItem(Icons.settings_outlined, 'Proposal', onTap: () =>  Get.toNamed('/profil')),
+                _buildMenuItem(Icons.settings_outlined, 'Ruangan', onTap: () =>  Get.toNamed('/dataRuanganKp')),
                 _buildMenuItem(Icons.settings_outlined, 'Pendaftaran Sidang', onTap: () =>  Get.toNamed('/')),
                 _buildMenuItem(Icons.settings_outlined, 'Profil', onTap: () =>  Get.toNamed('/profil', arguments: {'activeRole': 'koorprodi'})),
                
@@ -169,8 +165,8 @@ class _DashboardKpState extends State<DashboardKp> {
                           crossAxisSpacing: 12,
                           childAspectRatio: 0.85, 
                           children: [
-                            _buildMenuItem(Icons.people_outline, 'Mahasiswa', onTap: () => Get.toNamed('/dataMahasiswaAdm')),
-                            _buildMenuItem(Icons.supervisor_account, 'Dosen', onTap: () => Get.toNamed('/dataDosenAdm')),
+                            _buildMenuItem(Icons.people_outline, 'Mahasiswa', onTap: () => Get.toNamed('/dataMahasiswaKp')),
+                            _buildMenuItem(Icons.supervisor_account, 'Dosen', onTap: () => Get.toNamed('/dataDosenKp')),
                             _buildMenuItem(Icons.list_alt, 'Rubrik Nilai', onTap: () => Get.toNamed('/rubrikAdm')),
                             _buildMenuItem(Icons.calendar_month, 'Jadwal', onTap: () => Get.toNamed('/jadwalAdm')),
                             _buildMenuItem(Icons.history_edu_outlined, 'Logbook', onTap: () => Get.toNamed('/logbookAdm')),

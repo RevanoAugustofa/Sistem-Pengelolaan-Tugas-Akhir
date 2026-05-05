@@ -79,6 +79,37 @@ Route::middleware('auth:sanctum', 'role:koorprodi')->group(function () {
     Route::get('/koorprodi/dosen', [KoorProdiController::class, 'dosenList']);
     Route::post('/koorprodi/pengajuan-pembimbing/{id}/update-supervisor', [KoorProdiController::class, 'updateSupervisor']);
     Route::post('/koorprodi/pengajuan-pembimbing/{id}/validasi', [KoorProdiController::class, 'validatePengajuan']);
+
+    // Tahun Ajar for KoorProdi
+    Route::get('/koorprodi/tahun-ajar', [TahunAjarController::class, 'index']);
+
+    // Ruangan for KoorProdi
+    Route::get('/koorprodi/ruangan', [RuanganController::class, 'index']);
+    Route::post('/koorprodi/ruangan', [RuanganController::class, 'store']);
+    Route::get('/koorprodi/ruangan/{id}', [RuanganController::class, 'show']);
+    Route::put('/koorprodi/ruangan/{id}', [RuanganController::class, 'update']);
+    Route::delete('/koorprodi/ruangan/{id}', [RuanganController::class, 'destroy']);
+
+    // Mahasiswa CRUD for KoorProdi
+    Route::get('/koorprodi/mahasiswa', [\App\Http\Controllers\KoorProdi\MahasiswaController::class, 'index']);
+    Route::post('/koorprodi/mahasiswa', [\App\Http\Controllers\KoorProdi\MahasiswaController::class, 'store']);
+    Route::get('/koorprodi/mahasiswa/{id}', [\App\Http\Controllers\KoorProdi\MahasiswaController::class, 'show']);
+    Route::put('/koorprodi/mahasiswa/{id}', [\App\Http\Controllers\KoorProdi\MahasiswaController::class, 'update']);
+    Route::delete('/koorprodi/mahasiswa/{id}', [\App\Http\Controllers\KoorProdi\MahasiswaController::class, 'destroy']);
+
+    // Dosen CRUD for KoorProdi
+    Route::get('/koorprodi/dosen-manajemen', [\App\Http\Controllers\KoorProdi\DosenController::class, 'index']);
+    Route::post('/koorprodi/dosen-manajemen', [\App\Http\Controllers\KoorProdi\DosenController::class, 'store']);
+    Route::get('/koorprodi/dosen-manajemen/{id}', [\App\Http\Controllers\KoorProdi\DosenController::class, 'show']);
+    Route::put('/koorprodi/dosen-manajemen/{id}', [\App\Http\Controllers\KoorProdi\DosenController::class, 'update']);
+    Route::delete('/koorprodi/dosen-manajemen/{id}', [\App\Http\Controllers\KoorProdi\DosenController::class, 'destroy']);
+
+    // Rubrik Nilai CRUD for KoorProdi
+    Route::get('/koorprodi/rubrik-nilai', [\App\Http\Controllers\KoorProdi\RubrikNilaiController::class, 'index']);
+    Route::post('/koorprodi/rubrik-nilai', [\App\Http\Controllers\KoorProdi\RubrikNilaiController::class, 'store']);
+    Route::get('/koorprodi/rubrik-nilai/{id}', [\App\Http\Controllers\KoorProdi\RubrikNilaiController::class, 'show']);
+    Route::put('/koorprodi/rubrik-nilai/{id}', [\App\Http\Controllers\KoorProdi\RubrikNilaiController::class, 'update']);
+    Route::delete('/koorprodi/rubrik-nilai/{id}', [\App\Http\Controllers\KoorProdi\RubrikNilaiController::class, 'destroy']);
 });
 
 

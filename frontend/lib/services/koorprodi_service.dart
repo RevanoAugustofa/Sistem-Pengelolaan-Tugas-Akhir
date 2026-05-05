@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'package:frontend/models/ruangan_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/constants.dart';
 import '../models/pengajuan_pembimbing_model.dart';
 import '../models/dosen_model.dart';
+import '../models/mahasiswa_model.dart';
+import '../models/tahun_ajar_model.dart';
+import '../models/rubrik_nilai_model.dart';
 
 class KoorProdiService {
   final String baseUrl = AppConstants.baseUrl;
@@ -11,6 +15,253 @@ class KoorProdiService {
   Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
+  }
+
+  // Existing methods ... (will be kept by replace)
+
+  Future<List<Mahasiswa>> getMahasiswa() async {
+    final token = await _getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/koorprodi/mahasiswa"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => Mahasiswa.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data mahasiswa");
+  }
+
+  Future<bool> storeMahasiswa(Map<String, dynamic> data) async {
+    final token = await _getToken();
+    final response = await http.post(
+      Uri.parse("$baseUrl/koorprodi/mahasiswa"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    return response.statusCode == 201;
+  }
+
+  Future<bool> updateMahasiswa(int id, Map<String, dynamic> data) async {
+    final token = await _getToken();
+    final response = await http.put(
+      Uri.parse("$baseUrl/koorprodi/mahasiswa/$id"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    return response.statusCode == 200;
+  }
+
+  Future<bool> deleteMahasiswa(int id) async {
+    final token = await _getToken();
+    final response = await http.delete(
+      Uri.parse("$baseUrl/koorprodi/mahasiswa/$id"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+    return response.statusCode == 200;
+  }
+
+  Future<List<TahunAjar>> getTahunAjar() async {
+    final token = await _getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/koorprodi/tahun-ajar"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => TahunAjar.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data tahun ajar");
+  }
+
+  Future<List<Dosen>> getDosenManajemen() async {
+    final token = await _getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/koorprodi/dosen-manajemen"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => Dosen.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data dosen");
+  }
+
+  Future<bool> storeDosen(Map<String, dynamic> data) async {
+    final token = await _getToken();
+    final response = await http.post(
+      Uri.parse("$baseUrl/koorprodi/dosen-manajemen"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    return response.statusCode == 201;
+  }
+
+  Future<bool> updateDosen(int id, Map<String, dynamic> data) async {
+    final token = await _getToken();
+    final response = await http.put(
+      Uri.parse("$baseUrl/koorprodi/dosen-manajemen/$id"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    return response.statusCode == 200;
+  }
+
+  Future<bool> deleteDosen(int id) async {
+    final token = await _getToken();
+    final response = await http.delete(
+      Uri.parse("$baseUrl/koorprodi/dosen-manajemen/$id"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+    return response.statusCode == 200;
+  }
+
+  Future<List<Ruangan>> getRuangan() async {
+    final token = await _getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/koorprodi/ruangan"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => Ruangan.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data ruangan");
+  }
+
+  Future<bool> storeRuangan(Map<String, dynamic> data) async {
+    final token = await _getToken();
+    final response = await http.post(
+      Uri.parse("$baseUrl/koorprodi/ruangan"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    return response.statusCode == 201;
+  }
+
+  Future<bool> updateRuangan(int id, Map<String, dynamic> data) async {
+    final token = await _getToken();
+    final response = await http.put(
+      Uri.parse("$baseUrl/koorprodi/ruangan/$id"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    return response.statusCode == 200;
+  }
+
+  Future<bool> deleteRuangan(int id) async {
+    final token = await _getToken();
+    final response = await http.delete(
+      Uri.parse("$baseUrl/koorprodi/ruangan/$id"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+    return response.statusCode == 200;
+  }
+
+  Future<List<RubrikNilai>> getRubrikNilai() async {
+    final token = await _getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/koorprodi/rubrik-nilai"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => RubrikNilai.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data rubrik nilai");
+  }
+
+  Future<bool> storeRubrikNilai(Map<String, dynamic> data) async {
+    final token = await _getToken();
+    final response = await http.post(
+      Uri.parse("$baseUrl/koorprodi/rubrik-nilai"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    return response.statusCode == 201;
+  }
+
+  Future<bool> updateRubrikNilai(int id, Map<String, dynamic> data) async {
+    final token = await _getToken();
+    final response = await http.put(
+      Uri.parse("$baseUrl/koorprodi/rubrik-nilai/$id"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    return response.statusCode == 200;
+  }
+
+  Future<bool> deleteRubrikNilai(int id) async {
+    final token = await _getToken();
+    final response = await http.delete(
+      Uri.parse("$baseUrl/koorprodi/rubrik-nilai/$id"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+    return response.statusCode == 200;
   }
 
   Future<Map<String, dynamic>> getPengajuanPembimbing({int page = 1, String? search, List<String>? status, List<String>? tahunAjar}) async {

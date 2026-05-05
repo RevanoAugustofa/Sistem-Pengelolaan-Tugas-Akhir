@@ -25,6 +25,7 @@ import 'package:frontend/views/Dosen/jadwal_Dsn.dart';
 import 'package:frontend/views/Dosen/logbook_Dsn.dart';
 import 'package:frontend/views/Dosen/tugasAkhir_Dsn.dart';
 import 'package:frontend/views/KoorProdi/dashboard_KP.dart';
+import 'package:frontend/views/KoorProdi/User_Kp.dart';
 import 'package:frontend/views/KoorProdi/ValidasiPembimbing/pengajuanPembimbing.dart';
 import 'package:frontend/views/KoorProdi/Mahasiswa/index_mahasiswa.dart' as kp_mhs;
 import 'package:frontend/views/KoorProdi/Dosen/index_dosen.dart' as kp_dsn;
@@ -118,6 +119,7 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/dataDosenKp', page: () => const kp_dsn.IndexDosenPage() ),
         GetPage(name: '/dataRuanganKp', page: () => const kp_ruangan.IndexRuanganPage() ),
         GetPage(name: '/dataRubrikNilaiKp', page: () => const kp_rubrik.IndexRubrikNilaiPage() ),
+        GetPage(name: '/dataUserKp', page: () => const UserKpPage() ),
 
 
         //umum

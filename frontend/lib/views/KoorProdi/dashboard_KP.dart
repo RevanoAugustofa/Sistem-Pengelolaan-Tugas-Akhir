@@ -52,7 +52,7 @@ class _DashboardKpState extends State<DashboardKp> {
               crossAxisSpacing: 12,
               childAspectRatio: 0.85,
               children: [
-                _buildMenuItem(Icons.settings_outlined, 'User', onTap: () =>  Get.toNamed('/profil')),
+                _buildMenuItem(Icons.people_outline, 'User', onTap: () =>  Get.toNamed('/dataUserKp')),
                 _buildMenuItem(Icons.settings_outlined, 'Ruangan', onTap: () =>  Get.toNamed('/dataRuanganKp')),
                 _buildMenuItem(Icons.settings_outlined, 'Pendaftaran Sidang', onTap: () =>  Get.toNamed('/')),
                 _buildMenuItem(Icons.settings_outlined, 'Profil', onTap: () =>  Get.toNamed('/profil', arguments: {'activeRole': 'koorprodi'})),

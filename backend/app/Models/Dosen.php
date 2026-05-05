@@ -17,16 +17,8 @@ class Dosen extends Model
         'nama_dosen',
         'nip',
         'nidn',
-        'jabatan',
         'ttd_dosen',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'jabatan' => JabatanDosen::class,
-        ];
-    }
 
     public function user()
     {
@@ -35,6 +27,8 @@ class Dosen extends Model
 
     public function prodi()
     {
-        return $this->belongsToMany(Prodi::class, 'dosen_prodi', 'id_dosen', 'id_prodi');
+        return $this->belongsToMany(Prodi::class, 'dosen_prodi', 'id_dosen', 'id_prodi')
+            ->withPivot('jabatan')
+            ->withTimestamps();
     }
 }

@@ -18,7 +18,7 @@ class AuthController extends Controller
         ]);
 
         // 2. Cari user berdasarkan email
-        $user = User::with(['dosen', 'mahasiswa.prodi'])->where('email', $request->email)->first();
+        $user = User::with(['dosen.prodi', 'mahasiswa.prodi'])->where('email', $request->email)->first();
 
         // 3. Cek apakah user ada dan passwordnya bener
         if (!$user || !Hash::check($request->password, $user->password)) {
@@ -30,11 +30,19 @@ class AuthController extends Controller
         // 4. Buat Token Sanctum
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        $rolesMessage = implode(' dan ', $user->available_roles);
+        $contextsCount = count($user->available_contexts);
+        $message = "Login Berhasil!";
+        if ($contextsCount > 1) {
+            $message = "Login Berhasil, silakan pilih role/prodi anda.";
+        } else if ($contextsCount === 1) {
+            $role = $user->available_contexts[0]['role'];
+            $prodi = $user->available_contexts[0]['prodi_name'];
+            $message = "Login Berhasil sebagai $role di $prodi";
+        }
 
         // 5. Kirim balasan ke Flutter
         return response()->json([
-            'message' => "Login Berhasil, anda login sebagai $rolesMessage",
+            'message' => $message,
             'token' => $token,
             'user' => $user
         ]);

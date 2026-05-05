@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +15,7 @@ class ProfileController extends GetxController {
   var prodiName = "".obs;
   var isLoading = false.obs;
   var availableRoles = <String>[].obs;
+  var availableContexts = <dynamic>[].obs;
 
   @override
   void onInit() {
@@ -34,7 +36,10 @@ class ProfileController extends GetxController {
     userEmail.value = prefs.getString('user_email') ?? "user@sipta.com";
     idProdi.value = prefs.getInt('id_prodi') ?? 0;
     prodiName.value = prefs.getString('prodi_name') ?? "";
-    availableRoles.value = prefs.getStringList('available_roles') ?? [];
+    
+    String contextsJson = prefs.getString('available_contexts') ?? "[]";
+    availableContexts.value = jsonDecode(contextsJson);
+    availableRoles.value = availableContexts.map((e) => e['role'].toString()).toSet().toList();
   }
 
   void switchRole(String newRole) async {

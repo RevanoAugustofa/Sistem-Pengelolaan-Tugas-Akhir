@@ -24,33 +24,6 @@ class AuthService {
       if (responseData['token'] != null) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', responseData['token']);
-        
-        // Simpan data user lain jika diperlukan (optional)
-        if (responseData['user'] != null) {
-          String userRole = responseData['user']['role'] ?? '';
-          
-          // Jika user punya available_roles, kita simpan role pertama sebagai default jika perlu
-          if (responseData['user']['available_roles'] != null) {
-            List<String> roles = List<String>.from(responseData['user']['available_roles']);
-            await prefs.setStringList('available_roles', roles);
-            
-            // PAKSA: Jika punya lebih dari 1 role, gunakan role pertama (Jabatan) sebagai default
-            if (roles.length > 1) {
-              userRole = roles.first;
-            }
-          }
-
-          await prefs.setString('active_role', userRole);
-          await prefs.setString('user_name', responseData['user']['name'] ?? '');
-
-          // Simpan ID Prodi jika mahasiswa
-          if (responseData['user']['mahasiswa'] != null) {
-            await prefs.setInt('id_prodi', responseData['user']['mahasiswa']['id_prodi']);
-            if (responseData['user']['mahasiswa']['prodi'] != null) {
-              await prefs.setString('prodi_name', responseData['user']['mahasiswa']['prodi']['nama_prodi']);
-            }
-          }
-        }
       }
       
       return responseData;

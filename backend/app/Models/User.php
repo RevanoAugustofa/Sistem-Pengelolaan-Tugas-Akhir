@@ -52,7 +52,7 @@ class User extends Authenticatable
         ];
     }
 
-    protected $appends = ['available_roles'];
+    protected $appends = ['available_roles', 'available_contexts'];
 
     public function dosen()
     {
@@ -66,22 +66,57 @@ class User extends Authenticatable
 
     public function getAvailableRolesAttribute()
     {
-        $roles = [];
+        $roles = [$this->role->value];
 
-        // Masukkan jabatan dulu jika ada (admin/koorprodi)
-        if ($this->isDosen() && $this->dosen && $this->dosen->jabatan) {
-            $roles[] = $this->dosen->jabatan->value;
+        if ($this->isDosen() && $this->dosen) {
+            foreach ($this->dosen->prodi as $p) {
+                if ($p->pivot->jabatan) {
+                    $roles[] = $p->pivot->jabatan;
+                }
+            }
         }
-
-        // Masukkan role dasar (dosen/mahasiswa)
-        $roles[] = $this->role->value;
 
         return array_values(array_unique($roles));
     }
 
+    public function getAvailableContextsAttribute()
+    {
+        $contexts = [];
+
+        if ($this->isMahasiswa() && $this->mahasiswa) {
+            $contexts[] = [
+                'role' => 'mahasiswa',
+                'prodi_id' => $this->mahasiswa->id_prodi,
+                'prodi_name' => $this->mahasiswa->prodi?->nama_prodi,
+            ];
+        }
+
+        if ($this->isDosen() && $this->dosen) {
+            foreach ($this->dosen->prodi as $p) {
+                // Context as regular Dosen
+                $contexts[] = [
+                    'role' => 'dosen',
+                    'prodi_id' => $p->id,
+                    'prodi_name' => $p->nama_prodi,
+                ];
+
+                // Context with special jabatan (koorprodi/admin)
+                if ($p->pivot->jabatan) {
+                    $contexts[] = [
+                        'role' => $p->pivot->jabatan,
+                        'prodi_id' => $p->id,
+                        'prodi_name' => $p->nama_prodi,
+                    ];
+                }
+            }
+        }
+
+        return $contexts;
+    }
+
     public function isAdmin()
     {
-        return $this->isDosen() && $this->dosen?->jabatan === \App\Enums\JabatanDosen::ADMIN;
+        return in_array('admin', $this->available_roles);
     }
 
     public function isMahasiswa()
@@ -96,6 +131,6 @@ class User extends Authenticatable
 
     public function isKoordinatorProdi()
     {
-        return $this->isDosen() && $this->dosen?->jabatan === \App\Enums\JabatanDosen::KOORPRODI;
+        return in_array('koorprodi', $this->available_roles);
     }
 }

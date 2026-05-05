@@ -22,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
     // Gunakan postFrameCallback agar BottomSheet muncul setelah UI render selesai
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Get.arguments != null && Get.arguments['showRoles'] == true) {
-        _showRoleSelectionSheet(List<String>.from(Get.arguments['roles']));
+        _showRoleSelectionSheet(Get.arguments['roles']);
       }
     });
   }
@@ -196,24 +196,32 @@ class _LoginPageState extends State<LoginPage> {
             );
             String token = result['token'];
             var user = result['user'];
-            List<String> availableRoles = List<String>.from(user['available_roles']);
+            List<dynamic> availableContexts = user['available_contexts'] ?? [];
             
             SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setString('auth_token', token);
+            await prefs.setString('token', token);
             await prefs.setString('user_data', jsonEncode(user));
-            await prefs.setStringList('available_roles', availableRoles);
+            await prefs.setString('user_name', user['name'] ?? '');
+            await prefs.setString('available_contexts', jsonEncode(availableContexts));
             
-            if (availableRoles.length > 1) {
-              _showRoleSelectionSheet(availableRoles);
+            if (availableContexts.length > 1) {
+              _showRoleSelectionSheet(availableContexts);
+            } else if (availableContexts.length == 1) {
+              var context = availableContexts[0];
+              String role = context['role'];
+              int prodiId = context['prodi_id'];
+              await prefs.setString('active_role', role);
+              await prefs.setInt('id_prodi', prodiId);
+              _navigateToDashboard(role);
             } else {
-              String role = availableRoles[0];
+              String role = user['role'] ?? 'dosen';
               await prefs.setString('active_role', role);
               _navigateToDashboard(role);
             }
           } catch (e) {
             Get.snackbar(
               "Login Gagal",
-              "Email atau password salah",
+              e.toString(),
               snackPosition: SnackPosition.TOP,
               backgroundColor: Colors.red.withOpacity(0.8),
               colorText: Colors.white,
@@ -259,7 +267,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _showRoleSelectionSheet(List<String> roles) {
+  void _showRoleSelectionSheet(List<dynamic> contexts) {
     Get.bottomSheet(
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
@@ -292,22 +300,32 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 8),
             const Text(
-              "Silakan pilih jabatan untuk masuk",
+              "Silakan pilih prodi dan jabatan untuk masuk",
               style: TextStyle(color: Colors.white70, fontSize: 14),
             ),
             const SizedBox(height: 32),
-            ...roles.map((role) => _buildRoleOption(role)).toList(),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: contexts.map((context) => _buildRoleOption(context)).toList(),
+                ),
+              ),
+            ),
             const SizedBox(height: 16),
           ],
         ),
       ),
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black54, // Ini yang membuat background menggelap sedikit (overlay)
+      barrierColor: Colors.black54,
     );
   }
 
-  Widget _buildRoleOption(String role) {
+  Widget _buildRoleOption(Map<String, dynamic> context) {
+    String role = context['role'] ?? '';
+    String prodiName = context['prodi_name'] ?? '';
+    int prodiId = context['prodi_id'] ?? 0;
+    
     String title = "";
     IconData iconData = Icons.person;
 
@@ -338,6 +356,8 @@ class _LoginPageState extends State<LoginPage> {
         onTap: () async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('active_role', role);
+          await prefs.setInt('id_prodi', prodiId);
+          await prefs.setString('prodi_name', prodiName);
           _navigateToDashboard(role);
         },
         child: Container(
@@ -350,15 +370,28 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Icon(iconData, color: const Color(0xFF2563EB)),
               const SizedBox(width: 16),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF1E293B),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF1E293B),
+                      ),
+                    ),
+                    Text(
+                      prodiName,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF64748B),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const Spacer(),
               const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.black26),
             ],
           ),

@@ -11,11 +11,19 @@ use Illuminate\Support\Facades\DB;
 
 class MhsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $user = $request->user();
+        $pengajuan = null;
+        
+        if ($user->mahasiswa) {
+            $pengajuan = PengajuanPembimbing::where('id_mahasiswa', $user->mahasiswa->id)->first();
+        }
+
         return response()->json([
             'message' => 'Welcome to Mahasiswa Dashboard',
-            'role' => 'mahasiswa'
+            'role' => 'mahasiswa',
+            'pengajuan' => $pengajuan,
         ]);
     }
 

@@ -5,6 +5,25 @@ import '../helpers/constants.dart';
 import '../models/dosen_model.dart';
 
 class MhsService {
+  Future<Map<String, dynamic>> getDashboardData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.get(
+      Uri.parse('${AppConstants.baseUrl}/mahasiswa/dashboard'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Gagal memuat data dashboard');
+    }
+  }
+
   Future<List<Dosen>> getDosen() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');

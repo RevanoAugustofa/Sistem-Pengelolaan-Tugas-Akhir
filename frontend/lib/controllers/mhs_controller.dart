@@ -9,11 +9,30 @@ class MhsController extends GetxController {
   var isLoadingDosen = false.obs;
   var listDosen = <Dosen>[].obs;
   var isLoadingAction = false.obs;
+  var isLoadingDashboard = false.obs;
+  var pengajuanStatus = "".obs;
 
   @override
   void onInit() {
     super.onInit();
     fetchDosen();
+    fetchDashboardData();
+  }
+
+  void fetchDashboardData() async {
+    try {
+      isLoadingDashboard(true);
+      var data = await _service.getDashboardData();
+      if (data['pengajuan'] != null) {
+        pengajuanStatus.value = data['pengajuan']['status'] ?? "";
+      } else {
+        pengajuanStatus.value = "";
+      }
+    } catch (e) {
+      print(e);
+    } finally {
+      isLoadingDashboard(false);
+    }
   }
 
   void fetchDosen() async {
@@ -33,6 +52,7 @@ class MhsController extends GetxController {
       isLoadingAction(true);
       final result = await _service.daftarPembimbing(data);
       if (result['success'] == true) {
+        fetchDashboardData(); // Refresh status after submission
         Get.back();
         Get.snackbar("Sukses", result['message'] ?? "Pendaftaran berhasil");
       } else {

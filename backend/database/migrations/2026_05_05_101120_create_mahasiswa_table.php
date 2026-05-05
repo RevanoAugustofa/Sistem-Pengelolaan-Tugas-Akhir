@@ -18,6 +18,9 @@ return new class extends Migration
             $table->integer('id_tahun_ajar')->index('mahasiswa_ibfk_3');
             $table->string('nim')->nullable();
             $table->string('nama_mahasiswa')->nullable();
+            $table->string('tgl_lahir');
+            $table->string('jenis_kelamin');
+            $table->string('alamat');
             $table->string('ttd_mahasiswa')->nullable();
             $table->timestamps();
         });

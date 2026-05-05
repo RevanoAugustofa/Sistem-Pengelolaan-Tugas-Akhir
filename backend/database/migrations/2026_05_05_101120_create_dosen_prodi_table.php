@@ -15,6 +15,7 @@ return new class extends Migration
             $table->integer('id', true);
             $table->integer('id_dosen')->index('fk_dosen');
             $table->integer('id_prodi')->index('fk_prodi');
+            $table->enum('jabatan', ['koorprodi', 'admin']);
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();
         });

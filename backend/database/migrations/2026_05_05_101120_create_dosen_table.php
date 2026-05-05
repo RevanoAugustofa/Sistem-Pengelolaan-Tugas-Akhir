@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('nama_dosen')->nullable();
             $table->string('nip')->nullable();
             $table->string('nidn')->nullable();
-            $table->enum('jabatan', ['koorprodi', 'admin'])->nullable();
+            $table->string('jenis_kelamin');
+            $table->string('alamat');
             $table->string('ttd_dosen')->nullable();
             $table->timestamps();
         });

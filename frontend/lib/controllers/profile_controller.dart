@@ -13,6 +13,8 @@ class ProfileController extends GetxController {
   var userEmail = "".obs;
   var idProdi = 0.obs;
   var prodiName = "".obs;
+  var userAddress = "".obs;
+  var userGender = "".obs;
   var isLoading = false.obs;
   var availableRoles = <String>[].obs;
   var availableContexts = <dynamic>[].obs;
@@ -36,6 +38,8 @@ class ProfileController extends GetxController {
     userEmail.value = prefs.getString('user_email') ?? "user@sipta.com";
     idProdi.value = prefs.getInt('id_prodi') ?? 0;
     prodiName.value = prefs.getString('prodi_name') ?? "";
+    userAddress.value = prefs.getString('user_address') ?? "Alamat belum diatur";
+    userGender.value = prefs.getString('user_gender') ?? "Laki-laki";
     
     String contextsJson = prefs.getString('available_contexts') ?? "[]";
     availableContexts.value = jsonDecode(contextsJson);

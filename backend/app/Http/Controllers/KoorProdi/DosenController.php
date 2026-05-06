@@ -48,9 +48,10 @@ class DosenController extends Controller
         $request->validate([
             'nama_dosen' => 'required|string|max:255',
             'nip' => 'required|string|unique:dosen,nip',
+            'jenis_kelamin' => 'required|string',
+            'alamat' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'jabatan' => 'required|string', // Assuming you have an Enum or validation
         ]);
 
         try {
@@ -67,7 +68,8 @@ class DosenController extends Controller
                 'id_user' => $user->id,
                 'nip' => $request->nip,
                 'nama_dosen' => $request->nama_dosen,
-                'jabatan' => $request->jabatan,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
             ]);
 
             // Attach to KoorProdi's prodi
@@ -115,9 +117,10 @@ class DosenController extends Controller
         $request->validate([
             'nama_dosen' => 'required|string|max:255',
             'nip' => 'required|string|unique:dosen,nip,' . $id,
+            'jenis_kelamin' => 'required|string',
+            'alamat' => 'required|string',
             'email' => 'required|email|unique:users,email,' . $dosen->id_user,
             'password' => 'nullable|min:6',
-            'jabatan' => 'required|string',
         ]);
 
         try {
@@ -136,7 +139,8 @@ class DosenController extends Controller
             $dosen->update([
                 'nip' => $request->nip,
                 'nama_dosen' => $request->nama_dosen,
-                'jabatan' => $request->jabatan,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
             ]);
 
             DB::commit();

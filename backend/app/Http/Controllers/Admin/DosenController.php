@@ -26,7 +26,8 @@ class DosenController extends Controller
             'nama_dosen' => 'required|string|max:255',
             'nip' => 'nullable|string|unique:dosen,nip',
             'nidn' => 'nullable|string|unique:dosen,nidn',
-            'jabatan' => ['nullable', new Enum(JabatanDosen::class)],
+            'jenis_kelamin' => 'required|string',
+            'alamat' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
         ]);
@@ -46,7 +47,8 @@ class DosenController extends Controller
                 'nama_dosen' => $request->nama_dosen,
                 'nip' => $request->nip,
                 'nidn' => $request->nidn,
-                'jabatan' => $request->jabatan,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
             ]);
 
             DB::commit();
@@ -82,7 +84,8 @@ class DosenController extends Controller
             'nama_dosen' => 'required|string|max:255',
             'nip' => 'nullable|string|unique:dosen,nip,' . $id,
             'nidn' => 'nullable|string|unique:dosen,nidn,' . $id,
-            'jabatan' => ['nullable', new Enum(JabatanDosen::class)],
+            'jenis_kelamin' => 'required|string',
+            'alamat' => 'required|string',
             'email' => 'required|email|unique:users,email,' . $dosen->id_user,
             'password' => 'nullable|min:6',
         ]);
@@ -104,7 +107,8 @@ class DosenController extends Controller
                 'nama_dosen' => $request->nama_dosen,
                 'nip' => $request->nip,
                 'nidn' => $request->nidn,
-                'jabatan' => $request->jabatan,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
             ]);
 
             DB::commit();

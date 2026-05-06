@@ -17,14 +17,16 @@ class _EditDosenPageState extends State<EditDosenPage> {
 
   late TextEditingController namaController;
   late TextEditingController nipController;
+  late TextEditingController nidnController;
+  late TextEditingController alamatController;
   late TextEditingController emailController;
   final TextEditingController passwordController = TextEditingController();
   
-  String? selectedJabatan;
-  final List<Map<String, String>> jabatanOptions = [
-    {'label': 'Koorprodi', 'value': 'koorprodi'},
-    {'label': 'Admin', 'value': 'admin'},
-    // {'label': 'Dosen Biasa', 'value': ''},
+  String? selectedJenisKelamin;
+
+  final List<Map<String, String>> jenisKelaminOptions = [
+    {'label': 'Laki-laki', 'value': 'Laki-laki'},
+    {'label': 'Perempuan', 'value': 'Perempuan'},
   ];
 
   @override
@@ -32,8 +34,10 @@ class _EditDosenPageState extends State<EditDosenPage> {
     super.initState();
     namaController = TextEditingController(text: widget.dosen.namaDosen);
     nipController = TextEditingController(text: widget.dosen.nip);
+    nidnController = TextEditingController(text: widget.dosen.nidn);
+    alamatController = TextEditingController(text: widget.dosen.alamat);
     emailController = TextEditingController(text: widget.dosen.email);
-    selectedJabatan = widget.dosen.jabatan?.toLowerCase();
+    selectedJenisKelamin = widget.dosen.jenisKelamin;
   }
 
   @override
@@ -83,6 +87,59 @@ class _EditDosenPageState extends State<EditDosenPage> {
               ),
               const SizedBox(height: 25),
               TextFormField(
+                controller: nidnController,
+                decoration: const InputDecoration(
+                  labelText: "NIDN", 
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                validator: (v) => v!.isEmpty ? "NIDN wajib diisi" : null,
+              ),
+              const SizedBox(height: 25),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Jenis Kelamin", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54)),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: const Text("Laki-laki"),
+                      value: "Laki-laki",
+                      groupValue: selectedJenisKelamin,
+                      contentPadding: EdgeInsets.zero,
+                      onChanged: (v) => setState(() => selectedJenisKelamin = v),
+                    ),
+                  ),
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: const Text("Perempuan"),
+                      value: "Perempuan",
+                      groupValue: selectedJenisKelamin,
+                      contentPadding: EdgeInsets.zero,
+                      onChanged: (v) => setState(() => selectedJenisKelamin = v),
+                    ),
+                  ),
+                ],
+              ),
+              if (selectedJenisKelamin == null)
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("  Jenis kelamin wajib dipilih", style: TextStyle(color: Colors.red, fontSize: 12)),
+                ),
+              const SizedBox(height: 25),
+              TextFormField(
+                controller: alamatController,
+                decoration: const InputDecoration(
+                  labelText: "Alamat", 
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                maxLines: 3,
+                validator: (v) => v!.isEmpty ? "Alamat wajib diisi" : null,
+              ),
+              const SizedBox(height: 25),
+              TextFormField(
                 controller: emailController,
                 decoration: const InputDecoration(
                   labelText: "Email", 
@@ -102,20 +159,6 @@ class _EditDosenPageState extends State<EditDosenPage> {
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
               ),
-              const SizedBox(height: 25),
-              DropdownButtonFormField<String>(
-                value: selectedJabatan,
-                decoration: InputDecoration(
-                  labelText: "Jabatan (Opsional)", 
-                  border: const OutlineInputBorder(),
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  suffixIcon: selectedJabatan != null && selectedJabatan!.isNotEmpty
-                    ? IconButton(icon: const Icon(Icons.clear, size: 18), onPressed: () => setState(() => selectedJabatan = null)) 
-                    : null,
-                ),
-                items: jabatanOptions.map((opt) => DropdownMenuItem(value: opt['value'], child: Text(opt['label']!))).toList(),
-                onChanged: (v) => setState(() => selectedJabatan = v),
-              ),
               const SizedBox(height: 40),
               Obx(() => ElevatedButton(
                 onPressed: controller.isLoadingDosen.value ? null : () {
@@ -123,8 +166,10 @@ class _EditDosenPageState extends State<EditDosenPage> {
                     Map<String, dynamic> data = {
                       "nama_dosen": namaController.text,
                       "nip": nipController.text,
+                      "nidn": nidnController.text,
+                      "jenis_kelamin": selectedJenisKelamin,
+                      "alamat": alamatController.text,
                       "email": emailController.text,
-                      "jabatan": (selectedJabatan == null || selectedJabatan!.isEmpty) ? null : selectedJabatan,
                     };
                     if (passwordController.text.isNotEmpty) {
                       data["password"] = passwordController.text;

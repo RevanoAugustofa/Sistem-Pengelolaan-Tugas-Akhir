@@ -18,16 +18,14 @@ class _EditDosenPageState extends State<EditDosenPage> {
   late TextEditingController _nipController;
   late TextEditingController _namaController;
   late TextEditingController _emailController;
+  late TextEditingController _alamatController;
   final TextEditingController _passwordController = TextEditingController();
 
-  String? selectedJabatan;
+  String? selectedJenisKelamin;
 
-  final List<String> jabatanOptions = [
-    'Asisten Ahli',
-    'Lektor',
-    'Lektor Kepala',
-    'Guru Besar',
-    'Tenaga Pengajar'
+  final List<Map<String, String>> jenisKelaminOptions = [
+    {'label': 'Laki-laki', 'value': 'Laki-laki'},
+    {'label': 'Perempuan', 'value': 'Perempuan'},
   ];
 
   @override
@@ -36,7 +34,8 @@ class _EditDosenPageState extends State<EditDosenPage> {
     _nipController = TextEditingController(text: widget.dosen.nip);
     _namaController = TextEditingController(text: widget.dosen.namaDosen);
     _emailController = TextEditingController(text: widget.dosen.email);
-    selectedJabatan = widget.dosen.jabatan;
+    _alamatController = TextEditingController(text: widget.dosen.alamat);
+    selectedJenisKelamin = widget.dosen.jenisKelamin;
   }
 
   @override
@@ -85,6 +84,49 @@ class _EditDosenPageState extends State<EditDosenPage> {
                 validator: (v) => v!.isEmpty ? "NIP wajib diisi" : null,
               ),
               const SizedBox(height: 25),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Jenis Kelamin", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54)),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: const Text("Laki-laki"),
+                      value: "Laki-laki",
+                      groupValue: selectedJenisKelamin,
+                      contentPadding: EdgeInsets.zero,
+                      onChanged: (v) => setState(() => selectedJenisKelamin = v),
+                    ),
+                  ),
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: const Text("Perempuan"),
+                      value: "Perempuan",
+                      groupValue: selectedJenisKelamin,
+                      contentPadding: EdgeInsets.zero,
+                      onChanged: (v) => setState(() => selectedJenisKelamin = v),
+                    ),
+                  ),
+                ],
+              ),
+              if (selectedJenisKelamin == null)
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("  Jenis kelamin wajib dipilih", style: TextStyle(color: Colors.red, fontSize: 12)),
+                ),
+              const SizedBox(height: 25),
+              TextFormField(
+                controller: _alamatController,
+                decoration: const InputDecoration(
+                  labelText: "Alamat", 
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                maxLines: 3,
+                validator: (v) => v!.isEmpty ? "Alamat wajib diisi" : null,
+              ),
+              const SizedBox(height: 25),
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(
@@ -105,23 +147,6 @@ class _EditDosenPageState extends State<EditDosenPage> {
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
               ),
-              const SizedBox(height: 25),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: "Jabatan", 
-                  border: OutlineInputBorder(),
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                ),
-                value: selectedJabatan,
-                items: jabatanOptions.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (val) => setState(() => selectedJabatan = val),
-                validator: (v) => v == null ? "Jabatan wajib dipilih" : null,
-              ),
               const SizedBox(height: 40),
               Obx(() => ElevatedButton(
                 onPressed: controller.isLoadingDosen.value ? null : () {
@@ -129,8 +154,9 @@ class _EditDosenPageState extends State<EditDosenPage> {
                     final Map<String, dynamic> data = {
                       "nip": _nipController.text,
                       "nama_dosen": _namaController.text,
+                      "jenis_kelamin": selectedJenisKelamin,
+                      "alamat": _alamatController.text,
                       "email": _emailController.text,
-                      "jabatan": selectedJabatan,
                     };
                     if (_passwordController.text.isNotEmpty) {
                       data["password"] = _passwordController.text;

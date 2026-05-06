@@ -17,6 +17,8 @@ class Dosen extends Model
         'nama_dosen',
         'nip',
         'nidn',
+        'jenis_kelamin',
+        'alamat',
         'ttd_dosen',
     ];
 

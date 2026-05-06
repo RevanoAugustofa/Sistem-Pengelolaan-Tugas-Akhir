@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/profile_controller.dart';
+import '../../controllers/koorprodi_controller.dart';
 
 class DashboardKp extends StatefulWidget {
   const DashboardKp({super.key});
@@ -11,6 +12,7 @@ class DashboardKp extends StatefulWidget {
 
 class _DashboardKpState extends State<DashboardKp> {
   final ProfileController profileController = Get.put(ProfileController());
+  final KoorProdiController koorProdiController = Get.put(KoorProdiController());
 
   // Fungsi untuk menampilkan Modal Bottom Sheet "Lainnya"
   void _showMoreMenu() {
@@ -168,7 +170,7 @@ class _DashboardKpState extends State<DashboardKp> {
                             _buildMenuItem(Icons.people_outline, 'Mahasiswa', onTap: () => Get.toNamed('/dataMahasiswaKp')),
                             _buildMenuItem(Icons.supervisor_account, 'Dosen', onTap: () => Get.toNamed('/dataDosenKp')),
                             _buildMenuItem(Icons.list_alt, 'Rubrik Nilai', onTap: () => Get.toNamed('/dataRubrikNilaiKp')),
-                            _buildMenuItem(Icons.calendar_month, 'Jadwal', onTap: () => Get.toNamed('/jadwalAdm')),
+                            _buildMenuItem(Icons.calendar_month, 'Jadwal', onTap: () => Get.toNamed('/jadwalKp')),
                             _buildMenuItem(Icons.history_edu_outlined, 'Logbook', onTap: () => Get.toNamed('/logbookAdm')),
                             _buildMenuItem(Icons.verified_user_outlined, 'Validasi Pembimbing', onTap: () => Get.toNamed('/pengajuanpembimbing_KP')),
                             _buildMenuItem(Icons.assignment_turned_in_outlined, 'Hasil Akhir', onTap: () => Get.toNamed('/hasilAdm')),

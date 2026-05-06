@@ -64,4 +64,51 @@ class AuthService {
       throw Exception(responseData['message'] ?? 'Gagal mengubah kata sandi');
     }
   }
+
+  Future<Map<String, dynamic>> getProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.get(
+      Uri.parse('${AppConstants.baseUrl}/profile'),
+      headers: <String, String>{
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    final responseData = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      return responseData;
+    } else {
+      throw Exception(responseData['message'] ?? 'Gagal mengambil data profil');
+    }
+  }
+
+  Future<Map<String, dynamic>> updateProfile({required String email, String? ttdPath}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    var request = http.MultipartRequest('POST', Uri.parse('${AppConstants.baseUrl}/profile?_method=PUT'));
+    request.headers.addAll({
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    
+    request.fields['email'] = email;
+
+    if (ttdPath != null && ttdPath.isNotEmpty) {
+      request.files.add(await http.MultipartFile.fromPath('ttd', ttdPath));
+    }
+
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+
+    final responseData = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      return responseData;
+    } else {
+      throw Exception(responseData['message'] ?? 'Gagal memperbarui profil');
+    }
+  }
 }

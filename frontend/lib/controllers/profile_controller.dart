@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
 import '../services/auth_service.dart';
 
 class ProfileController extends GetxController {
   final AuthService _authService = AuthService();
+  final ImagePicker _picker = ImagePicker();
   
   var userName = "Memuat...".obs;
   var userRole = "".obs;
@@ -15,35 +17,106 @@ class ProfileController extends GetxController {
   var prodiName = "".obs;
   var userAddress = "".obs;
   var userGender = "".obs;
+  var userSignature = "".obs;
+  var selectedImagePath = "".obs;
   var isLoading = false.obs;
   var availableRoles = <String>[].obs;
   var availableContexts = <dynamic>[].obs;
 
+  late TextEditingController emailController;
+
   @override
   void onInit() {
     super.onInit();
+    emailController = TextEditingController();
     // Jika ada argument yang dikirim (misal dari dashboard), gunakan itu
     String? currentRole = Get.arguments?['activeRole'];
     loadUserData(activeRole: currentRole);
+    fetchProfileFromApi();
   }
 
   void loadUserData({String? activeRole}) async {
     final prefs = await SharedPreferences.getInstance();
     userName.value = prefs.getString('user_name') ?? "User SIPTA";
-    
-    // Gunakan activeRole jika dikirim, jika tidak ambil dari prefs 'active_role'
     userRole.value = activeRole ?? (prefs.getString('active_role') ?? "");
-    
     userId.value = prefs.getString('user_id') ?? "0000000000";
     userEmail.value = prefs.getString('user_email') ?? "user@sipta.com";
+    emailController.text = userEmail.value;
     idProdi.value = prefs.getInt('id_prodi') ?? 0;
     prodiName.value = prefs.getString('prodi_name') ?? "";
     userAddress.value = prefs.getString('user_address') ?? "Alamat belum diatur";
     userGender.value = prefs.getString('user_gender') ?? "Laki-laki";
+    userSignature.value = prefs.getString('user_signature') ?? "";
     
     String contextsJson = prefs.getString('available_contexts') ?? "[]";
     availableContexts.value = jsonDecode(contextsJson);
     availableRoles.value = availableContexts.map((e) => e['role'].toString()).toSet().toList();
+  }
+
+  Future<void> fetchProfileFromApi() async {
+    try {
+      isLoading(true);
+      final data = await _authService.getProfile();
+      final user = data['user'];
+      
+      userEmail.value = user['email'];
+      emailController.text = userEmail.value;
+      
+      if (user['role'] == 'mahasiswa') {
+        final mhs = user['mahasiswa'];
+        userName.value = mhs['nama_mahasiswa'];
+        userId.value = mhs['nim'];
+        userGender.value = mhs['jenis_kelamin'] ?? "Laki-laki";
+        userAddress.value = mhs['alamat'] ?? "Belum diatur";
+        userSignature.value = mhs['ttd_mahasiswa'] ?? "";
+        prodiName.value = mhs['prodi']?['nama_prodi'] ?? "";
+      } else {
+        final dsn = user['dosen'];
+        userName.value = dsn['nama_dosen'];
+        userId.value = dsn['nip'] ?? dsn['nidn'] ?? "";
+        userGender.value = dsn['jenis_kelamin'] ?? "Laki-laki";
+        userAddress.value = dsn['alamat'] ?? "Belum diatur";
+        userSignature.value = dsn['ttd_dosen'] ?? "";
+      }
+
+      // Update local storage
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user_name', userName.value);
+      await prefs.setString('user_email', userEmail.value);
+      await prefs.setString('user_address', userAddress.value);
+      await prefs.setString('user_gender', userGender.value);
+      await prefs.setString('user_signature', userSignature.value);
+      
+    } catch (e) {
+      print("Error fetching profile: $e");
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      selectedImagePath.value = image.path;
+    }
+  }
+
+  Future<void> updateProfile() async {
+    try {
+      isLoading(true);
+      final response = await _authService.updateProfile(
+        email: emailController.text,
+        ttdPath: selectedImagePath.value,
+      );
+      
+      Get.snackbar("Sukses", response['message'], backgroundColor: Colors.green, colorText: Colors.white);
+      fetchProfileFromApi(); // Refresh data
+      selectedImagePath.value = ""; // Clear selected image
+    } catch (e) {
+      Get.snackbar("Error", e.toString(), backgroundColor: Colors.red, colorText: Colors.white);
+    } finally {
+      isLoading(false);
+    }
   }
 
   void switchRole(String newRole) async {

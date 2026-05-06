@@ -55,6 +55,63 @@ class AuthController extends Controller
         return response()->json(['message' => 'Berhasil Logout']);
     }
 
+    public function profile(Request $request)
+    {
+        $user = $request->user()->load(['dosen.prodi', 'mahasiswa.prodi']);
+        return response()->json([
+            'user' => $user
+        ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+        
+        $request->validate([
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'ttd' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+        ]);
+
+        try {
+            \DB::beginTransaction();
+
+            // Update Email di tabel User
+            $user->update([
+                'email' => $request->email
+            ]);
+
+            // Update TTD di tabel Dosen atau Mahasiswa
+            if ($user->role === 'dosen' || $user->role === 'koorprodi' || $user->role === 'admin') {
+                $dosen = $user->dosen;
+                if ($dosen) {
+                    if ($request->hasFile('ttd')) {
+                        $path = $request->file('ttd')->store('signatures', 'public');
+                        $dosen->update(['ttd_dosen' => $path]);
+                    }
+                }
+            } else if ($user->role === 'mahasiswa') {
+                $mahasiswa = $user->mahasiswa;
+                if ($mahasiswa) {
+                    if ($request->hasFile('ttd')) {
+                        $path = $request->file('ttd')->store('signatures', 'public');
+                        $mahasiswa->update(['ttd_mahasiswa' => $path]);
+                    }
+                }
+            }
+
+            \DB::commit();
+
+            return response()->json([
+                'message' => 'Profil berhasil diperbarui',
+                'user' => $user->fresh(['dosen.prodi', 'mahasiswa.prodi'])
+            ]);
+
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return response()->json(['message' => 'Gagal memperbarui profil: ' . $e->getMessage()], 500);
+        }
+    }
+
     public function updatePassword(Request $request)
     {
         $request->validate([

@@ -61,7 +61,7 @@ class DataDiriPage extends StatelessWidget {
 
                   _buildInputField(
                     label: "Email",
-                    initialValue: controller.userEmail.value,
+                    controller: controller.emailController,
                     keyboardType: TextInputType.emailAddress,
                     readOnly: false, // Hanya email yang bisa diedit
                     hint: "Masukkan email baru",
@@ -79,24 +79,21 @@ class DataDiriPage extends StatelessWidget {
                     readOnly: true,
                   )),
 
+                  Obx(() => _buildSignatureField(
+                    label: controller.userRole.value == 'mahasiswa' ? "Tanda Tangan Mahasiswa" : "Tanda Tangan Dosen",
+                    initialValue: controller.userSignature.value,
+                    selectedPath: controller.selectedImagePath.value,
+                    onTap: () => controller.pickImage(),
+                  )),
+
                   // Tambahan Field Berdasarkan Role
                   Obx(() {
-                    if (controller.userRole.value == 'Mahasiswa') {
+                    if (controller.userRole.value == 'mahasiswa') {
                       return Column(
                         children: [
                           _buildInputField(
                             label: "Program Studi",
                             initialValue: controller.prodiName.value,
-                            readOnly: true,
-                          ),
-                        ],
-                      );
-                    } else if (controller.userRole.value == 'Dosen' || controller.userRole.value == 'KoorProdi') {
-                      return Column(
-                        children: [
-                          _buildInputField(
-                            label: "Jabatan",
-                            initialValue: "Lektor", // Mockup read-only
                             readOnly: true,
                           ),
                         ],
@@ -114,11 +111,8 @@ class DataDiriPage extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  Get.snackbar("Sukses", "Perubahan email berhasil disimpan", 
-                      backgroundColor: Colors.green, colorText: Colors.white);
-                },
+              child: Obx(() => ElevatedButton(
+                onPressed: controller.isLoading.value ? null : () => controller.updateProfile(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 0, 149, 255),
                   shape: RoundedRectangleBorder(
@@ -126,15 +120,17 @@ class DataDiriPage extends StatelessWidget {
                   ),
                   elevation: 0,
                 ),
-                child: const Text(
-                  "Simpan Perubahan",
-                  style: TextStyle(
-                    fontSize: 16, 
-                    fontWeight: FontWeight.bold, 
-                    color: Colors.white
-                  ),
-                ),
-              ),
+                child: controller.isLoading.value 
+                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                  : const Text(
+                      "Simpan Perubahan",
+                      style: TextStyle(
+                        fontSize: 16, 
+                        fontWeight: FontWeight.bold, 
+                        color: Colors.white
+                      ),
+                    ),
+              )),
             ),
             const SizedBox(height: 50),
           ],
@@ -147,6 +143,7 @@ class DataDiriPage extends StatelessWidget {
   Widget _buildInputField({
     required String label,
     String? initialValue,
+    TextEditingController? controller,
     String? hint,
     TextInputType? keyboardType,
     int maxLines = 1,
@@ -167,7 +164,8 @@ class DataDiriPage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           TextFormField(
-            initialValue: initialValue,
+            initialValue: controller == null ? initialValue : null,
+            controller: controller,
             keyboardType: keyboardType,
             maxLines: maxLines,
             readOnly: readOnly,
@@ -249,4 +247,73 @@ class DataDiriPage extends StatelessWidget {
       ],
     );
   }
+
+  // Helper untuk membuat Signature Field (Editable/Upload mockup)
+  Widget _buildSignatureField({
+    required String label,
+    required String initialValue,
+    required String selectedPath,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label, 
+            style: const TextStyle(
+              fontSize: 14, 
+              fontWeight: FontWeight.w600, 
+              color: Colors.black87
+            )
+          ),
+          const SizedBox(height: 8),
+          InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              width: double.infinity,
+              height: 120,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF9FAFB),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey.shade300, style: BorderStyle.solid),
+              ),
+              child: selectedPath.isNotEmpty
+                ? Center(
+                    child: Text("Gambar terpilih:\n${selectedPath.split('/').last}", 
+                      style: const TextStyle(fontSize: 12, color: Colors.blue, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                : (initialValue.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.cloud_upload_outlined, color: Colors.grey.shade400, size: 40),
+                          const SizedBox(height: 8),
+                          Text("Klik untuk unggah tanda tangan", style: TextStyle(color: Colors.grey.shade500, fontSize: 12)),
+                        ],
+                      ),
+                    )
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.check_circle_outline, color: Colors.green, size: 30),
+                          const SizedBox(height: 4),
+                          Text("Tanda Tangan Tersimpan", style: TextStyle(color: Colors.green.shade700, fontSize: 12, fontWeight: FontWeight.bold)),
+                          Text("(Ketuk untuk mengganti)", style: TextStyle(color: Colors.grey.shade500, fontSize: 10)),
+                        ],
+                      ),
+                    )),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
+

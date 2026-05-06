@@ -17,6 +17,9 @@ class Mahasiswa extends Model
         'id_tahun_ajar',
         'nim',
         'nama_mahasiswa',
+        'tgl_lahir',
+        'jenis_kelamin',
+        'alamat',
         'ttd_mahasiswa',
     ];
 

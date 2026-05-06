@@ -8,6 +8,9 @@ class Mahasiswa {
   final String? email;
   final String? angkatan;
   final String? prodi;
+  final String? tglLahir;
+  final String? jenisKelamin;
+  final String? alamat;
   final Proposal? proposal;
 
   Mahasiswa({
@@ -20,6 +23,9 @@ class Mahasiswa {
     this.email, 
     this.angkatan, 
     this.prodi,
+    this.tglLahir,
+    this.jenisKelamin,
+    this.alamat,
     this.proposal,
   });
 
@@ -34,6 +40,9 @@ class Mahasiswa {
       email: json['user'] != null ? json['user']['email'] : null,
       angkatan: json['tahun_ajar'] != null ? json['tahun_ajar']['tahun_ajar'] : null,
       prodi: json['prodi'] != null ? json['prodi']['nama_prodi'] : null,
+      tglLahir: json['tgl_lahir'],
+      jenisKelamin: json['jenis_kelamin'],
+      alamat: json['alamat'],
       proposal: json['proposal'] != null ? Proposal.fromJson(json['proposal']) : null,
     );
   }

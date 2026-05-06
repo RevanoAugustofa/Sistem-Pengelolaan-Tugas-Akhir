@@ -18,6 +18,8 @@ class ProfileController extends GetxController {
   var userAddress = "".obs;
   var userGender = "".obs;
   var userSignature = "".obs;
+  var userNip = "".obs;
+  var userNidn = "".obs;
   var selectedImagePath = "".obs;
   var isLoading = false.obs;
   var availableRoles = <String>[].obs;
@@ -40,6 +42,8 @@ class ProfileController extends GetxController {
     userName.value = prefs.getString('user_name') ?? "User SIPTA";
     userRole.value = activeRole ?? (prefs.getString('active_role') ?? "");
     userId.value = prefs.getString('user_id') ?? "0000000000";
+    userNip.value = prefs.getString('user_nip') ?? "";
+    userNidn.value = prefs.getString('user_nidn') ?? "";
     userEmail.value = prefs.getString('user_email') ?? "user@sipta.com";
     emailController.text = userEmail.value;
     idProdi.value = prefs.getInt('id_prodi') ?? 0;
@@ -57,26 +61,41 @@ class ProfileController extends GetxController {
     try {
       isLoading(true);
       final data = await _authService.getProfile();
+      print("Profile API Response: $data"); // Debug print
       final user = data['user'];
       
-      userEmail.value = user['email'];
+      userEmail.value = user['email'] ?? "";
       emailController.text = userEmail.value;
       
-      if (user['role'] == 'mahasiswa') {
+      // Karena role bisa berupa string atau object (enum)
+      String role = "";
+      if (user['role'] is Map) {
+        role = user['role']['value'] ?? "";
+      } else {
+        role = user['role'].toString();
+      }
+
+      if (role == 'mahasiswa') {
         final mhs = user['mahasiswa'];
-        userName.value = mhs['nama_mahasiswa'];
-        userId.value = mhs['nim'];
-        userGender.value = mhs['jenis_kelamin'] ?? "Laki-laki";
-        userAddress.value = mhs['alamat'] ?? "Belum diatur";
-        userSignature.value = mhs['ttd_mahasiswa'] ?? "";
-        prodiName.value = mhs['prodi']?['nama_prodi'] ?? "";
+        if (mhs != null) {
+          userName.value = mhs['nama_mahasiswa'] ?? "User SIPTA";
+          userId.value = mhs['nim'] ?? "";
+          userGender.value = mhs['jenis_kelamin'] ?? "Laki-laki";
+          userAddress.value = mhs['alamat'] ?? "Belum diatur";
+          userSignature.value = mhs['ttd_mahasiswa'] ?? "";
+          prodiName.value = mhs['prodi']?['nama_prodi'] ?? "";
+        }
       } else {
         final dsn = user['dosen'];
-        userName.value = dsn['nama_dosen'];
-        userId.value = dsn['nip'] ?? dsn['nidn'] ?? "";
-        userGender.value = dsn['jenis_kelamin'] ?? "Laki-laki";
-        userAddress.value = dsn['alamat'] ?? "Belum diatur";
-        userSignature.value = dsn['ttd_dosen'] ?? "";
+        if (dsn != null) {
+          userName.value = dsn['nama_dosen'] ?? "Dosen SIPTA";
+          userNip.value = dsn['nip'] ?? "";
+          userNidn.value = dsn['nidn'] ?? "";
+          userId.value = userNip.value.isNotEmpty ? userNip.value : userNidn.value;
+          userGender.value = dsn['jenis_kelamin'] ?? "Laki-laki";
+          userAddress.value = dsn['alamat'] ?? "Belum diatur";
+          userSignature.value = dsn['ttd_dosen'] ?? "";
+        }
       }
 
       // Update local storage
@@ -86,6 +105,9 @@ class ProfileController extends GetxController {
       await prefs.setString('user_address', userAddress.value);
       await prefs.setString('user_gender', userGender.value);
       await prefs.setString('user_signature', userSignature.value);
+      await prefs.setString('user_id', userId.value);
+      await prefs.setString('user_nip', userNip.value);
+      await prefs.setString('user_nidn', userNidn.value);
       
     } catch (e) {
       print("Error fetching profile: $e");
@@ -94,10 +116,26 @@ class ProfileController extends GetxController {
     }
   }
 
+  var isPickingImage = false.obs;
+
   Future<void> pickImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      selectedImagePath.value = image.path;
+    if (isPickingImage.value) return;
+    try {
+      isPickingImage.value = true;
+      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        selectedImagePath.value = image.path;
+      }
+    } catch (e) {
+      print("Error picking image: $e");
+      Get.snackbar(
+        "Error", 
+        "Gagal mengambil gambar: $e",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isPickingImage.value = false;
     }
   }
 

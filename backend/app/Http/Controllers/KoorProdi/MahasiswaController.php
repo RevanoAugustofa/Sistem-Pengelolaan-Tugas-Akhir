@@ -44,6 +44,9 @@ class MahasiswaController extends Controller
         $request->validate([
             'nama_mahasiswa' => 'required|string|max:255',
             'nim' => 'required|string|unique:mahasiswa,nim',
+            'tgl_lahir' => 'required|string',
+            'jenis_kelamin' => 'required|string',
+            'alamat' => 'required|string',
             'id_tahun_ajar' => 'required|exists:tahun_ajar,id',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
@@ -65,6 +68,9 @@ class MahasiswaController extends Controller
                 'id_tahun_ajar' => $request->id_tahun_ajar,
                 'nim' => $request->nim,
                 'nama_mahasiswa' => $request->nama_mahasiswa,
+                'tgl_lahir' => $request->tgl_lahir,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
             ]);
 
             DB::commit();
@@ -105,6 +111,9 @@ class MahasiswaController extends Controller
         $request->validate([
             'nama_mahasiswa' => 'required|string|max:255',
             'nim' => 'required|string|unique:mahasiswa,nim,' . $id,
+            'tgl_lahir' => 'required|string',
+            'jenis_kelamin' => 'required|string',
+            'alamat' => 'required|string',
             'id_tahun_ajar' => 'required|exists:tahun_ajar,id',
             'email' => 'required|email|unique:users,email,' . $mahasiswa->id_user,
             'password' => 'nullable|min:6',
@@ -127,6 +136,9 @@ class MahasiswaController extends Controller
                 'id_tahun_ajar' => $request->id_tahun_ajar,
                 'nim' => $request->nim,
                 'nama_mahasiswa' => $request->nama_mahasiswa,
+                'tgl_lahir' => $request->tgl_lahir,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
             ]);
 
             DB::commit();

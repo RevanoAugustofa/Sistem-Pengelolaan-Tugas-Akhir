@@ -191,7 +191,6 @@ class _IndexDosenPageState extends State<IndexDosenPage> {
                               DataColumn(label: Text('No')),
                               DataColumn(label: Text('NIP')),
                               DataColumn(label: Text('Nama')),
-                              DataColumn(label: Text('Jabatan')),
                               DataColumn(label: Text('Aksi')),
                             ],
                             rows: List.generate(displayedDosen.length, (index) {
@@ -205,7 +204,6 @@ class _IndexDosenPageState extends State<IndexDosenPage> {
                                   DataCell(Text((startIndex + index + 1).toString())),
                                   DataCell(Text(dosen.nip ?? "-")),
                                   DataCell(Text(dosen.namaDosen ?? "-")),
-                                  DataCell(Text(dosen.jabatan ?? "-")),
                                   DataCell(Row(
                                     children: [
                                       IconButton(

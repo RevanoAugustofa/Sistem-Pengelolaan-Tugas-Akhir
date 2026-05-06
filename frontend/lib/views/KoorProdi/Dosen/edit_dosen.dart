@@ -16,6 +16,7 @@ class _EditDosenPageState extends State<EditDosenPage> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _nipController;
+  late TextEditingController _nidnController;
   late TextEditingController _namaController;
   late TextEditingController _emailController;
   late TextEditingController _alamatController;
@@ -32,6 +33,7 @@ class _EditDosenPageState extends State<EditDosenPage> {
   void initState() {
     super.initState();
     _nipController = TextEditingController(text: widget.dosen.nip);
+    _nidnController = TextEditingController(text: widget.dosen.nidn);
     _namaController = TextEditingController(text: widget.dosen.namaDosen);
     _emailController = TextEditingController(text: widget.dosen.email);
     _alamatController = TextEditingController(text: widget.dosen.alamat);
@@ -82,6 +84,16 @@ class _EditDosenPageState extends State<EditDosenPage> {
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
                 validator: (v) => v!.isEmpty ? "NIP wajib diisi" : null,
+              ),
+              const SizedBox(height: 25),
+              TextFormField(
+                controller: _nidnController,
+                decoration: const InputDecoration(
+                  labelText: "NIDN", 
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                validator: (v) => v!.isEmpty ? "NIDN wajib diisi" : null,
               ),
               const SizedBox(height: 25),
               const Align(
@@ -153,6 +165,7 @@ class _EditDosenPageState extends State<EditDosenPage> {
                   if (_formKey.currentState!.validate()) {
                     final Map<String, dynamic> data = {
                       "nip": _nipController.text,
+                      "nidn": _nidnController.text,
                       "nama_dosen": _namaController.text,
                       "jenis_kelamin": selectedJenisKelamin,
                       "alamat": _alamatController.text,

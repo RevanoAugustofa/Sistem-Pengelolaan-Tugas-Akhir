@@ -48,16 +48,35 @@ class DataDiriPage extends StatelessWidget {
                 children: [
 
                   Obx(() => _buildInputField(
-                    label: controller.userRole.value == 'Mahasiswa' ? "Nama Mahasiswa" : "Nama Lengkap",
+                    label: controller.userRole.value == 'mahasiswa' ? "Nama Mahasiswa" : "Nama Lengkap",
                     initialValue: controller.userName.value,
                     readOnly: true,
                   )),
 
-                  Obx(() => _buildInputField(
-                    label: controller.userRole.value == 'Mahasiswa' ? "NIM" : "NIP / NIDN",
-                    initialValue: controller.userId.value,
-                    readOnly: true,
-                  )),
+                  Obx(() {
+                    if (controller.userRole.value == 'mahasiswa') {
+                      return _buildInputField(
+                        label: "NIM",
+                        initialValue: controller.userId.value,
+                        readOnly: true,
+                      );
+                    } else {
+                      return Column(
+                        children: [
+                          _buildInputField(
+                            label: "NIP",
+                            initialValue: controller.userNip.value,
+                            readOnly: true,
+                          ),
+                          _buildInputField(
+                            label: "NIDN",
+                            initialValue: controller.userNidn.value,
+                            readOnly: true,
+                          ),
+                        ],
+                      );
+                    }
+                  }),
 
                   _buildInputField(
                     label: "Email",

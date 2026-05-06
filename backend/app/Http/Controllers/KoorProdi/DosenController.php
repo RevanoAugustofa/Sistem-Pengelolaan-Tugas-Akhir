@@ -48,6 +48,7 @@ class DosenController extends Controller
         $request->validate([
             'nama_dosen' => 'required|string|max:255',
             'nip' => 'required|string|unique:dosen,nip',
+            'nidn' => 'required|string|unique:dosen,nidn',
             'jenis_kelamin' => 'required|string',
             'alamat' => 'required|string',
             'email' => 'required|email|unique:users,email',
@@ -67,6 +68,7 @@ class DosenController extends Controller
             $dosen = Dosen::create([
                 'id_user' => $user->id,
                 'nip' => $request->nip,
+                'nidn' => $request->nidn,
                 'nama_dosen' => $request->nama_dosen,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,
@@ -117,6 +119,7 @@ class DosenController extends Controller
         $request->validate([
             'nama_dosen' => 'required|string|max:255',
             'nip' => 'required|string|unique:dosen,nip,' . $id,
+            'nidn' => 'required|string|unique:dosen,nidn,' . $id,
             'jenis_kelamin' => 'required|string',
             'alamat' => 'required|string',
             'email' => 'required|email|unique:users,email,' . $dosen->id_user,
@@ -138,6 +141,7 @@ class DosenController extends Controller
 
             $dosen->update([
                 'nip' => $request->nip,
+                'nidn' => $request->nidn,
                 'nama_dosen' => $request->nama_dosen,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,

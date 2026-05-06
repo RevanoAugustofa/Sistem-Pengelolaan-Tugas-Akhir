@@ -14,6 +14,7 @@ class _CreateDosenPageState extends State<CreateDosenPage> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _nipController = TextEditingController();
+  final TextEditingController _nidnController = TextEditingController();
   final TextEditingController _namaController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -70,6 +71,16 @@ class _CreateDosenPageState extends State<CreateDosenPage> {
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
                 validator: (v) => v!.isEmpty ? "NIP wajib diisi" : null,
+              ),
+              const SizedBox(height: 25),
+              TextFormField(
+                controller: _nidnController,
+                decoration: const InputDecoration(
+                  labelText: "NIDN", 
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                validator: (v) => v!.isEmpty ? "NIDN wajib diisi" : null,
               ),
               const SizedBox(height: 25),
               const Align(
@@ -142,6 +153,7 @@ class _CreateDosenPageState extends State<CreateDosenPage> {
                   if (_formKey.currentState!.validate()) {
                     final data = {
                       "nip": _nipController.text,
+                      "nidn": _nidnController.text,
                       "nama_dosen": _namaController.text,
                       "jenis_kelamin": selectedJenisKelamin,
                       "alamat": _alamatController.text,

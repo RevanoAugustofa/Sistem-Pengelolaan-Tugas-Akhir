@@ -8,6 +8,7 @@ import '../models/dosen_model.dart';
 import '../models/mahasiswa_model.dart';
 import '../models/tahun_ajar_model.dart';
 import '../models/rubrik_nilai_model.dart';
+import '../models/jadwal_model.dart';
 
 class KoorProdiService {
   final String baseUrl = AppConstants.baseUrl;
@@ -15,6 +16,37 @@ class KoorProdiService {
   Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
+  }
+
+  Future<List<JadwalModel>> getJadwal(String jenisSidang) async {
+    final token = await _getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/koorprodi/jadwal?jenis_sidang=$jenisSidang"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => JadwalModel.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data jadwal $jenisSidang");
+  }
+
+  Future<bool> storeJadwal(Map<String, dynamic> data) async {
+    final token = await _getToken();
+    final response = await http.post(
+      Uri.parse("$baseUrl/koorprodi/jadwal"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    return response.statusCode == 201;
   }
 
   // Existing methods ... (will be kept by replace)

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../../controllers/koorprodi_controller.dart';
 
 class SidangTable extends StatelessWidget {
   const SidangTable({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final KoorProdiController controller = Get.find<KoorProdiController>();
+
     return Column(
       children: [
         Padding(
@@ -31,35 +35,66 @@ class SidangTable extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              headingRowColor:
-                  WidgetStateProperty.all(const Color.fromARGB(255, 110, 110, 110)),
-              headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-              columns: const [
-                DataColumn(label: Text('No')),
-                DataColumn(label: Text('Nama')),
-                DataColumn(label: Text('Penguji')),
-                DataColumn(label: Text('Tanggal')),
-              ],
-              rows: List.generate(5, (index) {
-                return DataRow(
-                  color: WidgetStateProperty.resolveWith<Color?>((states) {
-                    if (index % 2 != 0) return Colors.grey.withOpacity(0.05);
-                    return null;
-                  }),
-                  cells: [
-                    DataCell(Text("${index + 1}")),
-                    const DataCell(Text("Mahasiswa")),
-                    const DataCell(Text("Dr. Dosen")),
-                    const DataCell(Text("20-03-2026")),
-                  ],
-                );
-              }),
-            ),
-          ),
+          child: Obx(() {
+            if (controller.isLoadingJadwal.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (controller.listJadwalSidang.isEmpty) {
+              return const Center(
+                child: Text("Belum ada jadwal sidang", style: TextStyle(color: Colors.grey)),
+              );
+            }
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                headingRowColor:
+                    WidgetStateProperty.all(const Color.fromARGB(255, 110, 110, 110)),
+                headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                columns: const [
+                  DataColumn(label: Text('No')),
+                  DataColumn(label: Text('Nama')),
+                  DataColumn(label: Text('Penguji')),
+                  DataColumn(label: Text('Ruangan')),
+                  DataColumn(label: Text('Waktu')),
+                ],
+                rows: controller.listJadwalSidang.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  var item = entry.value;
+                  return DataRow(
+                    color: WidgetStateProperty.resolveWith<Color?>((states) {
+                      if (index % 2 != 0) return Colors.grey.withOpacity(0.05);
+                      return null;
+                    }),
+                    cells: [
+                      DataCell(Text("${index + 1}")),
+                      DataCell(Text(item.mahasiswa?.namaMahasiswa ?? "-")),
+                      DataCell(Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("U: ${item.pengujiUtama?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 11)),
+                          Text("P: ${item.pengujiPendamping?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 10, color: Colors.black54)),
+                        ],
+                      )),
+                      DataCell(Text(item.ruangan?.namaRuangan ?? "-")),
+                      DataCell(Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(item.tanggal ?? "-", style: const TextStyle(fontSize: 11)),
+                          Text("${item.waktuMulai} - ${item.waktuSelesai}", 
+                               style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.blue)),
+                        ],
+                      )),
+                    ],
+                  );
+                }).toList(),
+              ),
+            );
+          }),
         ),
       ],
     );

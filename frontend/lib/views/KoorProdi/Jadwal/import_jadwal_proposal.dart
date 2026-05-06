@@ -168,12 +168,33 @@ class _ImportJadwalProposalPageState extends State<ImportJadwalProposalPage> {
       return;
     }
     setState(() => _isLoading = true);
-    // Di sini nanti panggil controller.importJadwal(tempItems)
-    await Future.delayed(const Duration(seconds: 2));
+    
+    int successCount = 0;
+    for (var item in _previewData) {
+      try {
+        // Map fields to match database
+        Map<String, dynamic> data = {
+          'id_mahasiswa': item['id_mahasiswa'],
+          'jenis_sidang': item['jenis_sidang'],
+          'id_penguji_utama': item['id_penguji_utama'],
+          'id_penguji_pendamping': item['id_penguji_pendamping'],
+          'tanggal': item['tanggal'],
+          'waktu_mulai': item['waktu_mulai'],
+          'waktu_selesai': item['waktu_selesai'],
+          'id_ruang_sidang': item['id_ruang_sidang'],
+        };
+        
+        await controller.saveJadwal(data);
+        successCount++;
+      } catch (e) {
+        print("Error saving item: $e");
+      }
+    }
     
     setState(() => _isLoading = false);
-    Get.snackbar("Selesai", "Berhasil mengimpor ${_previewData.length} data jadwal proposal.");
-    Get.back();
+    Get.snackbar("Selesai", "Berhasil mengimpor $successCount data jadwal proposal.");
+    controller.fetchJadwalProposal();
+    if (successCount > 0) Get.back();
   }
 
   @override

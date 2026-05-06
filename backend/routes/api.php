@@ -13,10 +13,7 @@ use App\Http\Controllers\Admin\ProdiController;
 use App\Http\Controllers\Admin\RuanganController;
 use App\Http\Controllers\Admin\DosenProdiController;
 use App\Http\Controllers\KoorProdi\KoorProdiController;
-
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+use App\Http\Controllers\KoorProdi\JadwalController;
 
 Route::post('/login',[AuthController::class, 'login']);
 
@@ -110,6 +107,10 @@ Route::middleware('auth:sanctum', 'role:koorprodi')->group(function () {
     Route::get('/koorprodi/rubrik-nilai/{id}', [\App\Http\Controllers\KoorProdi\RubrikNilaiController::class, 'show']);
     Route::put('/koorprodi/rubrik-nilai/{id}', [\App\Http\Controllers\KoorProdi\RubrikNilaiController::class, 'update']);
     Route::delete('/koorprodi/rubrik-nilai/{id}', [\App\Http\Controllers\KoorProdi\RubrikNilaiController::class, 'destroy']);
+
+    // Jadwal for KoorProdi
+    Route::get('/koorprodi/jadwal', [JadwalController::class, 'index']);
+    Route::post('/koorprodi/jadwal', [JadwalController::class, 'store']);
 });
 
 
@@ -118,6 +119,3 @@ Route::middleware('auth:sanctum', 'role:mahasiswa')->group(function () {
     Route::get('/mahasiswa/dosen', [MhsController::class, 'dosenList']);
     Route::post('/mahasiswa/daftar-pembimbing', [MhsController::class, 'storeDaftarPembimbing']);
 });
-
-
-

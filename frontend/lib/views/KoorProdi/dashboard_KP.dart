@@ -57,8 +57,9 @@ class _DashboardKpState extends State<DashboardKp> {
                 _buildMenuItem(Icons.people_outline, 'User', onTap: () =>  Get.toNamed('/dataUserKp')),
                 _buildMenuItem(Icons.settings_outlined, 'Ruangan', onTap: () =>  Get.toNamed('/dataRuanganKp')),
                 _buildMenuItem(Icons.settings_outlined, 'Pendaftaran Sidang', onTap: () =>  Get.toNamed('/')),
+                _buildMenuItem(Icons.settings_outlined, 'Proposal', onTap: () =>  Get.toNamed('/proposal')),
                 _buildMenuItem(Icons.settings_outlined, 'Profil', onTap: () =>  Get.toNamed('/profil', arguments: {'activeRole': 'koorprodi'})),
-               
+                
               ],
             ),
             const SizedBox(height: 15),
@@ -171,9 +172,9 @@ class _DashboardKpState extends State<DashboardKp> {
                             _buildMenuItem(Icons.supervisor_account, 'Dosen', onTap: () => Get.toNamed('/dataDosenKp')),
                             _buildMenuItem(Icons.list_alt, 'Rubrik Nilai', onTap: () => Get.toNamed('/dataRubrikNilaiKp')),
                             _buildMenuItem(Icons.calendar_month, 'Jadwal', onTap: () => Get.toNamed('/jadwalKp')),
-                            _buildMenuItem(Icons.history_edu_outlined, 'Logbook', onTap: () => Get.toNamed('/logbookAdm')),
+                            _buildMenuItem(Icons.history_edu_outlined, 'Logbook', onTap: () => Get.toNamed('/logbookKp')),
                             _buildMenuItem(Icons.verified_user_outlined, 'Validasi Pembimbing', onTap: () => Get.toNamed('/pengajuanpembimbing_KP')),
-                            _buildMenuItem(Icons.assignment_turned_in_outlined, 'Hasil Akhir', onTap: () => Get.toNamed('/hasilAdm')),
+                            _buildMenuItem(Icons.assignment_turned_in_outlined, 'Proposal', onTap: () => Get.toNamed('/proposalKp')),
                             _buildMenuItem(Icons.more_horiz, 'Lainnya', color: const Color(0xFFEFE0FB), onTap: _showMoreMenu),
                           ],
                         ),

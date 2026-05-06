@@ -5,6 +5,8 @@ import 'package:frontend/views/Admin/DataProdi/index_prodi.dart';
 import 'package:frontend/views/Admin/DataRuangan/index_ruangan.dart';
 import 'package:frontend/views/Admin/DataTahunAjar/index_tahun_ajar.dart';
 import 'package:frontend/views/KoorProdi/Jadwal/jadwal_koor.dart';
+import 'package:frontend/views/KoorProdi/Proposal_Kp.dart';
+import 'package:frontend/views/KoorProdi/Logbook_Kp.dart';
 import 'package:frontend/views/KoorProdi/Jadwal/import_jadwal_proposal.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:frontend/views/Admin/Data/DataUser_Admin.dart';
@@ -123,6 +125,8 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/dataRubrikNilaiKp', page: () => const kp_rubrik.IndexRubrikNilaiPage() ),
         GetPage(name: '/dataUserKp', page: () => const UserKpPage() ),
         GetPage(name: '/jadwalKp', page: () => const JadwalKoorPage() ),
+        GetPage(name: '/proposalKp', page: () => const ProposalKoorPage() ),
+        GetPage(name: '/logbookKp', page: () => const LogbookKoorPage() ),
         GetPage(name: '/importJadwalProposalKp', page: () => const ImportJadwalProposalPage() ),
 
 

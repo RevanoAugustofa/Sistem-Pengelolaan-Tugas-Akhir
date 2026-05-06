@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/ruangan_model.dart';
 import 'package:frontend/models/rubrik_nilai_model.dart';
+import 'package:frontend/models/jadwal_model.dart';
 import 'package:get/get.dart';
 import '../models/pengajuan_pembimbing_model.dart';
 import '../models/dosen_model.dart';
@@ -33,6 +34,11 @@ class KoorProdiController extends GetxController {
   var listRubrikNilai = <RubrikNilai>[].obs;
   var isLoadingRubrikNilai = false.obs;
 
+  // Jadwal states
+  var listJadwalProposal = <JadwalModel>[].obs;
+  var listJadwalSidang = <JadwalModel>[].obs;
+  var isLoadingJadwal = false.obs;
+
   // Pagination states
   int currentPage = 1;
   int lastPage = 1;
@@ -54,6 +60,43 @@ class KoorProdiController extends GetxController {
     fetchDosenManajemen();
     fetchRuangan();
     fetchRubrikNilai();
+    fetchJadwalProposal();
+    fetchJadwalSidang();
+  }
+
+  void fetchJadwalProposal() async {
+    try {
+      isLoadingJadwal(true);
+      var data = await _service.getJadwal('proposal');
+      listJadwalProposal.assignAll(data);
+    } catch (e) {
+      Get.snackbar("Error", "Gagal mengambil data jadwal proposal: $e");
+    } finally {
+      isLoadingJadwal(false);
+    }
+  }
+
+  void fetchJadwalSidang() async {
+    try {
+      isLoadingJadwal(true);
+      var data = await _service.getJadwal('sidang');
+      listJadwalSidang.assignAll(data);
+    } catch (e) {
+      Get.snackbar("Error", "Gagal mengambil data jadwal sidang: $e");
+    } finally {
+      isLoadingJadwal(false);
+    }
+  }
+
+  Future<void> saveJadwal(Map<String, dynamic> data) async {
+    try {
+      bool success = await _service.storeJadwal(data);
+      if (!success) {
+        throw Exception("Gagal menyimpan ke database");
+      }
+    } catch (e) {
+      throw e;
+    }
   }
 
   void fetchRubrikNilai() async {

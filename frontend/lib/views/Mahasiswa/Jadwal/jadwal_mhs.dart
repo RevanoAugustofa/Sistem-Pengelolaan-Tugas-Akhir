@@ -29,7 +29,7 @@ class JadwalMhsPage extends StatelessWidget {
         children: [
           const SizedBox(height: 20),
           // 1. Tab Selector (Sempro / Sidang TA)
-          Obx(() => Container(
+          Container(
             margin: const EdgeInsets.symmetric(horizontal: 20),
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
@@ -42,7 +42,7 @@ class JadwalMhsPage extends StatelessWidget {
                 _buildTabItem("Sidang TA", 1, controller),
               ],
             ),
-          )),
+          ),
           const SizedBox(height: 20),
 
           // 2. Search & Filter Section
@@ -108,25 +108,27 @@ class JadwalMhsPage extends StatelessWidget {
   }
 
   Widget _buildTabItem(String label, int index, JadwalController controller) {
-    bool isActive = controller.selectedJadwalTab.value == index;
     return Expanded(
       child: GestureDetector(
         onTap: () => controller.selectedJadwalTab.value = index,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: isActive ? const Color(0xFF283D70) : Colors.transparent,
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+        child: Obx(() {
+          bool isActive = controller.selectedJadwalTab.value == index;
+          return Container(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            decoration: BoxDecoration(
+              color: isActive ? const Color(0xFF283D70) : Colors.transparent,
+              borderRadius: BorderRadius.circular(25),
             ),
-          ),
-        ),
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -143,9 +145,7 @@ class JadwalMhsPage extends StatelessWidget {
         if (index == 0) {
           Get.toNamed('/dashboardMhs'); 
         } else if (index == 1) {
-          Get.toNamed('/proposalMhs');
-        } else if (index == 2) {
-          Get.toNamed('/jadwalSemproMhs');
+          Get.toNamed('/tugasAkhirMhs');
         } else if (index == 3) {
           Get.toNamed('/profil');
         }

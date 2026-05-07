@@ -319,7 +319,7 @@ class ProfilPage extends StatelessWidget {
           if (index == 0)
             Get.offAllNamed('/dashboardMhs');
           else if (index == 1)
-            Get.toNamed('/proposalMhs');
+            Get.toNamed('/tugasAkhirMhs');
           else if (index == 2)
             Get.toNamed('/jadwalSemproMhs');
           else if (index == 3) {} // Stay here

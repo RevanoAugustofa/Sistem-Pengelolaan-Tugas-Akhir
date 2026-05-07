@@ -352,7 +352,7 @@ class DashboardMhs extends StatelessWidget {
         // Logika pindah halaman berdasarkan index menu
         if (index == 1) {
           // Index 1 "Tugas Akhir"
-          Get.toNamed('/proposalMhs');
+          Get.toNamed('/tugasAkhirMhs');
         } else if (index == 2) {
           Get.toNamed('/jadwalSemproMhs');
         } else if (index == 3) {

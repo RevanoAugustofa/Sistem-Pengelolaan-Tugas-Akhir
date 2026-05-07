@@ -46,9 +46,8 @@ import 'package:frontend/views/Notification/notifikasi.dart';
 import 'package:frontend/views/Profile/dataDiri_page.dart';
 import 'package:frontend/views/Profile/profile_page.dart';
 import 'package:frontend/views/Profile/ubah_password.dart';
-import 'package:frontend/views/Mahasiswa/TugasAkhir/TA_bimbingan_Mhs.dart';
+import 'package:frontend/views/Mahasiswa/TugasAkhir/tugas_akhir_mhs.dart';
 import 'package:frontend/views/Mahasiswa/dashboard_Mhs.dart';
-import 'package:frontend/views/Mahasiswa/TugasAkhir/TA_proposal_Mhs.dart';
 import 'package:frontend/views/login_page.dart';
 import 'package:frontend/views/splash_page.dart';
 import 'package:get/get.dart';
@@ -108,8 +107,7 @@ class MainApp extends StatelessWidget {
         //mahasiswa
         GetPage(name: '/login', page: () => LoginPage() ),
         GetPage(name: '/dashboardMhs', page: () => DashboardMhs() ),
-        GetPage(name: '/proposalMhs', page: () => TaProposalMhs() ),
-        GetPage(name: '/bimbinganMhs', page: () => TaBimbinganMhs() ),
+        GetPage(name: '/tugasAkhirMhs', page: () => const TugasAkhirMhsPage() ),
         GetPage(name: '/jadwalSemproMhs', page: () => const JadwalMhsPage() ),
         GetPage(name: '/detail_proposal', page: () => ProposalMhs() ),
         GetPage(name: '/riwayat_bimbingan', page: () => RiwayatBimbingan() ),

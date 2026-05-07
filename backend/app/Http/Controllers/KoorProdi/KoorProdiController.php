@@ -122,4 +122,40 @@ class KoorProdiController extends Controller
             'data' => $pengajuan->load(['mahasiswa.proposal', 'pembimbingUtama', 'pembimbingPendamping'])
         ]);
     }
+
+    public function rekap(Request $request)
+    {
+        $user = $request->user();
+        if (!$user->dosen) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $idProdi = $user->dosen->prodi()->first()?->id;
+
+        $query = \App\Models\Mahasiswa::with([
+            'prodi',
+            'tahunAjar',
+            'pengajuanPembimbing.pembimbingUtama',
+            'pengajuanPembimbing.pembimbingPendamping',
+            'jadwalSempro.pengujiUtama',
+            'jadwalSempro.pengujiPendamping',
+            'jadwalSidang.pengujiUtama',
+            'jadwalSidang.pengujiPendamping'
+        ]);
+
+        if ($idProdi) {
+            $query->where('id_prodi', $idProdi);
+        }
+
+        if ($request->has('search')) {
+            $search = $request->query('search');
+            $query->where(function($q) use ($search) {
+                $q->where('nama_mahasiswa', 'like', "%$search%")
+                  ->orWhere('nim', 'like', "%$search%");
+            });
+        }
+
+        $data = $query->get();
+        return response()->json(['data' => $data]);
+    }
 }

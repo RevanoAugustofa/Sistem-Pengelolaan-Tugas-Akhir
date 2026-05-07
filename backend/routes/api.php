@@ -113,6 +113,9 @@ Route::middleware('auth:sanctum', 'role:koorprodi')->group(function () {
     // Jadwal for KoorProdi
     Route::get('/koorprodi/jadwal', [JadwalController::class, 'index']);
     Route::post('/koorprodi/jadwal', [JadwalController::class, 'store']);
+
+    // Rekap for KoorProdi
+    Route::get('/koorprodi/rekap', [KoorProdiController::class, 'rekap']);
 });
 
 

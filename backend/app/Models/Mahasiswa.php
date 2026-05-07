@@ -42,4 +42,19 @@ class Mahasiswa extends Model
     {
         return $this->hasOne(Proposal::class, 'id_mahasiswa')->latestOfMany();
     }
+
+    public function pengajuanPembimbing()
+    {
+        return $this->hasOne(PengajuanPembimbing::class, 'id_mahasiswa');
+    }
+
+    public function jadwalSempro()
+    {
+        return $this->hasOne(JadwalSempro::class, 'id_mahasiswa');
+    }
+
+    public function jadwalSidang()
+    {
+        return $this->hasOne(JadwalSidangTA::class, 'id_mahasiswa');
+    }
 }

@@ -112,6 +112,8 @@ class _LogbookKoorPageState extends State<LogbookKoorPage> {
                             DataColumn(label: Text('No')),
                             DataColumn(label: Text('NIM')),
                             DataColumn(label: Text('Nama')),
+                            DataColumn(label: Text('Pembimbing utama')),
+                            DataColumn(label: Text('Pembimbing pendamping')),
                             DataColumn(label: Text('Prodi')),
                             DataColumn(label: Text('Aksi')),
                           ],
@@ -126,6 +128,8 @@ class _LogbookKoorPageState extends State<LogbookKoorPage> {
                               cells: [
                                 DataCell(Text("${startIndex + index + 1}")),
                                 DataCell(Text(mhs.npm ?? "-")),
+                                DataCell(Text(mhs.namaMahasiswa ?? "-")),
+                                DataCell(Text(mhs.namaMahasiswa ?? "-")),
                                 DataCell(Text(mhs.namaMahasiswa ?? "-")),
                                 DataCell(Text(mhs.prodi ?? "-")),
                                 DataCell(

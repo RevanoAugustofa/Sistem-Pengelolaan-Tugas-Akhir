@@ -39,6 +39,10 @@ class KoorProdiController extends GetxController {
   var listJadwalSidang = <JadwalModel>[].obs;
   var isLoadingJadwal = false.obs;
 
+  // Rekap states
+  var listRekap = <dynamic>[].obs;
+  var isLoadingRekap = false.obs;
+
   // Pagination states
   int currentPage = 1;
   int lastPage = 1;
@@ -509,6 +513,18 @@ class KoorProdiController extends GetxController {
       Get.snackbar("Error", e.toString());
     } finally {
       isLoading(false);
+    }
+  }
+
+  void fetchRekap() async {
+    try {
+      isLoadingRekap(true);
+      var data = await _service.getRekap();
+      listRekap.assignAll(data);
+    } catch (e) {
+      Get.snackbar("Error", "Gagal mengambil data rekap: $e");
+    } finally {
+      isLoadingRekap(false);
     }
   }
 }

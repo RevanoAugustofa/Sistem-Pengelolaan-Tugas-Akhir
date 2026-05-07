@@ -16,6 +16,12 @@ class _ProposalKoorPageState extends State<ProposalKoorPage> {
   int _currentPage = 0;
 
   @override
+  void initState() {
+    super.initState();
+    controller.fetchMahasiswa();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FB),
@@ -57,11 +63,14 @@ class _ProposalKoorPageState extends State<ProposalKoorPage> {
         
         var displayedList = listMahasiswa.isEmpty ? [] : listMahasiswa.sublist(startIndex, endIndex);
 
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        return RefreshIndicator(
+          onRefresh: () async => controller.fetchMahasiswa(),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
               // Search Bar
               Container(
                 height: 50,
@@ -97,7 +106,7 @@ class _ProposalKoorPageState extends State<ProposalKoorPage> {
                     const Padding(
                       padding: EdgeInsets.all(16),
                       child: Text(
-                        "Data Judul Proposal Mahasiswa",
+                        "Data Proposal",
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF1E3475)),
                       ),
                     ),
@@ -114,6 +123,7 @@ class _ProposalKoorPageState extends State<ProposalKoorPage> {
                             DataColumn(label: Text('NIM')),
                             DataColumn(label: Text('Nama')),
                             DataColumn(label: Text('Judul Proposal')),
+                            DataColumn(label: Text('File')),
                           ],
                           rows: displayedList.asMap().entries.map((entry) {
                             int index = entry.key;
@@ -131,10 +141,34 @@ class _ProposalKoorPageState extends State<ProposalKoorPage> {
                                   width: 250,
                                   child: Text(
                                     mhs.proposal?.judulProposal ?? "-",
-                                    maxLines: 2,
+                                    maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 )),
+                                DataCell(
+                                  mhs.proposal?.fileProposal != null
+                                      ? ElevatedButton.icon(
+                                          onPressed: () {
+                                            // Aksi unduh/lihat file bisa ditambahkan di sini
+                                            Get.snackbar(
+                                              "Info", 
+                                              "Fitur unduh file ${mhs.proposal!.fileProposal} akan segera hadir",
+                                              snackPosition: SnackPosition.BOTTOM
+                                            );
+                                          },
+                                          icon: const Icon(Icons.download, size: 16, color: Colors.white),
+                                          label: const Text("Unduh", style: TextStyle(fontSize: 12, color: Colors.white)),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.blue,
+                                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                                            minimumSize: const Size(80, 30),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(6),
+                                            ),
+                                          ),
+                                        )
+                                      : const Text("-", style: TextStyle(color: Colors.grey)),
+                                ),
                               ],
                             );
                           }).toList(),
@@ -173,8 +207,9 @@ class _ProposalKoorPageState extends State<ProposalKoorPage> {
               ),
             ],
           ),
-        );
-      }),
+        ),
+      );
+    }),
     );
   }
 }

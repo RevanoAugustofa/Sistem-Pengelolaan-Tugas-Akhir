@@ -377,4 +377,20 @@ class KoorProdiService {
     );
     return response.statusCode == 200;
   }
+
+  Future<List<dynamic>> getRekap() async {
+    final token = await _getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/koorprodi/rekap"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body)['data'];
+    }
+    throw Exception("Gagal mengambil data rekap");
+  }
 }

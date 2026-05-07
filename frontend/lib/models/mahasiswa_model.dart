@@ -51,13 +51,15 @@ class Mahasiswa {
 class Proposal {
   final int? id;
   final String? judulProposal;
+  final String? fileProposal;
 
-  Proposal({this.id, this.judulProposal});
+  Proposal({this.id, this.judulProposal, this.fileProposal});
 
   factory Proposal.fromJson(Map<String, dynamic> json) {
     return Proposal(
       id: json['id'],
       judulProposal: json['judul_proposal'],
+      fileProposal: json['file_proposal'],
     );
   }
 }

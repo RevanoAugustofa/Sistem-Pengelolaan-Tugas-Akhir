@@ -28,7 +28,7 @@ class MahasiswaController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $mahasiswa = Mahasiswa::with(['user', 'prodi', 'tahunAjar'])
+        $mahasiswa = Mahasiswa::with(['user', 'prodi', 'tahunAjar', 'proposal'])
             ->where('id_prodi', $idProdi)
             ->get();
         return response()->json(['data' => $mahasiswa]);
@@ -89,7 +89,7 @@ class MahasiswaController extends Controller
     public function show(Request $request, $id)
     {
         $idProdi = $this->getProdiId($request);
-        $mahasiswa = Mahasiswa::with(['user', 'prodi', 'tahunAjar'])
+        $mahasiswa = Mahasiswa::with(['user', 'prodi', 'tahunAjar', 'proposal'])
             ->where('id_prodi', $idProdi)
             ->find($id);
 
@@ -145,7 +145,7 @@ class MahasiswaController extends Controller
 
             return response()->json([
                 'message' => 'Data Mahasiswa berhasil diperbarui',
-                'data' => $mahasiswa->load(['user', 'prodi', 'tahunAjar'])
+                'data' => $mahasiswa->load(['user', 'prodi', 'tahunAjar', 'proposal'])
             ]);
 
         } catch (\Exception $e) {

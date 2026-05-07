@@ -69,8 +69,8 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
           onPressed: () => Get.back(),
         ),
         title: const Text(
-          "Validasi Pembimbing",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          "Pengajuan Pembimbing",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

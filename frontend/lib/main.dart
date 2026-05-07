@@ -26,7 +26,7 @@ import 'package:frontend/views/Admin/dashboard_Adm.dart';
 import 'package:frontend/views/Dosen/dashboard_Dsn.dart';
 import 'package:frontend/views/Dosen/detailProposal_Dsn.dart';
 import 'package:frontend/views/Dosen/detailTA_Dsn.dart';
-import 'package:frontend/views/Dosen/jadwal_Dsn.dart';
+import 'package:frontend/views/Dosen/Jadwal/jadwal_Dsn.dart';
 import 'package:frontend/views/Dosen/logbook_Dsn.dart';
 import 'package:frontend/views/Dosen/tugasAkhir_Dsn.dart';
 import 'package:frontend/views/KoorProdi/dashboard_KP.dart';

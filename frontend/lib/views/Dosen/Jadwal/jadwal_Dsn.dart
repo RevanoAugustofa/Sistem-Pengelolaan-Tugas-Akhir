@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'jadwal_proposal.dart';
+import 'jadwal_bimbingan.dart';
+import 'jadwal_sidang.dart';
 
 class JadwalDosenPage extends StatefulWidget {
   const JadwalDosenPage({super.key});
@@ -90,7 +93,7 @@ class _JadwalDosenPageState extends State<JadwalDosenPage> {
 
           // --- TABLE / LIST AREA ---
           Expanded(
-            child: buildTable(),
+            child: _buildTable(),
           ),
         ],
       ),
@@ -125,110 +128,14 @@ class _JadwalDosenPageState extends State<JadwalDosenPage> {
   }
 
   // --- SWITCH KONTEN ---
-  Widget buildTable() {
+  Widget _buildTable() {
     if (selectedTab == "Proposal") {
-      return buildProposalTable();
+      return JadwalProposalDosenTable(searchQuery: searchQuery);
     } else if (selectedTab == "Bimbingan") {
-      return buildBimbinganTable();
+      return JadwalBimbinganDosenTable(searchQuery: searchQuery);
     } else {
-      return buildSidangTable();
+      return JadwalSidangDosenTable(searchQuery: searchQuery);
     }
-  }
-
-  // =============================
-  // TABEL PROPOSAL
-  // =============================
-  Widget buildProposalTable() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        headingRowColor: WidgetStateProperty.all(const Color.fromARGB(255, 110, 110, 110)),
-        headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        columns: const [
-          DataColumn(label: Text('Nama')),
-          DataColumn(label: Text('NPM')),
-          DataColumn(label: Text('Jam & Tgl')),
-        ],
-        rows: List.generate(5, (index) {
-          return DataRow(
-            color: WidgetStateProperty.resolveWith<Color?>((states) {
-              if (index % 2 != 0) return Colors.grey.withOpacity(0.05);
-              return null;
-            }),
-            cells: [
-              const DataCell(Text("Mahasiswa Proposal")),
-              const DataCell(Text("230102071")),
-              const DataCell(Text("10:00, 12-03-2026")),
-            ],
-          );
-        }),
-      ),
-    );
-  }
-
-  // =============================
-  // TABEL BIMBINGAN
-  // =============================
-  Widget buildBimbinganTable() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        headingRowColor: WidgetStateProperty.all(const Color.fromARGB(255, 110, 110, 110)),
-        headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        columns: const [
-          DataColumn(label: Text('Nama')),
-          DataColumn(label: Text('NPM')),
-          DataColumn(label: Text('Jam & Tgl')),
-        ],
-        rows: List.generate(5, (index) {
-          return DataRow(
-            color: WidgetStateProperty.resolveWith<Color?>((states) {
-              if (index % 2 != 0) return Colors.grey.withOpacity(0.05);
-              return null;
-            }),
-            cells: [
-              const DataCell(Text("Mahasiswa Bimbingan")),
-              const DataCell(Text("230102071")),
-              const DataCell(Text("13:00, 13-03-2026")),
-            ],
-          );
-        }),
-      ),
-    );
-  }
-
-  // =============================
-  // TABEL SIDANG
-  // =============================
-  Widget buildSidangTable() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        headingRowColor: WidgetStateProperty.all(const Color.fromARGB(255, 110, 110, 110)),
-        headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        columns: const [
-          DataColumn(label: Text('Nama')),
-          DataColumn(label: Text('NPM')),
-          DataColumn(label: Text('Jam & Tgl')),
-        ],
-        rows: List.generate(5, (index) {
-          return DataRow(
-            color: WidgetStateProperty.resolveWith<Color?>((states) {
-              if (index % 2 != 0) return Colors.grey.withOpacity(0.05);
-              return null;
-            }),
-            cells: [
-              const DataCell(Text("Mahasiswa Sidang")),
-              const DataCell(Text("230102071")),
-              const DataCell(Text("09:00, 15-03-2026")),
-            ],
-          );
-        }),
-      ),
-    );
   }
 
   //  BOTTOM NAVIGATION BAR ==================================================
@@ -243,10 +150,8 @@ class _JadwalDosenPageState extends State<JadwalDosenPage> {
         if (index == 0) {
           Get.toNamed('/dashboardDsn');
         } else if (index == 1) {
-          // Navigasi ke Tugas Akhir
           Get.toNamed('/tugasAkhirDsn');
         } else if (index == 3) {
-          // Navigasi ke Profil
           Get.toNamed('/');
         }
       },

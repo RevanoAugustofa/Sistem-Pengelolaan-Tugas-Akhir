@@ -28,7 +28,7 @@ class _LogbookKoorPageState extends State<LogbookKoorPage> {
         ),
         title: const Text(
           "Logbook Mahasiswa",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

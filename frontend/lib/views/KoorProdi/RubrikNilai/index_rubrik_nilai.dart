@@ -39,7 +39,7 @@ class _IndexRubrikNilaiPageState extends State<IndexRubrikNilaiPage> {
         ),
         title: const Text(
           "Data Rubrik Nilai",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),
@@ -50,9 +50,9 @@ class _IndexRubrikNilaiPageState extends State<IndexRubrikNilaiPage> {
 
         var filteredRubrik = controller.listRubrikNilai.where((rubrik) {
           final query = searchQuery.toLowerCase();
-          return (rubrik?.kelompok?.toLowerCase().contains(query) ?? false) ||
-                 (rubrik?.kategori?.toLowerCase().contains(query) ?? false) ||
-                 (rubrik?.jenisDosen?.toLowerCase().contains(query) ?? false);
+          return (rubrik.kelompok?.toLowerCase().contains(query) ?? false) ||
+                 (rubrik.kategori?.toLowerCase().contains(query) ?? false) ||
+                 (rubrik.jenisDosen?.toLowerCase().contains(query) ?? false);
         }).toList();
         
         int startIndex = _currentPage * _rowsPerPage;
@@ -352,10 +352,3 @@ class _IndexRubrikNilaiPageState extends State<IndexRubrikNilaiPage> {
   }
 }
 
-extension on Object? {
-  get kelompok => null;
-  
-  get kategori => null;
-  
-  get jenisDosen => null;
-}

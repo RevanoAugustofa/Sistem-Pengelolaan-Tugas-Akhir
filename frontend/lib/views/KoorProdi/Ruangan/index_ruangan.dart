@@ -39,7 +39,7 @@ class _IndexRuanganPageState extends State<IndexRuanganPage> {
         ),
         title: const Text(
           "Data Ruangan",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),
@@ -50,8 +50,8 @@ class _IndexRuanganPageState extends State<IndexRuanganPage> {
 
         var filteredRuangan = controller.listRuangan.where((ruangan) {
           final query = searchQuery.toLowerCase();
-          return (ruangan?.namaRuangan?.toLowerCase().contains(query) ?? false) ||
-                 (ruangan?.gedung?.toLowerCase().contains(query) ?? false);
+          return (ruangan.namaRuangan?.toLowerCase().contains(query) ?? false) ||
+                 (ruangan.gedung?.toLowerCase().contains(query) ?? false);
         }).toList();
         
         int startIndex = _currentPage * _rowsPerPage;
@@ -345,10 +345,4 @@ class _IndexRuanganPageState extends State<IndexRuanganPage> {
       ),
     );
   }
-}
-
-extension on Object? {
-  get gedung => null;
-  
-  get namaRuangan => null;
 }

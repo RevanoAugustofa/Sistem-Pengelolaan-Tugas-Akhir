@@ -30,7 +30,7 @@ class _UserKpPageState extends State<UserKpPage> {
         ),
         title: const Text(
           "User",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

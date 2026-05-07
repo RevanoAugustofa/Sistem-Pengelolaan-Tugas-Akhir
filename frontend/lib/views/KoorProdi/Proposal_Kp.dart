@@ -33,8 +33,8 @@ class _ProposalKoorPageState extends State<ProposalKoorPage> {
           onPressed: () => Get.back(),
         ),
         title: const Text(
-          "Daftar Proposal",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          "Proposal Mahasiswa",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

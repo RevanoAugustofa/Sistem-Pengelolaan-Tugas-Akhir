@@ -36,7 +36,7 @@ import 'package:frontend/views/KoorProdi/Mahasiswa/index_mahasiswa.dart' as kp_m
 import 'package:frontend/views/KoorProdi/Dosen/index_dosen.dart' as kp_dsn;
 import 'package:frontend/views/KoorProdi/Ruangan/index_ruangan.dart' as kp_ruangan;
 import 'package:frontend/views/KoorProdi/RubrikNilai/index_rubrik_nilai.dart' as kp_rubrik;
-import 'package:frontend/views/Mahasiswa/Jadwal/jadwal_Sempro_Mhs.dart';
+import 'package:frontend/views/Mahasiswa/Jadwal/jadwal_mhs.dart';
 import 'package:frontend/views/Mahasiswa/daftar_dosenPembimbing_Mhs.dart';
 import 'package:frontend/views/Mahasiswa/kuota_pembimbing.dart';
 import 'package:frontend/views/Mahasiswa/pembimbing.dart';
@@ -110,7 +110,7 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/dashboardMhs', page: () => DashboardMhs() ),
         GetPage(name: '/proposalMhs', page: () => TaProposalMhs() ),
         GetPage(name: '/bimbinganMhs', page: () => TaBimbinganMhs() ),
-        GetPage(name: '/jadwalSemproMhs', page: () => JadwalSemproMhs() ),
+        GetPage(name: '/jadwalSemproMhs', page: () => const JadwalMhsPage() ),
         GetPage(name: '/detail_proposal', page: () => ProposalMhs() ),
         GetPage(name: '/riwayat_bimbingan', page: () => RiwayatBimbingan() ),
         GetPage(name: '/kuota_pembimbing', page: () => KuotaPembimbing() ),

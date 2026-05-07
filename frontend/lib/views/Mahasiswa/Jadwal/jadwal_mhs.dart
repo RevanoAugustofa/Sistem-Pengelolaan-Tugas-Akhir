@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'jadwal_sempro.dart';
+import 'jadwal_sidang.dart';
 
 class JadwalController extends GetxController {
   var selectedJadwalTab = 0.obs; // 0: Sempro, 1: Sidang TA
 }
 
-class JadwalSemproMhs extends StatelessWidget {
-  const JadwalSemproMhs({super.key});
+class JadwalMhsPage extends StatelessWidget {
+  const JadwalMhsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +17,7 @@ class JadwalSemproMhs extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        title: const Text("Jadwal Sempro", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text("Jadwal", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF283D70),
         centerTitle: true,
         leading: IconButton(
@@ -82,28 +84,26 @@ class JadwalSemproMhs extends StatelessWidget {
           
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Row(
+            child: const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Filter", style: TextStyle(fontWeight: FontWeight.bold)),
-                const Text("-All", style: TextStyle(fontWeight: FontWeight.bold)),
+                Text("Filter", style: TextStyle(fontWeight: FontWeight.bold)),
+                Text("-All", style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
           ),
 
-          // 3. List Jadwal
+          // 3. Content Area
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: 3, // Sesuai desain kamu
-              itemBuilder: (context, index) {
-                return _buildJadwalCard("Revano Augustofa", "Jum'at 20, Februari 2026", "08.30.00 - 09.45.00 WIB");
-              },
-            ),
+            child: Obx(() {
+              return controller.selectedJadwalTab.value == 0
+                  ? const JadwalSemproList()
+                  : const JadwalSidangList();
+            }),
           ),
         ],
       ),
-      bottomNavigationBar: _buildBottomNav(), // Index 2 untuk Jadwal
+      bottomNavigationBar: _buildBottomNav(),
     );
   }
 
@@ -131,35 +131,6 @@ class JadwalSemproMhs extends StatelessWidget {
     );
   }
 
-  Widget _buildJadwalCard(String nama, String tanggal, String jam) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            nama,
-            style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF283D70), fontSize: 15),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const Icon(Icons.more_horiz, color: Colors.grey, size: 20),
-              Text(tanggal, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
-              Text(jam, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
 //  BOTTOM NAVIGATION BAR ==================================================
     Widget _buildBottomNav() {
     return BottomNavigationBar(
@@ -169,7 +140,6 @@ class JadwalSemproMhs extends StatelessWidget {
       backgroundColor: Colors.white,
       currentIndex: 2,
       onTap: (index) {
-        // Logika pindah halaman berdasarkan index menu
         if (index == 0) {
           Get.toNamed('/dashboardMhs'); 
         } else if (index == 1) {

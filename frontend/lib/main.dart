@@ -28,7 +28,7 @@ import 'package:frontend/views/Dosen/detailProposal_Dsn.dart';
 import 'package:frontend/views/Dosen/detailTA_Dsn.dart';
 import 'package:frontend/views/Dosen/Jadwal/jadwal_Dsn.dart';
 import 'package:frontend/views/Dosen/logbook_Dsn.dart';
-import 'package:frontend/views/Dosen/tugasAkhir_Dsn.dart';
+import 'package:frontend/views/Dosen/TugasAkhir/tugasAkhir_Dsn.dart';
 import 'package:frontend/views/KoorProdi/dashboard_KP.dart';
 import 'package:frontend/views/KoorProdi/User_Kp.dart';
 import 'package:frontend/views/KoorProdi/ValidasiPembimbing/pengajuanPembimbing.dart';

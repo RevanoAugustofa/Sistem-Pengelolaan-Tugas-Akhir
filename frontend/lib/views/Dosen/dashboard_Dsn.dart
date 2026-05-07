@@ -294,6 +294,7 @@ class DashboardDsn extends StatelessWidget {
       type: BottomNavigationBarType.fixed,
       selectedItemColor: const Color(0xFF283D70),
       unselectedItemColor: Colors.grey,
+      backgroundColor: Colors.white,
       currentIndex: 0,
       onTap: (index) {
         if (index == 1) {

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'jadwal_proposal.dart';
-import 'jadwal_bimbingan.dart';
-import 'jadwal_sidang.dart';
+import 'tugas_akhir_proposal.dart';
+import 'tugas_akhir_bimbingan.dart';
+import 'tugas_akhir_sidang.dart';
 
-class JadwalDosenPage extends StatefulWidget {
-  const JadwalDosenPage({super.key});
+class TugasAkhirDosenPage extends StatefulWidget {
+  const TugasAkhirDosenPage({super.key});
 
   @override
-  State<JadwalDosenPage> createState() => _JadwalDosenPageState();
+  State<TugasAkhirDosenPage> createState() => _TugasAkhirDosenPageState();
 }
 
-class _JadwalDosenPageState extends State<JadwalDosenPage> {
+class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
   final TextEditingController searchController = TextEditingController();
   String selectedTab = "Proposal";
   String searchQuery = "";
@@ -28,7 +28,7 @@ class _JadwalDosenPageState extends State<JadwalDosenPage> {
           onPressed: () => Get.back(),
         ),
         title: const Text(
-          "Jadwal",
+          "Tugas Akhir",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -80,20 +80,20 @@ class _JadwalDosenPageState extends State<JadwalDosenPage> {
             ),
           ),
 
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 15, 20, 10),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(20, 15, 20, 10),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Jadwal - $selectedTab TA",
-                style: const TextStyle(color: Colors.grey, fontSize: 13),
+                "Filter - All",
+                style: TextStyle(color: Colors.grey, fontSize: 13),
               ),
             ),
           ),
 
           // --- TABLE / LIST AREA ---
           Expanded(
-            child: _buildTable(),
+            child: _buildContent(),
           ),
         ],
       ),
@@ -128,33 +128,34 @@ class _JadwalDosenPageState extends State<JadwalDosenPage> {
   }
 
   // --- SWITCH KONTEN ---
-  Widget _buildTable() {
+  Widget _buildContent() {
     if (selectedTab == "Proposal") {
-      return JadwalProposalDosenTable(searchQuery: searchQuery);
+      return TugasAkhirProposalTable(searchQuery: searchQuery);
     } else if (selectedTab == "Bimbingan") {
-      return JadwalBimbinganDosenTable(searchQuery: searchQuery);
+      return TugasAkhirBimbinganTable(searchQuery: searchQuery);
     } else {
-      return JadwalSidangDosenTable(searchQuery: searchQuery);
+      return TugasAkhirSidangTable(searchQuery: searchQuery);
     }
   }
 
   //  BOTTOM NAVIGATION BAR ==================================================
-  Widget _buildBottomNav() {
+    Widget _buildBottomNav() {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       selectedItemColor: const Color(0xFF283D70),
       unselectedItemColor: Colors.grey,
       backgroundColor: Colors.white,
-      currentIndex: 2,
+      currentIndex: 1,
       onTap: (index) {
         if (index == 0) {
-          Get.toNamed('/dashboardDsn');
-        } else if (index == 1) {
-          Get.toNamed('/tugasAkhirDsn');
+          Get.toNamed('/dashboardDsn'); 
+        } else if (index == 2) {
+          Get.toNamed('/jadwalDsn');
         } else if (index == 3) {
           Get.toNamed('/profil', arguments: {'activeRole': 'dosen'});
         }
       },
+      
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Beranda"),
         BottomNavigationBarItem(icon: Icon(Icons.assignment_outlined), label: "Tugas Akhir"),

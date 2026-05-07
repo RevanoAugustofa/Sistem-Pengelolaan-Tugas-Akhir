@@ -4,10 +4,6 @@ import 'tugas_akhir_proposal.dart';
 import 'tugas_akhir_bimbingan.dart';
 import 'tugas_akhir_sidang.dart';
 
-class TugasAkhirMhsController extends GetxController {
-  var selectedTab = 0.obs; // 0: Proposal, 1: Bimbingan, 2: Sidang
-}
-
 class TugasAkhirMhsPage extends StatefulWidget {
   const TugasAkhirMhsPage({super.key});
 
@@ -16,15 +12,20 @@ class TugasAkhirMhsPage extends StatefulWidget {
 }
 
 class _TugasAkhirMhsPageState extends State<TugasAkhirMhsPage> {
-  late TugasAkhirMhsController controller;
+  String selectedTab = "Proposal";
 
   @override
   void initState() {
     super.initState();
-    // Inisialisasi controller dan set tab awal dari arguments jika ada
-    controller = Get.put(TugasAkhirMhsController());
-    if (Get.arguments != null && Get.arguments is int) {
-      controller.selectedTab.value = Get.arguments;
+    // Set tab awal dari arguments jika ada
+    if (Get.arguments != null) {
+      if (Get.arguments is String) {
+        selectedTab = Get.arguments;
+      } else if (Get.arguments is int) {
+        // Fallback jika masih ada yang mengirim int
+        if (Get.arguments == 1) selectedTab = "Bimbingan";
+        if (Get.arguments == 2) selectedTab = "Sidang";
+      }
     }
   }
 
@@ -33,7 +34,8 @@ class _TugasAkhirMhsPageState extends State<TugasAkhirMhsPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        title: const Text("Tugas Akhir", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text("Tugas Akhir",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF283D70),
         centerTitle: true,
         elevation: 0,
@@ -51,27 +53,16 @@ class _TugasAkhirMhsPageState extends State<TugasAkhirMhsPage> {
             ),
             child: Row(
               children: [
-                _buildTabItem("Proposal", 0),
-                _buildTabItem("Bimbingan", 1),
-                _buildTabItem("Sidang", 2),
+                _buildTabItem("Proposal"),
+                _buildTabItem("Bimbingan"),
+                _buildTabItem("Sidang"),
               ],
             ),
           ),
 
           // 2. Dynamic Content
           Expanded(
-            child: Obx(() {
-              switch (controller.selectedTab.value) {
-                case 0:
-                  return const TugasAkhirProposalMhsView();
-                case 1:
-                  return const TugasAkhirBimbinganMhsView();
-                case 2:
-                  return const TugasAkhirSidangMhsView();
-                default:
-                  return const SizedBox();
-              }
-            }),
+            child: buildContent(),
           ),
         ],
       ),
@@ -79,30 +70,45 @@ class _TugasAkhirMhsPageState extends State<TugasAkhirMhsPage> {
     );
   }
 
-  Widget _buildTabItem(String title, int index) {
+  Widget _buildTabItem(String title) {
+    bool isActive = selectedTab == title;
     return Expanded(
       child: GestureDetector(
-        onTap: () => controller.selectedTab.value = index,
-        child: Obx(() {
-          bool isActive = controller.selectedTab.value == index;
-          return Container(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            decoration: BoxDecoration(
-              color: isActive ? const Color(0xFF283D70) : Colors.transparent,
-              borderRadius: BorderRadius.circular(25),
+        onTap: () {
+          setState(() {
+            selectedTab = title;
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isActive ? const Color(0xFF283D70) : Colors.transparent,
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
             ),
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-          );
-        }),
+          ),
+        ),
       ),
     );
+  }
+
+  Widget buildContent() {
+    switch (selectedTab) {
+      case "Proposal":
+        return const TugasAkhirProposalMhsView();
+      case "Bimbingan":
+        return const TugasAkhirBimbinganMhsView();
+      case "Sidang":
+        return const TugasAkhirSidangMhsView();
+      default:
+        return const SizedBox();
+    }
   }
 
   Widget _buildBottomNav() {
@@ -112,18 +118,22 @@ class _TugasAkhirMhsPageState extends State<TugasAkhirMhsPage> {
       selectedItemColor: const Color(0xFF283D70),
       onTap: (index) {
         if (index == 0) {
-          Get.toNamed('/dashboardMhs'); 
+          Get.offNamed('/dashboardMhs');
         } else if (index == 2) {
-          Get.toNamed('/jadwalSemproMhs');
+          Get.offNamed('/jadwalSemproMhs');
         } else if (index == 3) {
-          Get.toNamed('/profil');
+          Get.offNamed('/profil');
         }
       },
       items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Beranda"),
-        BottomNavigationBarItem(icon: Icon(Icons.assignment_outlined), label: "Tugas Akhir"),
-        BottomNavigationBarItem(icon: Icon(Icons.calendar_today_outlined), label: "Jadwal"),
-        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: "Profil"),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined), label: "Beranda"),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.assignment_outlined), label: "Tugas Akhir"),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today_outlined), label: "Jadwal"),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline), label: "Profil"),
       ],
     );
   }

@@ -17,7 +17,10 @@ class MhsController extends Controller
         $pengajuan = null;
         
         if ($user->mahasiswa) {
-            $pengajuan = PengajuanPembimbing::where('id_mahasiswa', $user->mahasiswa->id)->first();
+            $pengajuan = PengajuanPembimbing::with([
+                'pembimbingUtama.user',
+                'pembimbingPendamping.user'
+            ])->where('id_mahasiswa', $user->mahasiswa->id)->first();
         }
 
         return response()->json([

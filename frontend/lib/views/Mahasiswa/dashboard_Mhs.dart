@@ -92,37 +92,55 @@ class DashboardMhs extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // 2. Baris Dosen & Tahap
-                  Row(
-                    children: [
-                      Expanded(child: Obx(() => _buildDosenCard())),
-                      // const SizedBox(width: 12),
-                      // Expanded(child: _buildTahapCard()),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
+                  Obx(() {
+                    if (mhsController.isLoadingDashboard.value) {
+                      return const SizedBox(
+                        height: 110,
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
+                    bool isApproved = mhsController.pengajuanStatus.value == "disetujui";
+                    
+                    if (!isApproved) {
+                      return Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(child: _buildDosenCard()),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                      );
+                    } else {
+                      return Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildPembimbingCard(
+                                  title: "Pembimbing utama",
+                                  nama: mhsController.pembimbingUtama.value,
+                                  nip: "NIP. ${mhsController.nipUtama.value}",
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: _buildPembimbingCard(
+                                  title: "Pembimbing pendamping",
+                                  nama: mhsController.pembimbingPendamping.value,
+                                  nip: "NIP. ${mhsController.nipPendamping.value}",
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                      );
+                    }
+                  }),
                   const SizedBox(height: 14),
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildPembimbingCard(
-                          title: "Pembimbing utama",
-                          nama: "nama pembimbing .Amd",
-                          nip: "nip. 029092012902901",
-                        ),
-                      ),
-
-                      const SizedBox(width: 8),
-
-                      Expanded(
-                        child: _buildPembimbingCard(
-                          title: "Pembimbing pendamping",
-                          nama: "nama pembimbing .Amd",
-                          nip: "nip. 029092012902901",
-                        ),
-                      ),
-                    ],
-                  ),
                   // 3. Ringkasan Progres Section
                   const Text(
                     "Ringkasan Progres",

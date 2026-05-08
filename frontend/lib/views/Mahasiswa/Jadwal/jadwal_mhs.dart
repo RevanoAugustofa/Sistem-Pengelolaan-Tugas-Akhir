@@ -23,12 +23,9 @@ class _JadwalMhsPageState extends State<JadwalMhsPage> {
       appBar: AppBar(
         title: const Text("Jadwal",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF283D70),
+        backgroundColor: const Color.fromARGB(255, 0, 149, 255),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.white, size: 30),
-          onPressed: () => Get.back(),
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
@@ -38,7 +35,7 @@ class _JadwalMhsPageState extends State<JadwalMhsPage> {
             margin: const EdgeInsets.symmetric(horizontal: 20),
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: const Color(0xFF8E99BA).withOpacity(0.5),
+              color: const Color.fromARGB(255, 0, 149, 255),
               borderRadius: BorderRadius.circular(30),
             ),
             child: Row(
@@ -112,7 +109,7 @@ class _JadwalMhsPageState extends State<JadwalMhsPage> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isActive ? const Color(0xFF283D70) : Colors.transparent,
+            color: isActive ?  Color.fromARGB(74, 0, 0, 0): Colors.transparent,
             borderRadius: BorderRadius.circular(25),
           ),
           child: Text(

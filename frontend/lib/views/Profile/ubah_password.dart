@@ -47,16 +47,8 @@ class _UbahPasswordPageState extends State<UbahPasswordPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Placeholder Gambar Besar di Atas
-            Center(
-              child: Image.asset(
-                'assets/img/ubah_password.png',
-                width: 160,
-                height: 160,
-              ),
-            ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
 
             const Text(
               "Perbarui Kata Sandi",

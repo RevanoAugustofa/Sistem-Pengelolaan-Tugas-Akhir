@@ -32,13 +32,14 @@ class _TugasAkhirMhsPageState extends State<TugasAkhirMhsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         title: const Text("Tugas Akhir",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF283D70),
+        backgroundColor: Color.fromARGB(255, 0, 149, 255),
         centerTitle: true,
         elevation: 0,
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
@@ -48,7 +49,7 @@ class _TugasAkhirMhsPageState extends State<TugasAkhirMhsPage> {
             margin: const EdgeInsets.symmetric(horizontal: 20),
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: const Color(0xFF8E99BA),
+              color: const Color.fromARGB(255, 0, 149, 255),
               borderRadius: BorderRadius.circular(30),
             ),
             child: Row(
@@ -82,7 +83,7 @@ class _TugasAkhirMhsPageState extends State<TugasAkhirMhsPage> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isActive ? const Color(0xFF283D70) : Colors.transparent,
+            color: isActive ? Color.fromARGB(74, 0, 0, 0): Colors.transparent,
             borderRadius: BorderRadius.circular(25),
           ),
           child: Text(
@@ -116,6 +117,7 @@ class _TugasAkhirMhsPageState extends State<TugasAkhirMhsPage> {
       type: BottomNavigationBarType.fixed,
       currentIndex: 1,
       selectedItemColor: const Color(0xFF283D70),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       onTap: (index) {
         if (index == 0) {
           Get.offNamed('/dashboardMhs');

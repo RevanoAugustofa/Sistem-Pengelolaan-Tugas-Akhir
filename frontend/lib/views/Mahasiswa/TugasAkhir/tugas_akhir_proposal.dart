@@ -10,21 +10,23 @@ class TugasAkhirProposalMhsView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Proposal Tugas Akhir", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text("Proposal Tugas Akhir", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const Text("Kelola dokumen proposal, lihat catatan revisi dan status persetujuan", style: TextStyle(color: Colors.grey, fontSize: 13)),
           const SizedBox(height: 16),
           _buildStatusCard(),
           const SizedBox(height: 12),
           Align(alignment: Alignment.centerRight, child: _buildBlueButton("Unggah")),
           const SizedBox(height: 24),
-          const Text("Catatan Revisi Seminar Proposal", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 16),
+          const Text("Catatan Revisi Sempro", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          const Text("12 januari 2026", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 14),
           _buildRevisionItem("Bab 1, Rumusan Masalah dipertegas.", "Arfilal Faiznadi, Amd."),
           _buildRevisionItem("Bab 2, Rumusan Masalah dipertegas.", "Arfilal Faiznadi, Amd."),
           const SizedBox(height: 12),
           Align(alignment: Alignment.centerRight, child: _buildBlueButton("Unggah")),
           const SizedBox(height: 24),
-          const Text("Berita Acara", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text("Berita Acara", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const Center(child: Text("Berita Acara Seminar Proposal - 15 Desember 2025", style: TextStyle(fontSize: 12))),
           const SizedBox(height: 12),
           _buildBeritaAcaraPreview(),
@@ -42,8 +44,6 @@ class TugasAkhirProposalMhsView extends StatelessWidget {
       child: const Column(
         children: [
           _StatusRow("Unggah Proposal", "Belum"),
-          Divider(),
-          _StatusRow("Tinjau Dosen", "Menunggu"),
         ],
       ),
     );

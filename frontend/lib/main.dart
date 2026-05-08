@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:frontend/views/Admin/DataDosen/index_dosen.dart';
 import 'package:frontend/views/Admin/DataMahasiswa/index_mahasiswa.dart';
 import 'package:frontend/views/Admin/DataProdi/index_prodi.dart';
@@ -56,7 +57,13 @@ import 'package:get/get.dart';
 
 
 void main() {
-  runApp(const MainApp());
+  // runApp(const MainApp());
+  runApp(
+  DevicePreview(
+    enabled: true,
+    builder: (context) => const MainApp(),
+  ),
+);
 }
 
 class MainApp extends StatelessWidget {
@@ -65,6 +72,9 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  GetMaterialApp(
+      useInheritedMediaQuery: true,
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
       title: "sistem Informasi Pengelolaan Tugas Akhir",
       theme: ThemeData(
         textTheme: GoogleFonts.poppinsTextTheme(

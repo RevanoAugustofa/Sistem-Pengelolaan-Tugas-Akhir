@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/constants.dart';
 import '../models/dosen_model.dart';
+import '../models/jadwal_model.dart';
 
 class MhsService {
   Future<Map<String, dynamic>> getDashboardData() async {
@@ -41,6 +42,46 @@ class MhsService {
       return data.map((item) => Dosen.fromJson(item)).toList();
     } else {
       throw Exception('Gagal memuat data dosen');
+    }
+  }
+
+  Future<List<JadwalModel>> getJadwalSempro() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.get(
+      Uri.parse('${AppConstants.baseUrl}/mahasiswa/jadwal-sempro'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = jsonDecode(response.body)['data'];
+      return data.map((item) => JadwalModel.fromJson(item)).toList();
+    } else {
+      throw Exception('Gagal memuat data jadwal sempro');
+    }
+  }
+
+  Future<List<JadwalModel>> getJadwalSidang() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.get(
+      Uri.parse('${AppConstants.baseUrl}/mahasiswa/jadwal-sidang'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = jsonDecode(response.body)['data'];
+      return data.map((item) => JadwalModel.fromJson(item)).toList();
+    } else {
+      throw Exception('Gagal memuat data jadwal sidang');
     }
   }
 

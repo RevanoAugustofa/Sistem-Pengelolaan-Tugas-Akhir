@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/dosen_model.dart';
+import '../models/jadwal_model.dart';
 import '../services/mhs_service.dart';
 
 class MhsController extends GetxController {
@@ -10,6 +11,10 @@ class MhsController extends GetxController {
   var listDosen = <Dosen>[].obs;
   var isLoadingAction = false.obs;
   var isLoadingDashboard = false.obs;
+  var isLoadingJadwalSempro = false.obs;
+  var listJadwalSempro = <JadwalModel>[].obs;
+  var isLoadingJadwalSidang = false.obs;
+  var listJadwalSidang = <JadwalModel>[].obs;
   var pengajuanStatus = "".obs;
   var pembimbingUtama = "".obs;
   var nipUtama = "".obs;
@@ -21,6 +26,32 @@ class MhsController extends GetxController {
     super.onInit();
     fetchDosen();
     fetchDashboardData();
+    fetchJadwalSempro();
+    fetchJadwalSidang();
+  }
+
+  void fetchJadwalSempro() async {
+    try {
+      isLoadingJadwalSempro(true);
+      var data = await _service.getJadwalSempro();
+      listJadwalSempro.assignAll(data);
+    } catch (e) {
+      print(e);
+    } finally {
+      isLoadingJadwalSempro(false);
+    }
+  }
+
+  void fetchJadwalSidang() async {
+    try {
+      isLoadingJadwalSidang(true);
+      var data = await _service.getJadwalSidang();
+      listJadwalSidang.assignAll(data);
+    } catch (e) {
+      print(e);
+    } finally {
+      isLoadingJadwalSidang(false);
+    }
   }
 
   void fetchDashboardData() async {

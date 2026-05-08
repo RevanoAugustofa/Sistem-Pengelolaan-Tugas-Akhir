@@ -126,4 +126,6 @@ Route::middleware('auth:sanctum', 'role:mahasiswa')->group(function () {
     Route::get('/mahasiswa/dashboard', [MhsController::class, 'index']);
     Route::get('/mahasiswa/dosen', [MhsController::class, 'dosenList']);
     Route::post('/mahasiswa/daftar-pembimbing', [MhsController::class, 'storeDaftarPembimbing']);
+    Route::get('/mahasiswa/jadwal-sempro', [MhsController::class, 'jadwalSempro']);
+    Route::get('/mahasiswa/jadwal-sidang', [MhsController::class, 'jadwalSidang']);
 });

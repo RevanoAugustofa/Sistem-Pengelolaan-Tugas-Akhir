@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Dosen;
 use App\Models\PengajuanPembimbing;
 use App\Models\Proposal;
+use App\Models\JadwalSempro;
+use App\Models\JadwalSidangTA;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -28,6 +30,18 @@ class MhsController extends Controller
             'role' => 'mahasiswa',
             'pengajuan' => $pengajuan,
         ]);
+    }
+
+    public function jadwalSempro()
+    {
+        $data = JadwalSempro::with(['mahasiswa', 'ruangan'])->get();
+        return response()->json(['data' => $data]);
+    }
+
+    public function jadwalSidang()
+    {
+        $data = JadwalSidangTA::with(['mahasiswa', 'ruangan'])->get();
+        return response()->json(['data' => $data]);
     }
 
     public function dosenList(Request $request)

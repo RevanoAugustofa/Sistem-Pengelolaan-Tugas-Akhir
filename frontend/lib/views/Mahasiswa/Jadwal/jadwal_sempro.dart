@@ -1,17 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../../controllers/mhs_controller.dart';
 
 class JadwalSemproList extends StatelessWidget {
-  const JadwalSemproList({super.key});
+  final String searchQuery;
+  const JadwalSemproList({super.key, this.searchQuery = ""});
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      itemCount: 3, 
-      itemBuilder: (context, index) {
-        return _buildJadwalCard("Revano Augustofa", "Jum'at 20, Februari 2026", "08.30.00 - 09.45.00 WIB");
-      },
-    );
+    final MhsController controller = Get.find<MhsController>();
+
+    return Obx(() {
+      if (controller.isLoadingJadwalSempro.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      var filteredList = controller.listJadwalSempro.where((jadwal) {
+        return (jadwal.mahasiswa?.namaMahasiswa ?? "")
+            .toLowerCase()
+            .contains(searchQuery.toLowerCase());
+      }).toList();
+
+      if (filteredList.isEmpty) {
+        return const Center(child: Text("Belum ada jadwal sempro"));
+      }
+
+      return ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: filteredList.length,
+        itemBuilder: (context, index) {
+          final jadwal = filteredList[index];
+          String nama = jadwal.mahasiswa?.namaMahasiswa ?? "Tidak ada nama";
+          String tanggal = jadwal.tanggal ?? "-";
+          String jam = "${jadwal.waktuMulai ?? ''} - ${jadwal.waktuSelesai ?? ''} WIB";
+          
+          return _buildJadwalCard(nama, tanggal, jam);
+        },
+      );
+    });
   }
 
   Widget _buildJadwalCard(String nama, String tanggal, String jam) {

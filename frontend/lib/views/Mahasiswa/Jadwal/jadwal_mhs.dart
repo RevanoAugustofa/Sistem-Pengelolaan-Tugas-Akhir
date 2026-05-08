@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../controllers/mhs_controller.dart';
 import 'jadwal_sempro.dart';
 import 'jadwal_sidang.dart';
 
@@ -11,6 +12,7 @@ class JadwalMhsPage extends StatefulWidget {
 }
 
 class _JadwalMhsPageState extends State<JadwalMhsPage> {
+  final MhsController controller = Get.put(MhsController());
   final TextEditingController searchController = TextEditingController();
   // int selectedTab = 0; // 0: Sempro, 1: Sidang TA
   String searchQuery = "";
@@ -127,9 +129,9 @@ class _JadwalMhsPageState extends State<JadwalMhsPage> {
 
   Widget buildContent() {
     if (selectedTab == "Sempro") {
-      return const JadwalSemproList();
+      return JadwalSemproList(searchQuery: searchQuery);
     } else {
-      return const JadwalSidangList();
+      return JadwalSidangList(searchQuery: searchQuery);
     }
   }
 

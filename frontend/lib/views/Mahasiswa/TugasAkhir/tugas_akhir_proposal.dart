@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../Modals/form_proposal_modal.dart';
 
 class TugasAkhirProposalMhsView extends StatelessWidget {
   const TugasAkhirProposalMhsView({super.key});
+
+  void _showUploadModal() {
+    Get.bottomSheet(
+      const FormProposalModal(),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,12 +20,16 @@ class TugasAkhirProposalMhsView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(height: 10),
           const Text("Proposal Tugas Akhir", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const Text("Kelola dokumen proposal, lihat catatan revisi dan status persetujuan", style: TextStyle(color: Colors.grey, fontSize: 13)),
           const SizedBox(height: 16),
           _buildStatusCard(),
           const SizedBox(height: 12),
-          Align(alignment: Alignment.centerRight, child: _buildBlueButton("Unggah")),
+          Align(
+            alignment: Alignment.centerRight,
+            child: _buildBlueButton("Unggah", onPressed: _showUploadModal),
+          ),
           const SizedBox(height: 24),
           const Text("Catatan Revisi Sempro", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
@@ -24,7 +38,10 @@ class TugasAkhirProposalMhsView extends StatelessWidget {
           _buildRevisionItem("Bab 1, Rumusan Masalah dipertegas.", "Arfilal Faiznadi, Amd."),
           _buildRevisionItem("Bab 2, Rumusan Masalah dipertegas.", "Arfilal Faiznadi, Amd."),
           const SizedBox(height: 12),
-          Align(alignment: Alignment.centerRight, child: _buildBlueButton("Unggah")),
+          Align(
+            alignment: Alignment.centerRight,
+            child: _buildBlueButton("Unggah", onPressed: _showUploadModal),
+          ),
           const SizedBox(height: 24),
           const Text("Berita Acara", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const Center(child: Text("Berita Acara Seminar Proposal - 15 Desember 2025", style: TextStyle(fontSize: 12))),
@@ -58,7 +75,15 @@ class TugasAkhirProposalMhsView extends StatelessWidget {
     );
   }
 
-  Widget _buildBlueButton(String text) => ElevatedButton(onPressed: () {}, style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF4A89FF), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)), padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12)), child: Text(text, style: const TextStyle(color: Colors.white)));
+  Widget _buildBlueButton(String text, {VoidCallback? onPressed}) => ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF4A89FF),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+        ),
+        child: Text(text, style: const TextStyle(color: Colors.white)),
+      );
   Widget _buildOutlineButton(String text) => SizedBox(width: double.infinity, child: OutlinedButton(onPressed: () {}, child: Text(text, style: const TextStyle(color: Colors.black54))));
   Widget _buildRevisionItem(String t, String d) => ListTile(title: Text(t, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)), subtitle: Text("Dosen: $d", style: const TextStyle(fontSize: 11)), trailing: const Text("Belum", style: TextStyle(color: Colors.red, fontSize: 10)));
 }

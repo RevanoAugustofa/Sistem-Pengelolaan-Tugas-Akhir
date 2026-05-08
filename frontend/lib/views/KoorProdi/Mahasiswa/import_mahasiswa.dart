@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart' hide Border;
-import '../../../controllers/admin_controller.dart';
+import '../../../controllers/koorprodi_controller.dart';
 
 class ImportDataMahasiswaPage extends StatefulWidget {
   const ImportDataMahasiswaPage({super.key});
@@ -13,11 +13,11 @@ class ImportDataMahasiswaPage extends StatefulWidget {
 }
 
 class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
-  final AdminController controller = Get.find<AdminController>();
+  final KoorProdiController controller = Get.put(KoorProdiController());
   String? _fileName;
   List<Map<String, dynamic>> _previewData = [];
   bool _isLoading = false;
-  bool _hasDuplicate = false;
+  bool _hasError = false;
 
   // Fungsi untuk mengunduh template
   Future<void> _downloadTemplate() async {
@@ -32,8 +32,8 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: 0)).value = TextCellValue("Tgl Lahir (YYYY-MM-DD)");
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: 0)).value = TextCellValue("Jenis Kelamin (L/P)");
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: 0)).value = TextCellValue("Alamat");
-    sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: 0)).value = TextCellValue("ID Prodi");
-    sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: 0)).value = TextCellValue("ID Tahun Ajar");
+    sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: 0)).value = TextCellValue("Program Studi");
+    sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: 0)).value = TextCellValue("Tahun Ajar");
 
     // Contoh Data
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: 1)).value = TextCellValue("Contoh Mahasiswa");
@@ -43,8 +43,8 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: 1)).value = TextCellValue("2000-01-01");
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: 1)).value = TextCellValue("L");
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: 1)).value = TextCellValue("Jl. Contoh No. 123");
-    sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: 1)).value = TextCellValue("1");
-    sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: 1)).value = TextCellValue("1");
+    sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: 1)).value = TextCellValue("TI");
+    sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: 1)).value = TextCellValue("2025/2026");
 
     var fileBytes = excel.save();
     
@@ -74,7 +74,7 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
         setState(() {
           _fileName = file.name;
           _previewData = [];
-          _hasDuplicate = false;
+          _hasError = false;
         });
         if (file.bytes != null) _processExcel(file.bytes!);
       }
@@ -104,13 +104,41 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
           String tglLahir = (row.length > 4) ? row[4]?.value?.toString() ?? "" : "";
           String jk = (row.length > 5) ? row[5]?.value?.toString() ?? "" : "";
           String alamat = (row.length > 6) ? row[6]?.value?.toString() ?? "" : "";
-          int? idProdi = (row.length > 7) ? int.tryParse(row[7]?.value?.toString() ?? "") : null;
-          int? idTahunAjar = (row.length > 8) ? int.tryParse(row[8]?.value?.toString() ?? "") : null;
+          String prodiStr = (row.length > 7) ? row[7]?.value?.toString() ?? "" : "";
+          String tahunStr = (row.length > 8) ? row[8]?.value?.toString() ?? "" : "";
 
           if (nama.trim().isEmpty || nim.trim().isEmpty) continue;
 
-          bool isDuplicateInFile = tempItems.any((item) => item['nim'] == nim);
+          // Mapping Prodi String to ID
+          int? idProdi;
+          if (prodiStr.isNotEmpty) {
+            var prodi = controller.listProdi.firstWhereOrNull(
+              (p) => p.namaProdi?.toLowerCase() == prodiStr.toLowerCase() || 
+                     p.kodeProdi?.toLowerCase() == prodiStr.toLowerCase()
+            );
+            idProdi = prodi?.id;
+          }
+
+          // Mapping Tahun Ajar String to ID
+          int? idTahunAjar;
+          if (tahunStr.isNotEmpty) {
+            var tahun = controller.listTahunAjar.firstWhereOrNull(
+              (t) => t.tahunAjar?.contains(tahunStr) ?? false
+            );
+            idTahunAjar = tahun?.id;
+          }
+
           bool isDuplicateInDB = controller.listMahasiswa.any((mhs) => mhs.npm == nim);
+          bool isDuplicateInFile = tempItems.any((item) => item['nim'] == nim);
+          
+          String? errorMsg;
+          if (isDuplicateInDB) errorMsg = "NIM sudah terdaftar";
+          else if (isDuplicateInFile) errorMsg = "Duplikat di file";
+          else if (idProdi == null && prodiStr.isNotEmpty) errorMsg = "Prodi tidak ditemukan";
+          else if (idTahunAjar == null && tahunStr.isNotEmpty) errorMsg = "Tahun Ajar tidak ditemukan";
+          else if (tglLahir.isEmpty) errorMsg = "Tgl Lahir kosong";
+          else if (jk.isEmpty) errorMsg = "Jenis Kelamin kosong";
+          else if (alamat.isEmpty) errorMsg = "Alamat kosong";
 
           tempItems.add({
             'nama_mahasiswa': nama,
@@ -122,10 +150,12 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
             'alamat': alamat,
             'id_prodi': idProdi,
             'id_tahun_ajar': idTahunAjar,
-            'is_duplicate': isDuplicateInFile || isDuplicateInDB,
-            'error_msg': isDuplicateInFile ? "Duplikat di file" : (isDuplicateInDB ? "NIM sudah terdaftar" : null),
+            'prodi_name': prodiStr,
+            'tahun_name': tahunStr,
+            'is_error': errorMsg != null,
+            'error_msg': errorMsg,
           });
-          if (isDuplicateInFile || isDuplicateInDB) _hasDuplicate = true;
+          if (errorMsg != null) _hasError = true;
         }
       }
       setState(() => _previewData = tempItems);
@@ -137,7 +167,10 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
   }
 
   Future<void> _handleSave() async {
-    if (_hasDuplicate) return;
+    if (_hasError) {
+      Get.snackbar("Peringatan", "Mohon perbaiki data yang error terlebih dahulu", backgroundColor: Colors.orange, colorText: Colors.white);
+      return;
+    }
     setState(() => _isLoading = true);
     int successCount = 0;
     for (var item in _previewData) {
@@ -167,7 +200,6 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // TOMBOL UNDUH TEMPLATE
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(color: Colors.blue.shade50, borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.blue.shade200)),
@@ -180,7 +212,7 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text("Gunakan Template", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        const Text("Unduh template agar format data sesuai.", style: TextStyle(fontSize: 13, color: Colors.black54)),
+                        const Text("Unduh template agar format data sesuai. Gunakan nama Prodi (Contoh: TI) dan Tahun Ajar (Contoh: 2025).", style: TextStyle(fontSize: 13, color: Colors.black54)),
                         const SizedBox(height: 10),
                         ElevatedButton.icon(
                           onPressed: _downloadTemplate,
@@ -235,7 +267,7 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text("Pratinjau (${_previewData.length} data)", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        if (_hasDuplicate) const Text("Ada Duplikat!", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+        if (_hasError) const Text("Ada Masalah Data!", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
       ],
     );
   }
@@ -253,19 +285,23 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
             DataColumn(label: Text('Tgl Lahir')),
             DataColumn(label: Text('JK')),
             DataColumn(label: Text('Alamat')),
+            DataColumn(label: Text('Prodi')),
+            DataColumn(label: Text('Tahun')),
             DataColumn(label: Text('Status')),
           ],
           rows: _previewData.map((item) {
-            bool isDup = item['is_duplicate'];
+            bool isErr = item['is_error'];
             return DataRow(
-              color: isDup ? WidgetStateProperty.all(Colors.red.withOpacity(0.1)) : null,
+              color: isErr ? WidgetStateProperty.all(Colors.red.withOpacity(0.1)) : null,
               cells: [
                 DataCell(Text(item['nama_mahasiswa'])),
                 DataCell(Text(item['nim'])),
                 DataCell(Text(item['tgl_lahir'])),
                 DataCell(Text(item['jenis_kelamin'])),
                 DataCell(Text(item['alamat'])),
-                DataCell(isDup ? Text(item['error_msg'], style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)) : const Icon(Icons.check_circle, color: Colors.green)),
+                DataCell(Text(item['prodi_name'])),
+                DataCell(Text(item['tahun_name'])),
+                DataCell(isErr ? Text(item['error_msg'], style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)) : const Icon(Icons.check_circle, color: Colors.green)),
               ],
             );
           }).toList(),
@@ -278,8 +314,8 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
     return SizedBox(
       width: double.infinity, height: 50,
       child: ElevatedButton(
-        onPressed: _hasDuplicate ? null : _handleSave,
-        style: ElevatedButton.styleFrom(backgroundColor: _hasDuplicate ? Colors.grey : const Color(0xFF4CAF50), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+        onPressed: _hasError ? null : _handleSave,
+        style: ElevatedButton.styleFrom(backgroundColor: _hasError ? Colors.grey : const Color(0xFF4CAF50), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
         child: const Text("Simpan Data ke Database", style: TextStyle(color: Colors.white, fontSize: 16)),
       ),
     );

@@ -17,7 +17,10 @@ class _CreateMahasiswaPageState extends State<CreateMahasiswaPage> {
   final TextEditingController _namaController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _tglLahirController = TextEditingController();
+  final TextEditingController _alamatController = TextEditingController();
 
+  String? selectedJenisKelamin;
   int? selectedProdiId;
   int? selectedTahunAjarId;
 
@@ -26,6 +29,20 @@ class _CreateMahasiswaPageState extends State<CreateMahasiswaPage> {
     super.initState();
     controller.fetchProdi();
     controller.fetchTahunAjar();
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
+      firstDate: DateTime(1990),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        _tglLahirController.text = "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+      });
+    }
   }
 
   @override
@@ -72,6 +89,62 @@ class _CreateMahasiswaPageState extends State<CreateMahasiswaPage> {
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
                 validator: (v) => v!.isEmpty ? "NPM wajib diisi" : null,
+              ),
+              const SizedBox(height: 25),
+              TextFormField(
+                controller: _tglLahirController,
+                readOnly: true,
+                onTap: () => _selectDate(context),
+                decoration: const InputDecoration(
+                  labelText: "Tanggal Lahir", 
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  suffixIcon: Icon(Icons.calendar_today),
+                ),
+                validator: (v) => v!.isEmpty ? "Tanggal lahir wajib diisi" : null,
+              ),
+              const SizedBox(height: 25),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Jenis Kelamin", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54)),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: const Text("Laki-laki"),
+                      value: "Laki-laki",
+                      groupValue: selectedJenisKelamin,
+                      contentPadding: EdgeInsets.zero,
+                      onChanged: (v) => setState(() => selectedJenisKelamin = v),
+                    ),
+                  ),
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: const Text("Perempuan"),
+                      value: "Perempuan",
+                      groupValue: selectedJenisKelamin,
+                      contentPadding: EdgeInsets.zero,
+                      onChanged: (v) => setState(() => selectedJenisKelamin = v),
+                    ),
+                  ),
+                ],
+              ),
+              if (selectedJenisKelamin == null)
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("  Jenis kelamin wajib dipilih", style: TextStyle(color: Colors.red, fontSize: 12)),
+                ),
+              const SizedBox(height: 25),
+              TextFormField(
+                controller: _alamatController,
+                decoration: const InputDecoration(
+                  labelText: "Alamat", 
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                maxLines: 3,
+                validator: (v) => v!.isEmpty ? "Alamat wajib diisi" : null,
               ),
               const SizedBox(height: 25),
               TextFormField(
@@ -132,12 +205,15 @@ class _CreateMahasiswaPageState extends State<CreateMahasiswaPage> {
               const SizedBox(height: 40),
               Obx(() => ElevatedButton(
                 onPressed: controller.isLoadingMahasiswa.value ? null : () {
-                  if (_formKey.currentState!.validate()) {
+                  if (_formKey.currentState!.validate() && selectedJenisKelamin != null) {
                     final data = {
                       "id_prodi": selectedProdiId,
                       "id_tahun_ajar": selectedTahunAjarId,
                       "nim": _nimController.text,
                       "nama_mahasiswa": _namaController.text,
+                      "tgl_lahir": _tglLahirController.text,
+                      "jenis_kelamin": selectedJenisKelamin,
+                      "alamat": _alamatController.text,
                       "email": _emailController.text,
                       "password": _passwordController.text,
                     };

@@ -10,7 +10,7 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           const Text(
             "Jadwal Bimbingan",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

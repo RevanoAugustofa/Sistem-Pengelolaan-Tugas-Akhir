@@ -18,8 +18,11 @@ class _EditMahasiswaPageState extends State<EditMahasiswaPage> {
   late TextEditingController _nimController;
   late TextEditingController _namaController;
   late TextEditingController _emailController;
+  late TextEditingController _tglLahirController;
+  late TextEditingController _alamatController;
   final TextEditingController _passwordController = TextEditingController();
 
+  String? selectedJenisKelamin;
   int? selectedProdiId;
   int? selectedTahunAjarId;
 
@@ -29,14 +32,38 @@ class _EditMahasiswaPageState extends State<EditMahasiswaPage> {
     _nimController = TextEditingController(text: widget.mahasiswa.npm);
     _namaController = TextEditingController(text: widget.mahasiswa.namaMahasiswa);
     _emailController = TextEditingController(text: widget.mahasiswa.email);
+    _tglLahirController = TextEditingController(text: widget.mahasiswa.tglLahir);
+    _alamatController = TextEditingController(text: widget.mahasiswa.alamat);
+    selectedJenisKelamin = widget.mahasiswa.jenisKelamin;
     selectedProdiId = widget.mahasiswa.idProdi;
     selectedTahunAjarId = widget.mahasiswa.idTahunAjar;
-    
+
     controller.fetchProdi();
     controller.fetchTahunAjar();
-  }
+    }
 
-  @override
+    Future<void> _selectDate(BuildContext context) async {
+    DateTime initialDate = DateTime.now().subtract(const Duration(days: 365 * 18));
+    if (_tglLahirController.text.isNotEmpty) {
+      try {
+        initialDate = DateTime.parse(_tglLahirController.text);
+      } catch (_) {}
+    }
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(1990),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        _tglLahirController.text = "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+      });
+    }
+    }
+
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -80,6 +107,62 @@ class _EditMahasiswaPageState extends State<EditMahasiswaPage> {
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
                 validator: (v) => v!.isEmpty ? "NPM wajib diisi" : null,
+              ),
+              const SizedBox(height: 25),
+              TextFormField(
+                controller: _tglLahirController,
+                readOnly: true,
+                onTap: () => _selectDate(context),
+                decoration: const InputDecoration(
+                  labelText: "Tanggal Lahir", 
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  suffixIcon: Icon(Icons.calendar_today),
+                ),
+                validator: (v) => v!.isEmpty ? "Tanggal lahir wajib diisi" : null,
+              ),
+              const SizedBox(height: 25),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Jenis Kelamin", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black54)),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: const Text("Laki-laki"),
+                      value: "Laki-laki",
+                      groupValue: selectedJenisKelamin,
+                      contentPadding: EdgeInsets.zero,
+                      onChanged: (v) => setState(() => selectedJenisKelamin = v),
+                    ),
+                  ),
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: const Text("Perempuan"),
+                      value: "Perempuan",
+                      groupValue: selectedJenisKelamin,
+                      contentPadding: EdgeInsets.zero,
+                      onChanged: (v) => setState(() => selectedJenisKelamin = v),
+                    ),
+                  ),
+                ],
+              ),
+              if (selectedJenisKelamin == null)
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("  Jenis kelamin wajib dipilih", style: TextStyle(color: Colors.red, fontSize: 12)),
+                ),
+              const SizedBox(height: 25),
+              TextFormField(
+                controller: _alamatController,
+                decoration: const InputDecoration(
+                  labelText: "Alamat", 
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                maxLines: 3,
+                validator: (v) => v!.isEmpty ? "Alamat wajib diisi" : null,
               ),
               const SizedBox(height: 25),
               TextFormField(
@@ -139,12 +222,15 @@ class _EditMahasiswaPageState extends State<EditMahasiswaPage> {
               const SizedBox(height: 40),
               Obx(() => ElevatedButton(
                 onPressed: controller.isLoadingMahasiswa.value ? null : () {
-                  if (_formKey.currentState!.validate()) {
+                  if (_formKey.currentState!.validate() && selectedJenisKelamin != null) {
                     final Map<String, dynamic> data = {
                       "id_prodi": selectedProdiId,
                       "id_tahun_ajar": selectedTahunAjarId,
                       "nim": _nimController.text,
                       "nama_mahasiswa": _namaController.text,
+                      "tgl_lahir": _tglLahirController.text,
+                      "jenis_kelamin": selectedJenisKelamin,
+                      "alamat": _alamatController.text,
                       "email": _emailController.text,
                     };
                     if (_passwordController.text.isNotEmpty) {

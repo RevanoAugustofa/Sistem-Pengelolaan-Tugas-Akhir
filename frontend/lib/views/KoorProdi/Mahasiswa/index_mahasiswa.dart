@@ -4,6 +4,7 @@ import '../../../controllers/koorprodi_controller.dart';
 import '../../../models/mahasiswa_model.dart';
 import 'create_mahasiswa.dart';
 import 'edit_mahasiswa.dart';
+import 'import_mahasiswa.dart';
 
 class IndexMahasiswaPage extends StatefulWidget {
   const IndexMahasiswaPage({super.key});
@@ -100,16 +101,30 @@ class _IndexMahasiswaPageState extends State<IndexMahasiswaPage> {
                 ),
                 const SizedBox(height: 15),
 
-                // 2. Button Tambah
+                // 2. Button Tambah & Import
                 Row(
                   children: [
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: () => Get.to(() => const CreateMahasiswaPage()),
                         icon: const Icon(Icons.post_add, color: Colors.white, size: 20),
-                        label: const Text("Tambah Mahasiswa", style: TextStyle(color: Colors.white, fontSize: 14)),
+                        label: const Text("Tambah", style: TextStyle(color: Colors.white, fontSize: 14)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF4CAF50),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 15),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () => Get.toNamed('/importDataMahasiswaKp'),
+                        icon: const Icon(Icons.upload_file, color: Colors.white, size: 20),
+                        label: const Text("Import", style: TextStyle(color: Colors.white, fontSize: 14)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF4285F4),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 12),

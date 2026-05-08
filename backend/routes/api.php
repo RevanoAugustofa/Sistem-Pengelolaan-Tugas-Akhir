@@ -82,6 +82,9 @@ Route::middleware('auth:sanctum', 'role:koorprodi')->group(function () {
     // Tahun Ajar for KoorProdi
     Route::get('/koorprodi/tahun-ajar', [TahunAjarController::class, 'index']);
 
+    // Prodi for KoorProdi
+    Route::get('/koorprodi/prodi', [ProdiController::class, 'index']);
+
     // Ruangan for KoorProdi
     Route::get('/koorprodi/ruangan', [RuanganController::class, 'index']);
     Route::post('/koorprodi/ruangan', [RuanganController::class, 'store']);

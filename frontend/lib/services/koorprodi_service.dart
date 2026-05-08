@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:frontend/models/prodi_model.dart';
 import 'package:frontend/models/ruangan_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -123,6 +124,23 @@ class KoorProdiService {
       return data.map((e) => TahunAjar.fromJson(e)).toList();
     }
     throw Exception("Gagal mengambil data tahun ajar");
+  }
+
+  Future<List<Prodi>> getProdi() async {
+    final token = await _getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/koorprodi/prodi"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => Prodi.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data prodi");
   }
 
   Future<List<Dosen>> getDosenManajemen() async {

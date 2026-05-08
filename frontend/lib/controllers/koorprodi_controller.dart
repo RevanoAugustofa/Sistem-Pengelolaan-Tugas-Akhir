@@ -7,6 +7,7 @@ import '../models/pengajuan_pembimbing_model.dart';
 import '../models/dosen_model.dart';
 import '../models/mahasiswa_model.dart';
 import '../models/tahun_ajar_model.dart';
+import '../models/prodi_model.dart';
 import '../services/koorprodi_service.dart';
 
 class KoorProdiController extends GetxController {
@@ -20,6 +21,7 @@ class KoorProdiController extends GetxController {
   // Mahasiswa management states
   var listMahasiswa = <Mahasiswa>[].obs;
   var listTahunAjar = <TahunAjar>[].obs;
+  var listProdi = <Prodi>[].obs;
   var isLoadingMahasiswa = false.obs;
 
   // Dosen management states
@@ -61,11 +63,21 @@ class KoorProdiController extends GetxController {
     fetchDosen();
     fetchMahasiswa();
     fetchTahunAjar();
+    fetchProdi();
     fetchDosenManajemen();
     fetchRuangan();
     fetchRubrikNilai();
     fetchJadwalProposal();
     fetchJadwalSidang();
+  }
+
+  void fetchProdi() async {
+    try {
+      var data = await _service.getProdi();
+      listProdi.assignAll(data);
+    } catch (e) {
+      print("Error fetching prodi: $e");
+    }
   }
 
   void fetchJadwalProposal() async {

@@ -30,7 +30,7 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: 0)).value = TextCellValue("Email");
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: 0)).value = TextCellValue("Password");
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: 0)).value = TextCellValue("Tgl Lahir (YYYY-MM-DD)");
-    sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: 0)).value = TextCellValue("Jenis Kelamin (L/P)");
+    sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: 0)).value = TextCellValue("Jenis Kelamin");
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: 0)).value = TextCellValue("Alamat");
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: 0)).value = TextCellValue("Program Studi");
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: 0)).value = TextCellValue("Tahun Ajar");
@@ -41,7 +41,7 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: 1)).value = TextCellValue("mhs@example.com");
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: 1)).value = TextCellValue("123456");
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: 1)).value = TextCellValue("2000-01-01");
-    sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: 1)).value = TextCellValue("L");
+    sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: 1)).value = TextCellValue("Laki-laki");
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: 1)).value = TextCellValue("Jl. Contoh No. 123");
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: 1)).value = TextCellValue("Teknik Informatika");
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: 1)).value = TextCellValue("2025");

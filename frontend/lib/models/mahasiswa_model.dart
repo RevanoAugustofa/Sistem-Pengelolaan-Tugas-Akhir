@@ -52,14 +52,24 @@ class Proposal {
   final int? id;
   final String? judulProposal;
   final String? fileProposal;
+  final String? revisiJudulProposal;
+  final String? revisiFileProposal;
 
-  Proposal({this.id, this.judulProposal, this.fileProposal});
+  Proposal({
+    this.id,
+    this.judulProposal,
+    this.fileProposal,
+    this.revisiJudulProposal,
+    this.revisiFileProposal,
+  });
 
   factory Proposal.fromJson(Map<String, dynamic> json) {
     return Proposal(
       id: json['id'],
       judulProposal: json['judul_proposal'],
       fileProposal: json['file_proposal'],
+      revisiJudulProposal: json['revisi_judul_proposal'],
+      revisiFileProposal: json['revisi_file_proposal'],
     );
   }
 }

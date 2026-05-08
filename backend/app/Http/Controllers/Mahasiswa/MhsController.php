@@ -34,13 +34,13 @@ class MhsController extends Controller
 
     public function jadwalSempro()
     {
-        $data = JadwalSempro::with(['mahasiswa', 'ruangan'])->get();
+        $data = JadwalSempro::with(['mahasiswa.proposal', 'ruangan', 'pengujiUtama.user', 'pengujiPendamping.user'])->get();
         return response()->json(['data' => $data]);
     }
 
     public function jadwalSidang()
     {
-        $data = JadwalSidangTA::with(['mahasiswa', 'ruangan'])->get();
+        $data = JadwalSidangTA::with(['mahasiswa.proposal', 'ruangan', 'pengujiUtama.user', 'pengujiPendamping.user'])->get();
         return response()->json(['data' => $data]);
     }
 

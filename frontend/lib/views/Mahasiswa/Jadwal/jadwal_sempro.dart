@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/mhs_controller.dart';
+import '../../../models/jadwal_model.dart';
+import '../Modals/detail_jadwal_sempro_modal.dart';
 
 class JadwalSemproList extends StatelessWidget {
   final String searchQuery;
@@ -30,17 +32,17 @@ class JadwalSemproList extends StatelessWidget {
         itemCount: filteredList.length,
         itemBuilder: (context, index) {
           final jadwal = filteredList[index];
-          String nama = jadwal.mahasiswa?.namaMahasiswa ?? "Tidak ada nama";
-          String tanggal = jadwal.tanggal ?? "-";
-          String jam = "${jadwal.waktuMulai ?? ''} - ${jadwal.waktuSelesai ?? ''} WIB";
-          
-          return _buildJadwalCard(nama, tanggal, jam);
+          return _buildJadwalCard(context, jadwal);
         },
       );
     });
   }
 
-  Widget _buildJadwalCard(String nama, String tanggal, String jam) {
+  Widget _buildJadwalCard(BuildContext context, JadwalModel jadwal) {
+    String nama = jadwal.mahasiswa?.namaMahasiswa ?? "Tidak ada nama";
+    String tanggal = jadwal.tanggal ?? "-";
+    String jam = "${jadwal.waktuMulai ?? ''} - ${jadwal.waktuSelesai ?? ''} WIB";
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -59,7 +61,17 @@ class JadwalSemproList extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const Icon(Icons.more_horiz, color: Colors.grey, size: 20),
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => DetailJadwalSemproModal(jadwal: jadwal),
+                  );
+                },
+                child: const Icon(Icons.more_horiz, color: Colors.grey, size: 20),
+              ),
               Text(tanggal, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
               Text(jam, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
             ],

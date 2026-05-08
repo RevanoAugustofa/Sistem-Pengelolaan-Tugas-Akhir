@@ -4,7 +4,7 @@ import '../../../controllers/koorprodi_controller.dart';
 import '../../../models/mahasiswa_model.dart';
 import 'create_mahasiswa.dart';
 import 'edit_mahasiswa.dart';
-import 'import_mahasiswa.dart';
+// import 'import_mahasiswa.dart';
 
 class IndexMahasiswaPage extends StatefulWidget {
   const IndexMahasiswaPage({super.key});

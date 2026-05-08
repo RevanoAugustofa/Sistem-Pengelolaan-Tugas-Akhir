@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/admin_controller.dart';
-import '../../../models/dosen_model.dart';
+// import '../../../models/dosen_model.dart';
 import 'edit_dosen_prodi.dart';
 
 class IndexDosenProdiPage extends StatefulWidget {

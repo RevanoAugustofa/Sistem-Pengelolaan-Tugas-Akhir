@@ -13,7 +13,7 @@ class ImportJadwalProposalPage extends StatefulWidget {
 }
 
 class _ImportJadwalProposalPageState extends State<ImportJadwalProposalPage> {
-  final KoorProdiController controller = Get.find<KoorProdiController>();
+  final KoorProdiController controller = Get.put(KoorProdiController());
   String? _fileName;
   List<Map<String, dynamic>> _previewData = [];
   bool _isLoading = false;
@@ -28,7 +28,6 @@ class _ImportJadwalProposalPageState extends State<ImportJadwalProposalPage> {
     List<String> headers = [
       "NIM",
       "Nama Mahasiswa",
-      "Judul Proposal",
       "Tanggal (YYYY-MM-DD)",
       "Jam Mulai (HH:MM)",
       "Jam Selesai (HH:MM)",
@@ -45,7 +44,6 @@ class _ImportJadwalProposalPageState extends State<ImportJadwalProposalPage> {
     List<String> example = [
       "220101001",
       "Mahasiswa Contoh",
-      "Sistem Informasi Akademik Berbasis Mobile",
       "2026-05-20",
       "08:00",
       "09:00",
@@ -113,7 +111,6 @@ class _ImportJadwalProposalPageState extends State<ImportJadwalProposalPage> {
 
           String nim = row[0]?.value?.toString() ?? "";
           String namaMhs = row[1]?.value?.toString() ?? "";
-          String judul = row[2]?.value?.toString() ?? "";
           String tanggal = (row.length > 3) ? row[3]?.value?.toString() ?? "" : "";
           String jamMulai = (row.length > 4) ? row[4]?.value?.toString() ?? "" : "";
           String jamSelesai = (row.length > 5) ? row[5]?.value?.toString() ?? "" : "";
@@ -139,7 +136,6 @@ class _ImportJadwalProposalPageState extends State<ImportJadwalProposalPage> {
             'id_mahasiswa': mhs?.id,
             'nim': nim,
             'nama': namaMhs,
-            'judul': judul,
             'tanggal': tanggal,
             'waktu_mulai': jamMulai,
             'waktu_selesai': jamSelesai,

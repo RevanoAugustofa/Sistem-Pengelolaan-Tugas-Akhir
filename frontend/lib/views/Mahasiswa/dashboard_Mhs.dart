@@ -38,7 +38,7 @@ class DashboardMhs extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset('assets/img/logo2_putih.png', height: 50),
-                    GestureDetector(
+                      GestureDetector(
                         onTap: () => Get.toNamed('/notifikasi'),
                         child: Container(
                           padding: const EdgeInsets.all(6),
@@ -100,7 +100,29 @@ class DashboardMhs extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 24),
+                  const SizedBox(height: 14),
 
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildPembimbingCard(
+                          title: "Pembimbing utama",
+                          nama: "nama pembimbing .Amd",
+                          nip: "nip. 029092012902901",
+                        ),
+                      ),
+
+                      const SizedBox(width: 8),
+
+                      Expanded(
+                        child: _buildPembimbingCard(
+                          title: "Pembimbing pendamping",
+                          nama: "nama pembimbing .Amd",
+                          nip: "nip. 029092012902901",
+                        ),
+                      ),
+                    ],
+                  ),
                   // 3. Ringkasan Progres Section
                   const Text(
                     "Ringkasan Progres",
@@ -112,15 +134,17 @@ class DashboardMhs extends StatelessWidget {
                     "Proposal",
                     "Belum diunggah",
                   ),
-                  Obx(() => _buildProgresItem(
-                    Icons.people,
-                    "Pembimbing",
-                    mhsController.pengajuanStatus.value == "diajukan"
-                        ? "Sudah Diajukan"
-                        : mhsController.pengajuanStatus.value == "disetujui"
-                            ? "Disetujui"
-                            : "Belum Diajukan",
-                  )),
+                  Obx(
+                    () => _buildProgresItem(
+                      Icons.people,
+                      "Pembimbing",
+                      mhsController.pengajuanStatus.value == "diajukan"
+                          ? "Sudah Diajukan"
+                          : mhsController.pengajuanStatus.value == "disetujui"
+                          ? "Disetujui"
+                          : "Belum Diajukan",
+                    ),
+                  ),
                   _buildProgresItem(
                     Icons.event_note,
                     "Seminar Proposal",
@@ -207,9 +231,21 @@ class DashboardMhs extends StatelessWidget {
             children: [
               Text(
                 isApplied
-                    ? "Pengajuan Dosen Pembimbing sedang diproses"
-                    : "Daftar Dosen Pembimbing sekarang",
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                    ? "Berhasil mendaftar dosen pembimbing"
+                    : "Belum ada dosen pembimbing",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+              Text(
+                isApplied
+                    ? "Menunggu konfirmasi Koordinator Prodi"
+                    : "Daftar dosen pembimbing sekarang",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 10,
+                ),
               ),
             ],
           ),
@@ -223,19 +259,23 @@ class DashboardMhs extends StatelessWidget {
                       Get.toNamed('/pendaftaranDosen');
                     },
               style: ElevatedButton.styleFrom(
-                backgroundColor: isApplied ? Colors.blue : const Color(0xFFFDE047),
-                foregroundColor: isApplied ? Colors.white : Colors.black,
+                backgroundColor: isApplied ? Colors.blue : Colors.blue[50],
+                foregroundColor: isApplied ? Colors.white : Colors.blue,
                 disabledBackgroundColor: Colors.blue,
                 disabledForegroundColor: Colors.white,
                 elevation: 0,
                 padding: EdgeInsets.zero,
+                side: BorderSide(color: Colors.blue, width: 1.5),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18),
                 ),
               ),
               child: Text(
                 isApplied ? "MENUNGGU" : "DAFTAR",
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -243,62 +283,6 @@ class DashboardMhs extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _buildTahapCard() {
-  //   return Container(
-  //     height: 130,
-  //     padding: const EdgeInsets.all(16),
-  //     decoration: BoxDecoration(
-  //       color: Colors.white,
-  //       borderRadius: BorderRadius.circular(20),
-  //       boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
-  //     ),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         // KIRI (text)
-  //         Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: const [
-  //             Text(
-  //               "Progres",
-  //               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-  //             ),
-  //             // Text(
-  //             //   "98%",
-  //             //   style: TextStyle(
-  //             //     fontSize: 22,
-  //             //     fontWeight: FontWeight.bold,
-  //             //   ),
-  //             // ),
-  //           ],
-  //         ),
-
-  //         // KANAN (circular progress)
-  //         SizedBox(
-  //           width: 70,
-  //           height: 70,
-  //           child: Stack(
-  //             alignment: Alignment.center,
-  //             children: [
-  //               CircularProgressIndicator(
-  //                 value: 0.98,
-  //                 strokeWidth: 8,
-  //                 backgroundColor: Colors.grey.shade300,
-  //                 valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-  //               ),
-  //               const Text(
-  //                 "98%",
-  //                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget _buildProgresItem(IconData icon, String title, String status) {
     return Container(
@@ -334,6 +318,66 @@ class DashboardMhs extends StatelessWidget {
                 fontSize: 10,
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPembimbingCard({
+    required String title,
+    required String nama,
+    required String nip,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // HEADER
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            decoration: BoxDecoration(
+              color: const Color(0xFF6EC1FF),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          Text(
+            nama,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+          ),
+
+          const SizedBox(height: 4),
+
+          Text(
+            nip,
+            style: TextStyle(fontSize: 11, color: Colors.grey.shade700),
           ),
         ],
       ),

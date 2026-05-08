@@ -71,12 +71,15 @@ class KoorProdiController extends GetxController {
     fetchJadwalSidang();
   }
 
-  void fetchProdi() async {
+  Future<void> fetchProdi() async {
     try {
       var data = await _service.getProdi();
       listProdi.assignAll(data);
+      print("Prodi fetched: ${listProdi.length}");
     } catch (e) {
       print("Error fetching prodi: $e");
+      Get.snackbar("Error", "Gagal memuat data Prodi. Silakan coba lagi.", 
+        backgroundColor: Colors.red, colorText: Colors.white);
     }
   }
 

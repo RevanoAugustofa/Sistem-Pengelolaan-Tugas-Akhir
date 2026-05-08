@@ -112,11 +112,15 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
           // Mapping Prodi String to ID
           int? idProdi;
           if (prodiStr.isNotEmpty) {
+            print("Mencoba mapping Prodi: '$prodiStr'");
+            print("Daftar Prodi yang tersedia: ${controller.listProdi.map((p) => "'${p.namaProdi}' ('${p.kodeProdi}')").toList()}");
+            
             var prodi = controller.listProdi.firstWhereOrNull(
-              (p) => p.namaProdi?.toLowerCase() == prodiStr.toLowerCase() || 
-                     p.kodeProdi?.toLowerCase() == prodiStr.toLowerCase()
+              (p) => p.namaProdi?.toLowerCase().trim() == prodiStr.toLowerCase().trim() || 
+                     p.kodeProdi?.toLowerCase().trim() == prodiStr.toLowerCase().trim()
             );
             idProdi = prodi?.id;
+            print("Hasil mapping: ${idProdi ?? 'TIDAK DITEMUKAN'}");
           }
 
           // Mapping Tahun Ajar String to ID

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../controllers/dosen_controller.dart';
 import 'jadwal_proposal.dart';
 import 'jadwal_bimbingan.dart';
 import 'jadwal_sidang.dart';
@@ -12,6 +13,7 @@ class JadwalDosenPage extends StatefulWidget {
 }
 
 class _JadwalDosenPageState extends State<JadwalDosenPage> {
+  final DosenController controller = Get.put(DosenController());
   final TextEditingController searchController = TextEditingController();
   String selectedTab = "Proposal";
   String searchQuery = "";

@@ -122,6 +122,11 @@ Route::middleware('auth:sanctum', 'role:koorprodi')->group(function () {
 });
 
 
+Route::middleware('auth:sanctum', 'role:dosen')->group(function () {
+    Route::get('/dosen/jadwal', [\App\Http\Controllers\Dosen\JadwalController::class, 'index']);
+});
+
+
 Route::middleware('auth:sanctum', 'role:mahasiswa')->group(function () {
     Route::get('/mahasiswa/dashboard', [MhsController::class, 'index']);
     Route::get('/mahasiswa/dosen', [MhsController::class, 'dosenList']);

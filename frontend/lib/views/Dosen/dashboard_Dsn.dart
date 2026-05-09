@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../controllers/profile_controller.dart';
+import '../../controllers/dosen_controller.dart';
 
-class DashboardDsn extends StatelessWidget {
+class DashboardDsn extends StatefulWidget {
   const DashboardDsn({super.key});
+
+  @override
+  State<DashboardDsn> createState() => _DashboardDsnState();
+}
+
+class _DashboardDsnState extends State<DashboardDsn> {
+  final ProfileController profileController = Get.put(ProfileController());
+  final DosenController dosenController = Get.put(DosenController());
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +70,13 @@ class DashboardDsn extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  const Text(
-                    "Halo Dosen!",
-                    style: TextStyle(
+                  Obx(() => Text(
+                    "Halo ${profileController.userName.value.split(' ').first}!",
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.bold),
-                  ),
+                  )),
                   const SizedBox(height: 4),
                   const Text(
                     "Kelola Progres Tugas Akhir Mahasiswa Disini.",
@@ -148,11 +158,11 @@ class DashboardDsn extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 10,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           )
         ],
       ),
@@ -168,19 +178,21 @@ class DashboardDsn extends StatelessWidget {
             child: const Icon(Icons.person, size: 30),
           ),
           const SizedBox(width: 16),
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Arfilal Faiznadi A,md",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 4),
-              Text(
-                "000283883839",
-                style: TextStyle(fontSize: 13),
-              )
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Obx(() => Text(
+                  profileController.userName.value,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                )),
+                const SizedBox(height: 4),
+                Obx(() => Text(
+                  profileController.userId.value,
+                  style: const TextStyle(fontSize: 13),
+                ))
+              ],
+            ),
           )
         ],
       ),

@@ -111,12 +111,12 @@ class _ImportJadwalProposalPageState extends State<ImportJadwalProposalPage> {
 
           String nim = row[0]?.value?.toString() ?? "";
           String namaMhs = row[1]?.value?.toString() ?? "";
-          String tanggal = (row.length > 3) ? row[3]?.value?.toString() ?? "" : "";
-          String jamMulai = (row.length > 4) ? row[4]?.value?.toString() ?? "" : "";
-          String jamSelesai = (row.length > 5) ? row[5]?.value?.toString() ?? "" : "";
-          String namaRuangan = (row.length > 6) ? row[6]?.value?.toString() ?? "" : "";
-          String namaPenguji1 = (row.length > 7) ? row[7]?.value?.toString() ?? "" : "";
-          String namaPenguji2 = (row.length > 8) ? row[8]?.value?.toString() ?? "" : "";
+          String tanggal = (row.length > 2) ? row[2]?.value?.toString() ?? "" : "";
+          String jamMulai = (row.length > 3) ? row[3]?.value?.toString() ?? "" : "";
+          String jamSelesai = (row.length > 4) ? row[4]?.value?.toString() ?? "" : "";
+          String namaRuangan = (row.length > 5) ? row[5]?.value?.toString() ?? "" : "";
+          String namaPenguji1 = (row.length > 6) ? row[6]?.value?.toString() ?? "" : "";
+          String namaPenguji2 = (row.length > 7) ? row[7]?.value?.toString() ?? "" : "";
 
           // Lookup IDs
           var mhs = controller.listMahasiswa.firstWhereOrNull((m) => m.npm == nim);

@@ -134,4 +134,5 @@ Route::middleware('auth:sanctum', 'role:mahasiswa')->group(function () {
     Route::post('/mahasiswa/daftar-pembimbing', [MhsController::class, 'storeDaftarPembimbing']);
     Route::get('/mahasiswa/jadwal-sempro', [MhsController::class, 'jadwalSempro']);
     Route::get('/mahasiswa/jadwal-sidang', [MhsController::class, 'jadwalSidang']);
+    Route::get('/mahasiswa/jadwal-bimbingan', [MhsController::class, 'jadwalBimbingan']);
 });

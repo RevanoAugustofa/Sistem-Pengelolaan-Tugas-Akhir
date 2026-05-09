@@ -15,6 +15,8 @@ class MhsController extends GetxController {
   var listJadwalSempro = <JadwalModel>[].obs;
   var isLoadingJadwalSidang = false.obs;
   var listJadwalSidang = <JadwalModel>[].obs;
+  var isLoadingJadwalBimbingan = false.obs;
+  var listJadwalBimbingan = <JadwalModel>[].obs;
   var pengajuanStatus = "".obs;
   var pembimbingUtama = "".obs;
   var nipUtama = "".obs;
@@ -28,6 +30,19 @@ class MhsController extends GetxController {
     fetchDashboardData();
     fetchJadwalSempro();
     fetchJadwalSidang();
+    fetchJadwalBimbingan();
+  }
+
+  void fetchJadwalBimbingan() async {
+    try {
+      isLoadingJadwalBimbingan(true);
+      var data = await _service.getJadwalBimbingan();
+      listJadwalBimbingan.assignAll(data);
+    } catch (e) {
+      print(e);
+    } finally {
+      isLoadingJadwalBimbingan(false);
+    }
   }
 
   void fetchJadwalSempro() async {

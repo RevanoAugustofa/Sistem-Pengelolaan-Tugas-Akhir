@@ -19,6 +19,7 @@ class JadwalModel {
 
   // Jadwal Bimbingan specific fields
   final int? idDosen;
+  final Dosen? dosen;
   final String? waktuTanggal;
   final int? kuota;
   final String? metodeBimbingan;
@@ -40,6 +41,7 @@ class JadwalModel {
     this.pengujiPendamping,
     this.ruangan,
     this.idDosen,
+    this.dosen,
     this.waktuTanggal,
     this.kuota,
     this.metodeBimbingan,
@@ -63,6 +65,7 @@ class JadwalModel {
       pengujiPendamping: json['penguji_pendamping'] != null ? Dosen.fromJson(json['penguji_pendamping']) : null,
       ruangan: json['ruangan'] != null ? Ruangan.fromJson(json['ruangan']) : null,
       idDosen: json['id_dosen'],
+      dosen: json['dosen'] != null ? Dosen.fromJson(json['dosen']) : null,
       waktuTanggal: json['waktu_tanggal'],
       kuota: json['kuota'],
       metodeBimbingan: json['metode_bimbingan'],

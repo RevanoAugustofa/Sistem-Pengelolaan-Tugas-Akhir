@@ -1,43 +1,99 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import '../../../controllers/mhs_controller.dart';
+import '../../../models/jadwal_model.dart';
 
 class TugasAkhirBimbinganMhsView extends StatelessWidget {
   const TugasAkhirBimbinganMhsView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 10),
-          const Text(
-            "Jadwal Bimbingan",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          _buildJadwalBimbinganCard(),
-          const SizedBox(height: 24),
-          const Text(
-            "Logbook Bimbingan",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
-          // TAB
+    final MhsController controller = Get.put(MhsController());
 
-          // LIST LOGBOOK
-          _buildLogbookCard(isEmpty: true),
+    return RefreshIndicator(
+      onRefresh: () async {
+        controller.fetchJadwalBimbingan();
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10),
+            const Text(
+              "Jadwal Bimbingan",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            Obx(() {
+              if (controller.isLoadingJadwalBimbingan.value) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
 
-          const SizedBox(height: 16),
+              if (controller.listJadwalBimbingan.isEmpty) {
+                return Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(top: 10),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      "Belum ada jadwal bimbingan tersedia",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                );
+              }
 
-          _buildLogbookCard(isEmpty: false),
-          const SizedBox(height: 16),
-          _buildFullBlueButton("Tambah Logbook"),
-        ],
+              return Column(
+                children: controller.listJadwalBimbingan.map((jadwal) {
+                  return _buildJadwalBimbinganCard(jadwal);
+                }).toList(),
+              );
+            }),
+            const SizedBox(height: 24),
+            const Text(
+              "Logbook Bimbingan",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            // TAB
+
+            // LIST LOGBOOK
+            _buildLogbookCard(isEmpty: true),
+
+            const SizedBox(height: 16),
+
+            _buildLogbookCard(isEmpty: false),
+            const SizedBox(height: 16),
+            _buildFullBlueButton("Tambah Logbook"),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildJadwalBimbinganCard() {
+  Widget _buildJadwalBimbinganCard(JadwalModel jadwal) {
+    String formattedDate = "";
+    if (jadwal.waktuTanggal != null) {
+      try {
+        DateTime dt = DateTime.parse(jadwal.waktuTanggal!);
+        formattedDate = DateFormat("EEEE dd, MMMM yyyy  HH:mm 'WIB'", 'id_ID').format(dt);
+      } catch (e) {
+        formattedDate = jadwal.waktuTanggal!;
+      }
+    }
+
     return Container(
       margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.all(16),
@@ -49,29 +105,31 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Arfilal Faiznadi S,Pd",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.orange,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  jadwal.dosen?.user?.name ?? "Dosen Tidak Diketahui",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange,
+                  ),
                 ),
-              ),
-              Text(
-                "Jum'at 20, Februari 2026  08.02.00 WIB",
-                style: TextStyle(fontSize: 11),
-              ),
-              Text(
-                "Kuota tersisa (4)",
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
+                Text(
+                  formattedDate,
+                  style: const TextStyle(fontSize: 11),
                 ),
-              ),
-            ],
+                Text(
+                  "Kuota tersisa (${jadwal.kuota ?? 0})",
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
           ElevatedButton(
             onPressed: () {},

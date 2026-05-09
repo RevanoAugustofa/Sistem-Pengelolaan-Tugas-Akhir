@@ -29,4 +29,6 @@ class Dosen {
       // ttd: json['ttd'],
     );
   }
+
+  get user => null;
 }

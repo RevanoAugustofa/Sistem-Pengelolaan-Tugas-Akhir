@@ -8,6 +8,7 @@ use App\Models\PengajuanPembimbing;
 use App\Models\Proposal;
 use App\Models\JadwalSempro;
 use App\Models\JadwalSidangTA;
+use App\Models\JadwalBimbingan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -41,6 +42,12 @@ class MhsController extends Controller
     public function jadwalSidang()
     {
         $data = JadwalSidangTA::with(['mahasiswa.proposal', 'ruangan', 'pengujiUtama.user', 'pengujiPendamping.user'])->get();
+        return response()->json(['data' => $data]);
+    }
+
+    public function jadwalBimbingan()
+    {
+        $data = JadwalBimbingan::with(['dosen.user'])->where('status', 'tersedia')->get();
         return response()->json(['data' => $data]);
     }
 

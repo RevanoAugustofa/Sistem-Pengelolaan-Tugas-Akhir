@@ -85,6 +85,26 @@ class MhsService {
     }
   }
 
+  Future<List<JadwalModel>> getJadwalBimbingan() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.get(
+      Uri.parse('${AppConstants.baseUrl}/mahasiswa/jadwal-bimbingan'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = jsonDecode(response.body)['data'];
+      return data.map((item) => JadwalModel.fromJson(item)).toList();
+    } else {
+      throw Exception('Gagal memuat data jadwal bimbingan');
+    }
+  }
+
   Future<Map<String, dynamic>> daftarPembimbing(Map<String, dynamic> data) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');

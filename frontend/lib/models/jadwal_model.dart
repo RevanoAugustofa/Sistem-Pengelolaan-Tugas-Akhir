@@ -17,6 +17,14 @@ class JadwalModel {
   final Dosen? pengujiPendamping;
   final Ruangan? ruangan;
 
+  // Jadwal Bimbingan specific fields
+  final int? idDosen;
+  final String? waktuTanggal;
+  final int? kuota;
+  final String? metodeBimbingan;
+  final String? tempatLink;
+  final String? status;
+
   JadwalModel({
     this.id,
     this.idMahasiswa,
@@ -31,6 +39,12 @@ class JadwalModel {
     this.pengujiUtama,
     this.pengujiPendamping,
     this.ruangan,
+    this.idDosen,
+    this.waktuTanggal,
+    this.kuota,
+    this.metodeBimbingan,
+    this.tempatLink,
+    this.status,
   });
 
   factory JadwalModel.fromJson(Map<String, dynamic> json) {
@@ -48,6 +62,12 @@ class JadwalModel {
       pengujiUtama: json['penguji_utama'] != null ? Dosen.fromJson(json['penguji_utama']) : null,
       pengujiPendamping: json['penguji_pendamping'] != null ? Dosen.fromJson(json['penguji_pendamping']) : null,
       ruangan: json['ruangan'] != null ? Ruangan.fromJson(json['ruangan']) : null,
+      idDosen: json['id_dosen'],
+      waktuTanggal: json['waktu_tanggal'],
+      kuota: json['kuota'],
+      metodeBimbingan: json['metode_bimbingan'],
+      tempatLink: json['tempat_link'],
+      status: json['status'],
     );
   }
 }

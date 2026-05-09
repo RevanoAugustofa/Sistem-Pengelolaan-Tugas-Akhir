@@ -31,4 +31,18 @@ class DosenService {
     }
     throw Exception("Gagal mengambil data jadwal $jenisSidang");
   }
+
+  Future<bool> storeJadwalBimbingan(Map<String, dynamic> data) async {
+    final token = await _getToken();
+    final response = await http.post(
+      Uri.parse("$baseUrl/dosen/jadwal"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    return response.statusCode == 201;
+  }
 }

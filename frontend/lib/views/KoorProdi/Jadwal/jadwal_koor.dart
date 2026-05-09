@@ -55,43 +55,43 @@ class _JadwalKoorPageState extends State<JadwalKoorPage> {
           ),
 
           // 1. Search Bar
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Container(
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade400),
-              ),
-              child: TextField(
-                controller: searchController,
-                onChanged: (value) {
-                  setState(() {
-                    searchQuery = value;
-                  });
-                },
-                decoration: const InputDecoration(
-                  hintText: "Cari Mahasiswa",
-                  hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                  suffixIcon: Icon(Icons.tune, color: Colors.blue),
-                  contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 20),
+          //   child: Container(
+          //     height: 50,
+          //     decoration: BoxDecoration(
+          //       color: Colors.white,
+          //       borderRadius: BorderRadius.circular(8),
+          //       border: Border.all(color: Colors.grey.shade400),
+          //     ),
+          //     child: TextField(
+          //       controller: searchController,
+          //       onChanged: (value) {
+          //         setState(() {
+          //           searchQuery = value;
+          //         });
+          //       },
+          //       decoration: const InputDecoration(
+          //         hintText: "Cari Mahasiswa",
+          //         hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+          //         suffixIcon: Icon(Icons.tune, color: Colors.blue),
+          //         contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+          //         border: InputBorder.none,
+          //       ),
+          //     ),
+          //   ),
+          // ),
 
-          const Padding(
-            padding: EdgeInsets.fromLTRB(20, 15, 20, 10),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Filter - All",
-                style: TextStyle(color: Colors.grey, fontSize: 13),
-              ),
-            ),
-          ),
+          // const Padding(
+          //   padding: EdgeInsets.fromLTRB(20, 15, 20, 10),
+          //   child: Align(
+          //     alignment: Alignment.centerLeft,
+          //     child: Text(
+          //       "Filter - All",
+          //       style: TextStyle(color: Colors.grey, fontSize: 13),
+          //     ),
+          //   ),
+          // ),
 
           // TABLE AREA
           Expanded(

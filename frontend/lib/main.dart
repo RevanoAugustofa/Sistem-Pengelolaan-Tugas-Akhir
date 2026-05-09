@@ -5,6 +5,7 @@ import 'package:frontend/views/Admin/DataMahasiswa/index_mahasiswa.dart';
 import 'package:frontend/views/Admin/DataProdi/index_prodi.dart';
 import 'package:frontend/views/Admin/DataRuangan/index_ruangan.dart';
 import 'package:frontend/views/Admin/DataTahunAjar/index_tahun_ajar.dart';
+import 'package:frontend/views/KoorProdi/Jadwal/import_jadwal_sidang.dart';
 import 'package:frontend/views/KoorProdi/Jadwal/jadwal_koor.dart';
 import 'package:frontend/views/KoorProdi/Proposal_Kp.dart';
 import 'package:frontend/views/KoorProdi/Logbook_Kp.dart';
@@ -140,6 +141,7 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/rekapPembimbingPengujiKp', page: () => const RekapPembimbingPengujiPage() ),
         GetPage(name: '/importDataMahasiswaKp', page: () => const kp_import_mhs.ImportDataMahasiswaPage()),
         GetPage(name: '/importJadwalProposalKp', page: () => const ImportJadwalProposalPage() ),
+        GetPage(name: '/importJadwalSidangKp', page: () => const ImportJadwalSidangPage() ),
 
 
         //umum

@@ -110,7 +110,7 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  jadwal.dosen?.user?.name ?? "Dosen Tidak Diketahui",
+                  jadwal.dosen?.user?.name ?? jadwal.dosen?.namaDosen ?? "Dosen Tidak Diketahui",
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.orange,

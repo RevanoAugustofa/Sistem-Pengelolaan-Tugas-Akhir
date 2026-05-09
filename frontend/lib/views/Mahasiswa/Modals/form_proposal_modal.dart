@@ -73,12 +73,18 @@ class _FormProposalModalState extends State<FormProposalModal> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
           ),
           const SizedBox(height: 8),
-          TextField(
+          TextFormField(
             controller: _judulController,
+            minLines: 2,
+            maxLines: 5,
+            keyboardType: TextInputType.multiline,
             decoration: InputDecoration(
               hintText: "Masukkan judul proposal anda",
               hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(color: Colors.grey.shade300),
@@ -101,13 +107,20 @@ class _FormProposalModalState extends State<FormProposalModal> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 20),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300, style: BorderStyle.solid),
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  style: BorderStyle.solid,
+                ),
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.grey.shade50,
               ),
               child: Column(
                 children: [
-                  Icon(Icons.cloud_upload_outlined, size: 40, color: Colors.blue.shade400),
+                  Icon(
+                    Icons.cloud_upload_outlined,
+                    size: 40,
+                    color: Colors.blue.shade400,
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     _fileName ?? "Pilih file untuk diunggah",
@@ -151,7 +164,7 @@ class _FormProposalModalState extends State<FormProposalModal> {
                 ),
               ),
               child: const Text(
-                "SIMPAN DAN UNGGAH",
+                "SIMPAN",
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,

@@ -22,6 +22,8 @@ class MhsController extends GetxController {
   var nipUtama = "".obs;
   var pembimbingPendamping = "".obs;
   var nipPendamping = "".obs;
+  var proposalTitle = "".obs;
+  var proposalFile = "".obs;
 
   @override
   void onInit() {
@@ -73,8 +75,9 @@ class MhsController extends GetxController {
     try {
       isLoadingDashboard(true);
       var data = await _service.getDashboardData();
+      
+      // Update Pengajuan Data
       if (data['pengajuan'] != null) {
-        // Update data pendukung dulu
         if (data['pengajuan']['pembimbing_utama'] != null) {
           pembimbingUtama.value = data['pengajuan']['pembimbing_utama']['user']['name'] ?? "";
           nipUtama.value = data['pengajuan']['pembimbing_utama']['nip'] ?? "";
@@ -85,10 +88,18 @@ class MhsController extends GetxController {
           nipPendamping.value = data['pengajuan']['pembimbing_pendamping']['nip'] ?? "";
         }
 
-        // Baru update status di akhir untuk mentrigger UI
         pengajuanStatus.value = data['pengajuan']['status'] ?? "";
       } else {
         pengajuanStatus.value = "";
+      }
+
+      // Update Proposal Data
+      if (data['proposal'] != null) {
+        proposalTitle.value = data['proposal']['judul_proposal'] ?? "";
+        proposalFile.value = data['proposal']['file_proposal'] ?? "";
+      } else {
+        proposalTitle.value = "";
+        proposalFile.value = "";
       }
     } catch (e) {
       print(e);

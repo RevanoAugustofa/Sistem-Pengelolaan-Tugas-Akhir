@@ -18,18 +18,22 @@ class MhsController extends Controller
     {
         $user = $request->user();
         $pengajuan = null;
+        $proposal = null;
         
         if ($user->mahasiswa) {
             $pengajuan = PengajuanPembimbing::with([
                 'pembimbingUtama.user',
                 'pembimbingPendamping.user'
             ])->where('id_mahasiswa', $user->mahasiswa->id)->first();
+            
+            $proposal = $user->mahasiswa->proposal;
         }
 
         return response()->json([
             'message' => 'Welcome to Mahasiswa Dashboard',
             'role' => 'mahasiswa',
             'pengajuan' => $pengajuan,
+            'proposal' => $proposal,
         ]);
     }
 

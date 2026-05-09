@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../Modals/form_proposal_modal.dart';
+import '../../../controllers/mhs_controller.dart';
 
 class TugasAkhirProposalMhsView extends StatelessWidget {
   const TugasAkhirProposalMhsView({super.key});
@@ -15,21 +16,46 @@ class TugasAkhirProposalMhsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 10),
-          const Text("Proposal Tugas Akhir", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          const Text("Kelola dokumen proposal, lihat catatan revisi dan status persetujuan", style: TextStyle(color: Colors.grey, fontSize: 13)),
-          const SizedBox(height: 16),
-          _buildStatusCard(),
-          const SizedBox(height: 12),
-          Align(
-            alignment: Alignment.centerRight,
-            child: _buildBlueButton("Unggah", onPressed: _showUploadModal),
-          ),
+    final MhsController controller = Get.put(MhsController());
+
+    return RefreshIndicator(
+      onRefresh: () async {
+        controller.fetchDashboardData();
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10),
+            const Text("Proposal Tugas Akhir", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const Text("Kelola dokumen proposal, lihat catatan revisi dan status persetujuan", style: TextStyle(color: Colors.grey, fontSize: 13)),
+            const SizedBox(height: 16),
+            Obx(() {
+              String judul = controller.proposalTitle.value;
+              String file = controller.proposalFile.value;
+
+              return Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                    color: const Color(0xFFE8E8E8),
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.grey.shade300)),
+                child: Column(
+                  children: [
+                    _StatusRow("Judul Proposal", judul.isNotEmpty ? judul : "Belum Diajukan"),
+                    const Divider(),
+                    _StatusRow("Unggah Proposal", file.isNotEmpty ? "Sudah diunggah" : "Belum"),
+                  ],
+                ),
+              );
+            }),
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerRight,
+              child: _buildBlueButton("Unggah", onPressed: _showUploadModal),
+            ),
           const SizedBox(height: 24),
           const Text("Catatan Revisi Sempro", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
@@ -51,20 +77,23 @@ class TugasAkhirProposalMhsView extends StatelessWidget {
           _buildOutlineButton("Unduh Dokumen"),
         ],
       ),
-    );
-  }
-
-  Widget _buildStatusCard() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: const Color(0xFFE8E8E8), borderRadius: BorderRadius.circular(15), border: Border.all(color: Colors.grey.shade300)),
-      child: const Column(
-        children: [
-          _StatusRow("Unggah Proposal", "Belum"),
-        ],
       ),
     );
   }
+
+  // Widget _buildStatusCard() {
+  //   return Container(
+  //     padding: const EdgeInsets.all(16),
+  //     decoration: BoxDecoration(color: const Color(0xFFE8E8E8), borderRadius: BorderRadius.circular(15), border: Border.all(color: Colors.grey.shade300)),
+  //     child: const Column(
+  //       children: [
+  //         _StatusRow("Judul Proposal", "Belum"),
+  //         Divider(),
+  //         _StatusRow("Unggah Proposal", "Belum"),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildBeritaAcaraPreview() {
     return Container(

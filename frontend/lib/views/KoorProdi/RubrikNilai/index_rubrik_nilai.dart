@@ -245,7 +245,7 @@ class _IndexRubrikNilaiPageState extends State<IndexRubrikNilaiPage> {
                                       color: _currentPage > 0 ? Colors.white : Colors.grey.shade100,
                                     ),
                                     child: Text(
-                                      "Previous",
+                                      " < ",
                                       style: TextStyle(
                                         color: _currentPage > 0 ? const Color(0xFF4FA5FF) : Colors.grey,
                                         fontWeight: FontWeight.bold,
@@ -266,7 +266,7 @@ class _IndexRubrikNilaiPageState extends State<IndexRubrikNilaiPage> {
                                       color: endIndex < filteredRubrik.length ? Colors.white : Colors.grey.shade100,
                                     ),
                                     child: Text(
-                                      "Next",
+                                      " > ",
                                       style: TextStyle(
                                         color: endIndex < filteredRubrik.length ? const Color(0xFF4FA5FF) : Colors.grey,
                                         fontWeight: FontWeight.bold,

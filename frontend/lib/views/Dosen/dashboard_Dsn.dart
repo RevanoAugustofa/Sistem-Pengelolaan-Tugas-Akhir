@@ -310,7 +310,7 @@ class _DashboardDsnState extends State<DashboardDsn> {
       currentIndex: 0,
       onTap: (index) {
         if (index == 1) {
-          Get.toNamed('/tugasAkhirDsn');
+          Get.toNamed('/listMahasiswaDsn');
         } else if (index == 2) {
           Get.toNamed('/jadwalDsn');
         } else if (index == 3) {

@@ -35,6 +35,10 @@ class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
       ),
       body: Column(
         children: [
+
+          _buildInfoMahasiswa(),
+
+
           // --- TAB BAR ---
           Container(
             margin: const EdgeInsets.all(20),
@@ -53,43 +57,43 @@ class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
           ),
 
           // 1. Search Bar
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Container(
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade400),
-              ),
-              child: TextField(
-                controller: searchController,
-                onChanged: (value) {
-                  setState(() {
-                    searchQuery = value;
-                  });
-                },
-                decoration: const InputDecoration(
-                  hintText: "Cari Mahasiswa",
-                  hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                  suffixIcon: Icon(Icons.tune, color: Colors.blue),
-                  contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 20),
+          //   child: Container(
+          //     height: 50,
+          //     decoration: BoxDecoration(
+          //       color: Colors.white,
+          //       borderRadius: BorderRadius.circular(8),
+          //       border: Border.all(color: Colors.grey.shade400),
+          //     ),
+          //     child: TextField(
+          //       controller: searchController,
+          //       onChanged: (value) {
+          //         setState(() {
+          //           searchQuery = value;
+          //         });
+          //       },
+          //       decoration: const InputDecoration(
+          //         hintText: "Cari Mahasiswa",
+          //         hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+          //         suffixIcon: Icon(Icons.tune, color: Colors.blue),
+          //         contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+          //         border: InputBorder.none,
+          //       ),
+          //     ),
+          //   ),
+          // ),
 
-          const Padding(
-            padding: EdgeInsets.fromLTRB(20, 15, 20, 10),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Filter - All",
-                style: TextStyle(color: Colors.grey, fontSize: 13),
-              ),
-            ),
-          ),
+          // const Padding(
+          //   padding: EdgeInsets.fromLTRB(20, 15, 20, 10),
+          //   child: Align(
+          //     alignment: Alignment.centerLeft,
+          //     child: Text(
+          //       "Filter - All",
+          //       style: TextStyle(color: Colors.grey, fontSize: 13),
+          //     ),
+          //   ),
+          // ),
 
           // --- TABLE / LIST AREA ---
           Expanded(
@@ -97,7 +101,60 @@ class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
           ),
         ],
       ),
-      bottomNavigationBar: _buildBottomNav(),
+      // bottomNavigationBar: _buildBottomNav(),
+    );
+  }
+
+  // --- WIDGET BARU: INFO MAHASISWA ---
+  Widget _buildInfoMahasiswa() {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        children: [
+          _buildDetailRow("NPM", "230102078"),
+          const SizedBox(height: 10),
+          _buildDetailRow("Nama", "Revano Augustofa"),
+          const SizedBox(height: 10),
+          // Khusus untuk Judul TA, kita buat Row manual agar teksnya bisa underline dan multiline dengan baik
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 80, // Lebar tetap untuk label
+                child: Text("Judul TA", style: TextStyle(color: Colors.grey.shade800)),
+              ),
+              Expanded(
+                child: Text(
+                  "Sistem Informasi Pengelolaan Tugas Akhir",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline, // Menambahkan garis bawah (underline)
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Widget Helper untuk Baris Info Mahasiswa biasa
+  Widget _buildDetailRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 80, // Memberikan lebar tetap (fixed width) untuk kolom Label agar rapi
+          child: Text(label, style: TextStyle(color: Colors.grey.shade800)),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
     );
   }
 
@@ -139,29 +196,29 @@ class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
   }
 
   //  BOTTOM NAVIGATION BAR ==================================================
-    Widget _buildBottomNav() {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: const Color(0xFF283D70),
-      unselectedItemColor: Colors.grey,
-      backgroundColor: Colors.white,
-      currentIndex: 1,
-      onTap: (index) {
-        if (index == 0) {
-          Get.toNamed('/dashboardDsn'); 
-        } else if (index == 2) {
-          Get.toNamed('/jadwalDsn');
-        } else if (index == 3) {
-          Get.toNamed('/profil', arguments: {'activeRole': 'dosen'});
-        }
-      },
+    // Widget _buildBottomNav() {
+    // return BottomNavigationBar(
+    //   type: BottomNavigationBarType.fixed,
+    //   selectedItemColor: const Color(0xFF283D70),
+    //   unselectedItemColor: Colors.grey,
+    //   backgroundColor: Colors.white,
+    //   currentIndex: 1,
+    //   onTap: (index) {
+    //     if (index == 0) {
+    //       Get.toNamed('/dashboardDsn'); 
+    //     } else if (index == 2) {
+    //       Get.toNamed('/jadwalDsn');
+    //     } else if (index == 3) {
+    //       Get.toNamed('/profil', arguments: {'activeRole': 'dosen'});
+    //     }
+    //   },
       
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Beranda"),
-        BottomNavigationBarItem(icon: Icon(Icons.assignment_outlined), label: "Tugas Akhir"),
-        BottomNavigationBarItem(icon: Icon(Icons.calendar_today_outlined), label: "Jadwal"),
-        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: "Profil"),
-      ],
-    );
-  }
+    //   items: const [
+    //     BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Beranda"),
+    //     BottomNavigationBarItem(icon: Icon(Icons.assignment_outlined), label: "Tugas Akhir"),
+    //     BottomNavigationBarItem(icon: Icon(Icons.calendar_today_outlined), label: "Jadwal"),
+    //     BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: "Profil"),
+    //   ],
+    // );
+  // }
 }

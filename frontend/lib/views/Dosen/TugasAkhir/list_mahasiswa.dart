@@ -159,7 +159,7 @@ class _ListMahasiswaPageState extends State<ListMahasiswaPage> {
           ),
           ElevatedButton(
             onPressed: () {
-               Get.toNamed('/logbookDsn');
+               Get.toNamed('/tugasAkhirDsn');
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF10A8E5),

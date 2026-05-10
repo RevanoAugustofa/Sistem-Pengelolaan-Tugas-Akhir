@@ -21,7 +21,7 @@ class _JadwalKoorPageState extends State<JadwalKoorPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(16, 168, 229, 1),
+        backgroundColor: Color.fromARGB(255, 0, 149, 255),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.chevron_left, color: Colors.white, size: 30),
@@ -29,7 +29,7 @@ class _JadwalKoorPageState extends State<JadwalKoorPage> {
         ),
         title: const Text(
           "Jadwal",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
         ),
         centerTitle: true,
       ),

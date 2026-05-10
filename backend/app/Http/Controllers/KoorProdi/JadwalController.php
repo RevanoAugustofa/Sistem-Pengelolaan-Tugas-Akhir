@@ -5,6 +5,7 @@ namespace App\Http\Controllers\KoorProdi;
 use App\Http\Controllers\Controller;
 use App\Models\JadwalSempro;
 use App\Models\JadwalSidangTA;
+use App\Models\JadwalBimbingan;
 use Illuminate\Http\Request;
 
 class JadwalController extends Controller
@@ -15,6 +16,8 @@ class JadwalController extends Controller
 
         if ($jenisSidang === 'proposal') {
             $data = JadwalSempro::with(['mahasiswa.proposal', 'pengujiUtama', 'pengujiPendamping', 'ruangan'])->get();
+        } elseif ($jenisSidang === 'bimbingan') {
+            $data = JadwalBimbingan::with(['dosen'])->get();
         } else {
             $data = JadwalSidangTA::with(['mahasiswa.proposal', 'pengujiUtama', 'pengujiPendamping', 'ruangan'])->get();
         }
@@ -31,6 +34,8 @@ class JadwalController extends Controller
 
         if ($jenisSidang === 'proposal') {
             $jadwal = JadwalSempro::create($request->all());
+        } elseif ($jenisSidang === 'bimbingan') {
+            $jadwal = JadwalBimbingan::create($request->all());
         } else {
             $jadwal = JadwalSidangTA::create($request->all());
         }

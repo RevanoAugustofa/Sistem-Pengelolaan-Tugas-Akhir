@@ -39,6 +39,7 @@ class KoorProdiController extends GetxController {
   // Jadwal states
   var listJadwalProposal = <JadwalModel>[].obs;
   var listJadwalSidang = <JadwalModel>[].obs;
+  var listJadwalBimbingan = <JadwalModel>[].obs;
   var isLoadingJadwal = false.obs;
 
   // Rekap states
@@ -69,6 +70,7 @@ class KoorProdiController extends GetxController {
     fetchRubrikNilai();
     fetchJadwalProposal();
     fetchJadwalSidang();
+    fetchJadwalBimbingan();
   }
 
   Future<void> fetchProdi() async {
@@ -102,6 +104,18 @@ class KoorProdiController extends GetxController {
       listJadwalSidang.assignAll(data);
     } catch (e) {
       Get.snackbar("Error", "Gagal mengambil data jadwal sidang: $e");
+    } finally {
+      isLoadingJadwal(false);
+    }
+  }
+
+  void fetchJadwalBimbingan() async {
+    try {
+      isLoadingJadwal(true);
+      var data = await _service.getJadwal('bimbingan');
+      listJadwalBimbingan.assignAll(data);
+    } catch (e) {
+      Get.snackbar("Error", "Gagal mengambil data jadwal bimbingan: $e");
     } finally {
       isLoadingJadwal(false);
     }

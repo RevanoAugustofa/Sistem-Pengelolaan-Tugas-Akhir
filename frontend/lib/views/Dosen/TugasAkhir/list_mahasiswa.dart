@@ -17,12 +17,10 @@ class _ListMahasiswaPageState extends State<ListMahasiswaPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: const Color.fromRGBO(16, 168, 229, 1),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.white, size: 30),
-          onPressed: () => Get.back(),
-        ),
+        
         title: const Text(
           "Daftar Mahasiswa",
           style: TextStyle(

@@ -24,11 +24,9 @@ class _JadwalDosenPageState extends State<JadwalDosenPage> {
       backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(16, 168, 229, 1),
+        automaticallyImplyLeading: false,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.white, size: 30),
-          onPressed: () => Get.back(),
-        ),
+        
         title: const Text(
           "Jadwal",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -152,7 +150,7 @@ class _JadwalDosenPageState extends State<JadwalDosenPage> {
         if (index == 0) {
           Get.toNamed('/dashboardDsn');
         } else if (index == 1) {
-          Get.toNamed('/tugasAkhirDsn');
+          Get.toNamed('/listMahasiswaDsn');
         } else if (index == 3) {
           Get.toNamed('/profil', arguments: {'activeRole': 'dosen'});
         }

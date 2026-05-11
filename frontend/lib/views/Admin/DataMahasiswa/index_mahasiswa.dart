@@ -257,7 +257,7 @@ class _IndexMahasiswaPageState extends State<IndexMahasiswaPage> {
                                       color: _currentPage > 0 ? Colors.white : Colors.grey.shade100,
                                     ),
                                     child: Text(
-                                      "Previous",
+                                      " < ",
                                       style: TextStyle(
                                         color: _currentPage > 0 ? const Color(0xFF4FA5FF) : Colors.grey,
                                         fontWeight: FontWeight.bold,
@@ -278,7 +278,7 @@ class _IndexMahasiswaPageState extends State<IndexMahasiswaPage> {
                                       color: endIndex < filteredMahasiswa.length ? Colors.white : Colors.grey.shade100,
                                     ),
                                     child: Text(
-                                      "Next",
+                                      " > ",
                                       style: TextStyle(
                                         color: endIndex < filteredMahasiswa.length ? const Color(0xFF4FA5FF) : Colors.grey,
                                         fontWeight: FontWeight.bold,

@@ -247,7 +247,7 @@ class _IndexDosenPageState extends State<IndexDosenPage> {
                                       color: _currentPage > 0 ? Colors.white : Colors.grey.shade100,
                                     ),
                                     child: Text(
-                                      "Previous",
+                                      " < ",
                                       style: TextStyle(
                                         color: _currentPage > 0 ? const Color(0xFF4FA5FF) : Colors.grey,
                                         fontWeight: FontWeight.bold,
@@ -268,7 +268,7 @@ class _IndexDosenPageState extends State<IndexDosenPage> {
                                       color: endIndex < filteredDosen.length ? Colors.white : Colors.grey.shade100,
                                     ),
                                     child: Text(
-                                      "Next",
+                                      " > ",
                                       style: TextStyle(
                                         color: endIndex < filteredDosen.length ? const Color(0xFF4FA5FF) : Colors.grey,
                                         fontWeight: FontWeight.bold,

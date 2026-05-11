@@ -29,10 +29,17 @@ class AdminController extends GetxController {
   var isLoadingTahunAjar = false.obs;
   var listTahunAjar = <TahunAjar>[].obs;
 
+  // --- JADWAL ---
+  var isLoadingJadwal = false.obs;
+  var listJadwalProposal = <dynamic>[].obs;
+  var listJadwalBimbingan = <dynamic>[].obs;
+  var listJadwalSidang = <dynamic>[].obs;
+
   @override
   void onInit() {
     super.onInit();
     fetchAllData();
+    fetchJadwal();
   }
 
   void fetchAllData() {
@@ -42,6 +49,23 @@ class AdminController extends GetxController {
     fetchProdi();
     fetchRuangan();
     fetchTahunAjar();
+  }
+
+  void fetchJadwal() {
+    // Sementara dummy data karena service belum ada
+    listJadwalProposal.assignAll([
+      {'mahasiswa': {'nama': 'Mahasiswa 1', 'npm': '123'}, 'ruangan': 'Lab Komputer', 'tanggal': '2026-05-15', 'waktu': '08:00 - 10:00', 'penguji1': 'Dosen A', 'penguji2': 'Dosen B'},
+      {'mahasiswa': {'nama': 'Mahasiswa 2', 'npm': '124'}, 'ruangan': 'Ruang 101', 'tanggal': '2026-05-16', 'waktu': '10:00 - 12:00', 'penguji1': 'Dosen C', 'penguji2': 'Dosen D'},
+    ]);
+
+    listJadwalBimbingan.assignAll([
+      {'metode': 'Online', 'tempat': 'Zoom Meeting', 'kuota': 5, 'waktu': '2026-05-12 09:00', 'status': 'tersedia'},
+      {'metode': 'Offline', 'tempat': 'Ruang Dosen', 'kuota': 3, 'waktu': '2026-05-13 14:00', 'status': 'tersedia'},
+    ]);
+
+    listJadwalSidang.assignAll([
+      {'mahasiswa': {'nama': 'Mahasiswa 3', 'npm': '125'}, 'jenis': 'Sidang Akhir', 'ruangan': 'Aula', 'tanggal': '2026-05-20', 'waktu': '13:00 - 15:00'},
+    ]);
   }
 
   // --- HELPER UNTUK ERROR ---

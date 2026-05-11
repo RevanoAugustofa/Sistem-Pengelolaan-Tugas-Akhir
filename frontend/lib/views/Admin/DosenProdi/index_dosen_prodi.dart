@@ -38,7 +38,7 @@ class _IndexDosenProdiPageState extends State<IndexDosenProdiPage> {
           onPressed: () => Get.back(),
         ),
         title: const Text(
-          "Atur Dosen & Prodi",
+          "Dosen Prodi",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -116,7 +116,7 @@ class _IndexDosenProdiPageState extends State<IndexDosenProdiPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text(
-                              "Tabel Dosen & Prodi",
+                              "Tabel Dosen Prodi",
                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: Color(0xFF1E3475)),
                             ),
                             Row(

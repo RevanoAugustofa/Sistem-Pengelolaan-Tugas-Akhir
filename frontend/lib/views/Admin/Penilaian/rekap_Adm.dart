@@ -60,7 +60,7 @@ class _RekapAdminPageState extends State<RekapAdminPage> {
           onPressed: () => Get.back(),
         ),
         title: const Text(
-          "Rekap",
+          "Rekap nilai",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,

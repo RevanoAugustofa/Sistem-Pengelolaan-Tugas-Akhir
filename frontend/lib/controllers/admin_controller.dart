@@ -39,11 +39,17 @@ class AdminController extends GetxController {
   var listJadwalBimbingan = <dynamic>[].obs;
   var listJadwalSidang = <dynamic>[].obs;
 
+  // --- HASIL AKHIR ---
+  var isLoadingHasilAkhir = false.obs;
+  var listHasilSempro = <dynamic>[].obs;
+  var listHasilSidang = <dynamic>[].obs;
+
   @override
   void onInit() {
     super.onInit();
     fetchAllData();
     fetchJadwal();
+    fetchHasilAkhir();
   }
 
   void fetchAllData() {
@@ -69,6 +75,19 @@ class AdminController extends GetxController {
 
     listJadwalSidang.assignAll([
       {'mahasiswa': {'nama': 'Mahasiswa 3', 'npm': '125'}, 'jenis': 'Sidang Akhir', 'ruangan': 'Aula', 'tanggal': '2026-05-20', 'waktu': '13:00 - 15:00'},
+    ]);
+  }
+
+  void fetchHasilAkhir() {
+    // Sementara dummy data
+    listHasilSempro.assignAll([
+      {'mahasiswa': {'nama': 'Arya Dirham', 'npm': '203992'}, 'prodi': 'TI', 'nilai_akhir': 85.5, 'status': 'Lulus'},
+      {'mahasiswa': {'nama': 'Reva Dina', 'npm': '203922'}, 'prodi': 'TI', 'nilai_akhir': 78.0, 'status': 'Lulus'},
+    ]);
+
+    listHasilSidang.assignAll([
+      {'mahasiswa': {'nama': 'Aulia Fitri', 'npm': '205392'}, 'prodi': 'TI', 'nilai_akhir': 88.0, 'status': 'Lulus'},
+      {'mahasiswa': {'nama': 'Budi Santoso', 'npm': '203332'}, 'prodi': 'TI', 'nilai_akhir': 65.0, 'status': 'Tidak Lulus'},
     ]);
   }
 

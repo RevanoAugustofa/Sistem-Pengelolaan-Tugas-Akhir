@@ -54,9 +54,8 @@ import 'package:frontend/views/Mahasiswa/TugasAkhir/tugas_akhir_mhs.dart';
 import 'package:frontend/views/Mahasiswa/dashboard_Mhs.dart';
 import 'package:frontend/views/login_page.dart';
 import 'package:frontend/views/splash_page.dart';
+import 'package:frontend/views/KoorProdi/pendaftar_sidang.dart';
 import 'package:get/get.dart';
-
-
 
 void main() {
   // runApp(const MainApp());
@@ -144,6 +143,7 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/importDataMahasiswaKp', page: () => const kp_import_mhs.ImportDataMahasiswaPage()),
         GetPage(name: '/importJadwalProposalKp', page: () => const ImportJadwalProposalPage() ),
         GetPage(name: '/importJadwalSidangKp', page: () => const ImportJadwalSidangPage() ),
+        GetPage(name: '/pendaftaranSidangKp', page: () => const IndexPendaftarSidangPage() ),
 
 
         //umum

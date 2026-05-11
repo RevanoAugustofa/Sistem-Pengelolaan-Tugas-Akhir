@@ -53,7 +53,7 @@ class _DashboardAdmState extends State<DashboardAdm> {
               childAspectRatio: 0.85,
               children: [
                 _buildMenuItem(Icons.history_edu_outlined, 'Logbook', onTap: () => Get.toNamed('/logbookAdm')),
-                _buildMenuItem(Icons.how_to_reg_outlined, 'Sidang', onTap: () => Get.toNamed('/pendaftaranSidangAdm')),
+                _buildMenuItem(Icons.how_to_reg_outlined, 'Pendaftar Sidang', onTap: () => Get.toNamed('/pendaftaranSidangAdm')),
                 _buildMenuItem(Icons.verified_user_outlined, 'Rekap Pembimbing & Penguji', onTap: () => Get.toNamed('/rekapPembimbingPengujiAdm')),
                 _buildMenuItem(Icons.verified_user_outlined, 'Dosen Prodi', onTap: () => Get.toNamed('/dosenProdiAdm')),
                 _buildMenuItem(Icons.upload_file_outlined, 'Imp. Mahasiswa', onTap: () => Get.toNamed('/importDataMahasiswaAdm')),

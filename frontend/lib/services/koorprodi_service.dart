@@ -10,6 +10,7 @@ import '../models/mahasiswa_model.dart';
 import '../models/tahun_ajar_model.dart';
 import '../models/rubrik_nilai_model.dart';
 import '../models/jadwal_model.dart';
+import '../models/daftar_sidang_model.dart';
 
 class KoorProdiService {
   final String baseUrl = AppConstants.baseUrl;
@@ -17,6 +18,35 @@ class KoorProdiService {
   Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
+  }
+
+  Future<List<DaftarSidangModel>> getDaftarSidang() async {
+    final token = await _getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/koorprodi/daftar-sidang"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => DaftarSidangModel.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data pendaftar sidang");
+  }
+
+  Future<bool> deleteDaftarSidang(int id) async {
+    final token = await _getToken();
+    final response = await http.delete(
+      Uri.parse("$baseUrl/koorprodi/daftar-sidang/$id"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+    return response.statusCode == 200;
   }
 
   Future<List<JadwalModel>> getJadwal(String jenisSidang) async {

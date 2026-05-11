@@ -145,7 +145,7 @@ class _PendaftaranSidangAdminPageState extends State<PendaftaranSidangAdminPage>
                                 ),
                               ),
                             ),
-                            const Text("entries", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
+                            // const Text("entries", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
                           ],
                         ),
                       ],
@@ -216,7 +216,7 @@ class _PendaftaranSidangAdminPageState extends State<PendaftaranSidangAdminPage>
                                   color: _currentPage > 0 ? Colors.white : Colors.grey.shade100,
                                 ),
                                 child: Text(
-                                  "Previous",
+                                  " < ",
                                   style: TextStyle(
                                     color: _currentPage > 0 ? const Color(0xFF4FA5FF) : Colors.grey,
                                     fontWeight: FontWeight.bold,
@@ -238,7 +238,7 @@ class _PendaftaranSidangAdminPageState extends State<PendaftaranSidangAdminPage>
                                   color: endIndex < filteredMahasiswa.length ? Colors.white : Colors.grey.shade100,
                                 ),
                                 child: Text(
-                                  "Next",
+                                  " > ",
                                   style: TextStyle(
                                     color: endIndex < filteredMahasiswa.length ? const Color(0xFF4FA5FF) : Colors.grey,
                                     fontWeight: FontWeight.bold,

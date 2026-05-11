@@ -8,6 +8,7 @@ import '../models/dosen_model.dart';
 import '../models/mahasiswa_model.dart';
 import '../models/tahun_ajar_model.dart';
 import '../models/prodi_model.dart';
+import '../models/daftar_sidang_model.dart';
 import '../services/koorprodi_service.dart';
 
 class KoorProdiController extends GetxController {
@@ -18,6 +19,10 @@ class KoorProdiController extends GetxController {
   var listPengajuan = <PengajuanPembimbingModel>[].obs;
   var listDosen = <Dosen>[].obs;
   
+  // Daftar Sidang management states
+  var listDaftarSidang = <DaftarSidangModel>[].obs;
+  var isLoadingDaftarSidang = false.obs;
+
   // Mahasiswa management states
   var listMahasiswa = <Mahasiswa>[].obs;
   var listTahunAjar = <TahunAjar>[].obs;
@@ -554,6 +559,34 @@ class KoorProdiController extends GetxController {
       Get.snackbar("Error", "Gagal mengambil data rekap: $e");
     } finally {
       isLoadingRekap(false);
+    }
+  }
+
+  void fetchDaftarSidang() async {
+    try {
+      isLoadingDaftarSidang(true);
+      var data = await _service.getDaftarSidang();
+      listDaftarSidang.assignAll(data);
+    } catch (e) {
+      Get.snackbar("Error", "Gagal mengambil data pendaftar sidang: $e");
+    } finally {
+      isLoadingDaftarSidang(false);
+    }
+  }
+
+  Future<void> deleteDaftarSidang(int id) async {
+    try {
+      isLoadingDaftarSidang(true);
+      bool success = await _service.deleteDaftarSidang(id);
+      if (success) {
+        fetchDaftarSidang();
+        Get.snackbar("Sukses", "Data pendaftar sidang berhasil dihapus",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingDaftarSidang(false);
     }
   }
 }

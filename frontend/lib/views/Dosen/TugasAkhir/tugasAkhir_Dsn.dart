@@ -21,7 +21,7 @@ class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(16, 168, 229, 1),
+        backgroundColor: Color(0xFF2196F3),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.chevron_left, color: Colors.white, size: 30),
@@ -44,7 +44,7 @@ class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
             margin: const EdgeInsets.all(20),
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
-              color: const Color(0xFF7E89AC),
+              color: const Color.fromARGB(255, 0, 149, 255),
               borderRadius: BorderRadius.circular(30),
             ),
             child: Row(
@@ -168,7 +168,7 @@ class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isActive ? const Color(0xFF1E3475) : Colors.transparent,
+            color: isActive ? Color.fromARGB(74, 0, 0, 0): Colors.transparent,
             borderRadius: BorderRadius.circular(25),
           ),
           child: Text(

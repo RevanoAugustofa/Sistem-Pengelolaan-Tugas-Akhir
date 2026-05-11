@@ -18,7 +18,7 @@ class _ListMahasiswaPageState extends State<ListMahasiswaPage> {
       backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: const Color.fromRGBO(16, 168, 229, 1),
+        backgroundColor: Color(0xFF2196F3),
         elevation: 0,
         
         title: const Text(

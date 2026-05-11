@@ -31,7 +31,7 @@ class _JadwalAdminPageState extends State<JadwalAdminPage> {
         ),
         title: const Text(
           "Jadwal",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

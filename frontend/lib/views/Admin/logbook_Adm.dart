@@ -61,7 +61,7 @@ class _LogbookAdminPageState extends State<LogbookAdminPage> {
         ),
         title: const Text(
           "Logbook",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

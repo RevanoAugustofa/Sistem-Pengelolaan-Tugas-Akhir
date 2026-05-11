@@ -38,7 +38,7 @@ class _IndexProdiPageState extends State<IndexProdiPage> {
         ),
         title: const Text(
           "Data Program Studi",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

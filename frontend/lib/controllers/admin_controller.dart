@@ -44,12 +44,17 @@ class AdminController extends GetxController {
   var listHasilSempro = <dynamic>[].obs;
   var listHasilSidang = <dynamic>[].obs;
 
+  // --- PENGAJUAN PEMBIMBING ---
+  var isLoadingPengajuanPembimbing = false.obs;
+  var listPengajuanPembimbing = <dynamic>[].obs;
+
   @override
   void onInit() {
     super.onInit();
     fetchAllData();
     fetchJadwal();
     fetchHasilAkhir();
+    fetchPengajuanPembimbing();
   }
 
   void fetchAllData() {
@@ -88,6 +93,14 @@ class AdminController extends GetxController {
     listHasilSidang.assignAll([
       {'mahasiswa': {'nama': 'Aulia Fitri', 'npm': '205392'}, 'prodi': 'TI', 'nilai_akhir': 88.0, 'status': 'Lulus'},
       {'mahasiswa': {'nama': 'Budi Santoso', 'npm': '203332'}, 'prodi': 'TI', 'nilai_akhir': 65.0, 'status': 'Tidak Lulus'},
+    ]);
+  }
+
+  void fetchPengajuanPembimbing() {
+    // Sementara dummy data
+    listPengajuanPembimbing.assignAll([
+      {'mahasiswa': {'nama': 'Arya Dirham', 'npm': '203992'}, 'prodi': 'TI', 'judul': 'Pengembangan SI TA', 'pembimbing1': 'Dosen A', 'pembimbing2': 'Dosen B', 'status': 'Pending'},
+      {'mahasiswa': {'nama': 'Reva Dina', 'npm': '203922'}, 'prodi': 'TI', 'judul': 'Sistem Pakar Penyakit', 'pembimbing1': 'Dosen C', 'pembimbing2': 'Dosen D', 'status': 'Disetujui'},
     ]);
   }
 

@@ -61,7 +61,7 @@ class _RekapAdminPageState extends State<RekapAdminPage> {
         ),
         title: const Text(
           "Rekap nilai",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

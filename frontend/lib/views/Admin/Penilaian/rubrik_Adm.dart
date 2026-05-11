@@ -61,7 +61,7 @@ class _RubrikAdminPageState extends State<RubrikAdminPage> {
         ),
         title: const Text(
           "Rubrik",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

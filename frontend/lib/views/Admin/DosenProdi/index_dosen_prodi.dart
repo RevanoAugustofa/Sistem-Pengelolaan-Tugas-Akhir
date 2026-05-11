@@ -39,7 +39,7 @@ class _IndexDosenProdiPageState extends State<IndexDosenProdiPage> {
         ),
         title: const Text(
           "Dosen Prodi",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

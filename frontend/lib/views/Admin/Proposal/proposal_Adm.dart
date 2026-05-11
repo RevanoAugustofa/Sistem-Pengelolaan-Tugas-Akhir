@@ -61,7 +61,7 @@ class _ProposalAdminPageState extends State<ProposalAdminPage> {
         ),
         title: const Text(
           "Proposal",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

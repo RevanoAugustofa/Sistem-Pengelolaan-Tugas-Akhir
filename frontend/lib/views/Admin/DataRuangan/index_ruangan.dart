@@ -39,7 +39,7 @@ class _IndexRuanganPageState extends State<IndexRuanganPage> {
         ),
         title: const Text(
           "Data Ruangan Sidang",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

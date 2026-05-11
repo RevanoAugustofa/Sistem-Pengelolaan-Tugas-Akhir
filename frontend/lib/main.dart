@@ -19,6 +19,7 @@ import 'package:frontend/views/Admin/Import/importdataMahasiswa.dart';
 import 'package:frontend/views/Admin/Jadwal/jadwal_Admin.dart';
 import 'package:frontend/views/Admin/logbook_Adm.dart';
 import 'package:frontend/views/Admin/HasilAkhir/hasilAkhir_Adm.dart';
+import 'package:frontend/views/Admin/pengajuan_pembimbing_Adm.dart';
 import 'package:frontend/views/Admin/Penilaian/rekap_Adm.dart';
 import 'package:frontend/views/Admin/Penilaian/rubrik_Adm.dart';
 import 'package:frontend/views/Admin/Proposal/proposal_Adm.dart';
@@ -96,6 +97,7 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/proposalAdm', page: () => ProposalAdminPage() ),
         GetPage(name: '/logbookAdm', page: () => LogbookAdminPage() ),
         GetPage(name: '/hasilAdm', page: () => const HasilAkhirAdminPage() ),
+        GetPage(name: '/pengajuanPembimbingAdm', page: () => const PengajuanPembimbingAdminPage() ),
         GetPage(name: '/rekapAdm', page: () => RekapAdminPage() ),
         GetPage(name: '/rubrikAdm', page: () => RubrikAdminPage() ),
         GetPage(name: '/pendaftaranSidangAdm', page: () => PendaftaranSidangAdminPage() ),

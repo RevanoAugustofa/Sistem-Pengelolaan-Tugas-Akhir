@@ -39,7 +39,7 @@ class _IndexMahasiswaPageState extends State<IndexMahasiswaPage> {
         ),
         title: const Text(
           "Data Mahasiswa",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

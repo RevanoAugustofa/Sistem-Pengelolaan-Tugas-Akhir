@@ -61,7 +61,7 @@ class _PendaftaranSidangAdminPageState extends State<PendaftaranSidangAdminPage>
         ),
         title: const Text(
           "Pendaftaran Sidang",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

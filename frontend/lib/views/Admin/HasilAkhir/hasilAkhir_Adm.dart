@@ -30,7 +30,7 @@ class _HasilAkhirAdminPageState extends State<HasilAkhirAdminPage> {
         ),
         title: const Text(
           "Hasil Akhir",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),

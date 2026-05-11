@@ -56,7 +56,7 @@ class _DashboardAdmState extends State<DashboardAdm> {
                 _buildMenuItem(Icons.how_to_reg_outlined, 'Pendaftar Sidang', onTap: () => Get.toNamed('/pendaftaranSidangAdm')),
                 _buildMenuItem(Icons.verified_user_outlined, 'Rekap Pembimbing & Penguji', onTap: () => Get.toNamed('/rekapPembimbingPengujiAdm')),
                 _buildMenuItem(Icons.verified_user_outlined, 'Dosen Prodi', onTap: () => Get.toNamed('/dosenProdiAdm')),
-                _buildMenuItem(Icons.verified_user_outlined, 'Pengajuan Pembimbing', onTap: () => Get.toNamed('/')),
+                _buildMenuItem(Icons.verified_user_outlined, 'Pengajuan Pembimbing', onTap: () => Get.toNamed('/pengajuanPembimbingAdm')),
                 _buildMenuItem(Icons.settings_outlined, 'Profil', onTap: () =>  Get.toNamed('/profil', arguments: {'activeRole': 'admin'})),
               ],
             ),
@@ -222,12 +222,13 @@ class _DashboardAdmState extends State<DashboardAdm> {
       child: Row(
         children: [
           Container(
-            height: 45,
-            width: 45,
+            height: 60,
+            width: 60,
             decoration: BoxDecoration(
-              color: const Color(0xFFD9D9D9),
-              borderRadius: BorderRadius.circular(10),
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(12),
             ),
+            child: const Icon(Icons.person, size: 30),
           ),
           const SizedBox(width: 16),
           Expanded(

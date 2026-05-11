@@ -133,7 +133,7 @@ class _IndexTahunAjarPageState extends State<IndexTahunAjarPage> {
                           children: [
                             const Text(
                               "Tabel Tahun Ajar",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: Color(0xFF1E3475)),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Color(0xFF1E3475)),
                             ),
                             Row(
                               children: [

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LogbookAdminPage extends StatefulWidget {
-  const LogbookAdminPage({super.key});
+class HasilAdminPage extends StatefulWidget {
+  const HasilAdminPage({super.key});
 
   @override
-  State<LogbookAdminPage> createState() => _LogbookAdminPageState();
+  State<HasilAdminPage> createState() => _HasilAdminPageState();
 }
 
-class _LogbookAdminPageState extends State<LogbookAdminPage> {
+class _HasilAdminPageState extends State<HasilAdminPage> {
   final TextEditingController searchController = TextEditingController();
   int _rowsPerPage = 5;
   int _currentPage = 0;
@@ -60,7 +60,7 @@ class _LogbookAdminPageState extends State<LogbookAdminPage> {
           onPressed: () => Get.back(),
         ),
         title: const Text(
-          "Logbook",
+          "Hasil Akhir",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -87,7 +87,7 @@ class _LogbookAdminPageState extends State<LogbookAdminPage> {
                   });
                 },
                 decoration: const InputDecoration(
-                  hintText: "Cari Logbook",
+                  hintText: "Cari Hasil",
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
                   suffixIcon: Icon(Icons.tune, color: Colors.blue),
                   contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
@@ -114,7 +114,7 @@ class _LogbookAdminPageState extends State<LogbookAdminPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          "Data Logbook",
+                          "Data Hasil",
                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: Color(0xFF1E3475)),
                         ),
                         Row(
@@ -145,7 +145,7 @@ class _LogbookAdminPageState extends State<LogbookAdminPage> {
                                 ),
                               ),
                             ),
-                            const Text("entries", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
+                            // const Text("entries", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
                           ],
                         ),
                       ],
@@ -216,7 +216,7 @@ class _LogbookAdminPageState extends State<LogbookAdminPage> {
                                   color: _currentPage > 0 ? Colors.white : Colors.grey.shade100,
                                 ),
                                 child: Text(
-                                  "Previous",
+                                  " < ",
                                   style: TextStyle(
                                     color: _currentPage > 0 ? const Color(0xFF4FA5FF) : Colors.grey,
                                     fontWeight: FontWeight.bold,
@@ -238,7 +238,7 @@ class _LogbookAdminPageState extends State<LogbookAdminPage> {
                                   color: endIndex < filteredMahasiswa.length ? Colors.white : Colors.grey.shade100,
                                 ),
                                 child: Text(
-                                  "Next",
+                                  " > ",
                                   style: TextStyle(
                                     color: endIndex < filteredMahasiswa.length ? const Color(0xFF4FA5FF) : Colors.grey,
                                     fontWeight: FontWeight.bold,

@@ -29,6 +29,10 @@ class AdminController extends GetxController {
   var isLoadingTahunAjar = false.obs;
   var listTahunAjar = <TahunAjar>[].obs;
 
+  // --- REKAP ---
+  var isLoadingRekap = false.obs;
+  var listRekap = <dynamic>[].obs;
+
   // --- JADWAL ---
   var isLoadingJadwal = false.obs;
   var listJadwalProposal = <dynamic>[].obs;
@@ -337,6 +341,19 @@ class AdminController extends GetxController {
       Get.snackbar("Error", e.toString());
     } finally {
       isLoadingDosenProdi(false);
+    }
+  }
+
+  // --- REKAP ---
+  Future<void> fetchRekap() async {
+    try {
+      isLoadingRekap(true);
+      var data = await _service.getRekap();
+      listRekap.assignAll(data);
+    } catch (e) {
+      print("Error fetchRekap: $e");
+    } finally {
+      isLoadingRekap(false);
     }
   }
 }

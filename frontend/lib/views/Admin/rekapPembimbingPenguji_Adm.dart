@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../controllers/admin_controller.dart';
 
 class RekapPembimbingPengujiAdminPage extends StatefulWidget {
   const RekapPembimbingPengujiAdminPage({super.key});
@@ -9,8 +10,15 @@ class RekapPembimbingPengujiAdminPage extends StatefulWidget {
 }
 
 class _RekapPembimbingPengujiAdminPageState extends State<RekapPembimbingPengujiAdminPage> {
+  final AdminController controller = Get.put(AdminController());
   final TextEditingController searchController = TextEditingController();
   String searchQuery = "";
+
+  @override
+  void initState() {
+    super.initState();
+    controller.fetchRekap();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,115 +32,225 @@ class _RekapPembimbingPengujiAdminPageState extends State<RekapPembimbingPenguji
           onPressed: () => Get.back(),
         ),
         title: const Text(
-          "Rekap Pembimbing & Penguji",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          "Rekap Pembimbing Penguji",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 1. Search Bar
-            Container(
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade400),
-              ),
-              child: TextField(
-                controller: searchController,
-                onChanged: (value) {
-                  setState(() {
-                    searchQuery = value;
-                  });
-                },
-                decoration: const InputDecoration(
-                  hintText: "Cari Mahasiswa",
-                  hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                  suffixIcon: Icon(Icons.tune, color: Colors.blue),
-                  contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            const Text(
-              "Filter - All",
-              style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 20),
+      body: Obx(() {
+        if (controller.isLoadingRekap.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-            // --- List Card Mahasiswa ---
-            _buildStudentCard(
-              nama: "Revano Augustofa",
-              npm: "230102071",
-              kelas: "TI-C",
-              status: "Disetujui",
-            ),
-            _buildStudentCard(
-              nama: "Arya Awikwok",
-              npm: "230102071",
-              kelas: "TI-C",
-              status: "Disetujui",
-            ),
-            _buildStudentCard(
-              nama: "Arya Awikwok",
-              npm: "230102071",
-              kelas: "TI-C",
-              status: "Disetujui",
-            ),
-            _buildStudentCard(
-              nama: "Alle Danaralle",
-              npm: "230102071",
-              kelas: "TI-C",
-              status: "Ditolak",
-            ),
-            _buildStudentCard(
-              nama: "Alle Danaralle",
-              npm: "230102071",
-              kelas: "TI-C",
-              status: "Menunggu",
-            ),
+        List<dynamic> listRekap = controller.listRekap.toList();
 
-            const SizedBox(height: 30),
+        if (searchQuery.isNotEmpty) {
+          listRekap = listRekap.where((item) {
+            final nama = item['nama_mahasiswa']?.toString().toLowerCase() ?? "";
+            final nim = item['nim']?.toString().toLowerCase() ?? "";
+            final query = searchQuery.toLowerCase();
+            return nama.contains(query) || nim.contains(query);
+          }).toList();
+        }
 
-            // --- Pagination ---
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return RefreshIndicator(
+          onRefresh: () async => controller.fetchRekap(),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Menampilkan 5 dari 10 data",
-                  style: TextStyle(fontSize: 13, color: Colors.black54),
+                // 1. Search Bar
+                Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade400),
+                  ),
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      hintText: "Cari Nama atau NIM",
+                      hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                      suffixIcon: Icon(Icons.search, color: Colors.blue),
+                      contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                      border: InputBorder.none,
+                    ),
+                  ),
                 ),
+                const SizedBox(height: 15),
+                const Text(
+                  "Filter - All",
+                  style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: 20),
+
+                // --- Data Table Rekap ---
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  color: Colors.white,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Text(
+                          "Data Rekap",
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF1E3475)),
+                        ),
+                      ),
+
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width - 72),
+                          child: DataTable(
+                            headingRowColor: WidgetStateProperty.all(const Color.fromARGB(255, 110, 110, 110)),
+                            headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
+                            columnSpacing: 20,
+                            columns: const [
+                              DataColumn(label: Text('No')),
+                              DataColumn(label: Text('Mahasiswa')),
+                              DataColumn(label: Text('Pembimbing')),
+                              DataColumn(label: Text('Penguji Sempro')),
+                              DataColumn(label: Text('Penguji Sidang')),
+                              DataColumn(label: Text('Status')),
+                              DataColumn(label: Text('Aksi')),
+                            ],
+                            rows: _buildTableRows(listRekap),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                // --- Pagination ---
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildPageNode("1", isActive: false),
-                    const SizedBox(width: 5),
-                    _buildPageNode("2", isActive: true),
-                    const SizedBox(width: 5),
-                    _buildPageNode("...", isActive: false, isGreyBackground: true),
+                    Text(
+                      "Menampilkan ${listRekap.length} data",
+                      style: const TextStyle(fontSize: 13, color: Colors.black54),
+                    ),
+                    Row(
+                      children: [
+                        _buildPageNode("1", isActive: true),
+                      ],
+                    ),
                   ],
                 ),
+                const SizedBox(height: 20),
               ],
             ),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
+          ),
+        );
+      }),
     );
   }
 
-  // --- WIDGET HELPER: Card Mahasiswa ---
-  Widget _buildStudentCard({
-    required String nama,
-    required String npm,
-    required String kelas,
-    required String status,
-  }) {
-    // Logika Warna Badge Status
+  // --- WIDGET HELPER: Table Rows ---
+  List<DataRow> _buildTableRows(List<dynamic> listRekap) {
+    return listRekap.asMap().entries.map((entry) {
+      int index = entry.key;
+      var item = entry.value;
+
+      // Extracting Pembimbing
+      String pembimbing = "-";
+      if (item['pengajuan_pembimbing'] != null) {
+        String p1 = item['pengajuan_pembimbing']['pembimbing_utama']?['nama_dosen'] ?? "-";
+        String p2 = item['pengajuan_pembimbing']['pembimbing_pendamping']?['nama_dosen'] ?? "-";
+        pembimbing = "1. $p1\n2. $p2";
+      }
+
+      // Extracting Penguji Sempro
+      String pengujiSempro = "-";
+      if (item['jadwal_sempro'] != null) {
+        String u1 = item['jadwal_sempro']['penguji_utama']?['nama_dosen'] ?? "-";
+        String u2 = item['jadwal_sempro']['penguji_pendamping']?['nama_dosen'] ?? "-";
+        pengujiSempro = "1. $u1\n2. $u2";
+      }
+
+      // Extracting Penguji Sidang
+      String pengujiSidang = "-";
+      if (item['jadwal_sidang'] != null) {
+        String s1 = item['jadwal_sidang']['penguji_utama']?['nama_dosen'] ?? "-";
+        String s2 = item['jadwal_sidang']['penguji_pendamping']?['nama_dosen'] ?? "-";
+        pengujiSidang = "1. $s1\n2. $s2";
+      }
+
+      String status = item['pengajuan_pembimbing']?['status'] ?? "Menunggu";
+      // Capitalize first letter
+      status = status[0].toUpperCase() + status.substring(1);
+
+      return DataRow(
+        color: WidgetStateProperty.resolveWith<Color?>((states) {
+          if (index % 2 != 0) return Colors.grey.withOpacity(0.05);
+          return null;
+        }),
+        cells: [
+          DataCell(Text("${index + 1}")),
+          DataCell(Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(item['nama_mahasiswa'] ?? "-", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+              Text(item['nim'] ?? "-", style: const TextStyle(fontSize: 11, color: Colors.grey)),
+            ],
+          )),
+          DataCell(Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(pembimbing, style: const TextStyle(fontSize: 11)),
+          )),
+          DataCell(Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(pengujiSempro, style: const TextStyle(fontSize: 11)),
+          )),
+          DataCell(Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(pengujiSidang, style: const TextStyle(fontSize: 11)),
+          )),
+          DataCell(_buildStatusBadge(status)),
+          DataCell(
+            SizedBox(
+              height: 28,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Aksi validasi
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4FA5FF),
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                child: const Text(
+                  "validasi",
+                  style: TextStyle(color: Colors.white, fontSize: 10),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }).toList();
+  }
+
+  // --- WIDGET HELPER: Status Badge ---
+  Widget _buildStatusBadge(String status) {
     Color badgeColor;
     Color textColor;
     BoxBorder? badgeBorder;
@@ -151,82 +269,19 @@ class _RekapPembimbingPengujiAdminPageState extends State<RekapPembimbingPenguji
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade200),
+        color: badgeColor,
+        borderRadius: BorderRadius.circular(4),
+        border: badgeBorder,
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Info Mahasiswa (Kiri)
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  nama,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "$npm   $kelas",
-                  style: const TextStyle(color: Colors.black54, fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-          
-          // Badge & Tombol (Kanan)
-          Row(
-            children: [
-              // Status Badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: badgeColor,
-                  borderRadius: BorderRadius.circular(4),
-                  border: badgeBorder,
-                ),
-                child: Text(
-                  status,
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              
-              // Tombol Validasi
-              SizedBox(
-                height: 30,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Aksi validasi
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4FA5FF),
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                  child: const Text(
-                    "validasi",
-                    style: TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+      child: Text(
+        status,
+        style: TextStyle(
+          color: textColor,
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

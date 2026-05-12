@@ -8,6 +8,7 @@ import '../models/ruangan_model.dart';
 import '../models/tahun_ajar_model.dart';
 import '../models/rubrik_nilai_model.dart';
 import '../models/proposal_model.dart';
+import '../models/pengajuan_pembimbing_model.dart';
 import '../services/admin_service.dart';
 
 class AdminController extends GetxController {
@@ -52,9 +53,8 @@ class AdminController extends GetxController {
   var listHasilSempro = <dynamic>[].obs;
   var listHasilSidang = <dynamic>[].obs;
 
-  // --- PENGAJUAN PEMBIMBING ---
   var isLoadingPengajuanPembimbing = false.obs;
-  var listPengajuanPembimbing = <dynamic>[].obs;
+  var listPengajuanPembimbing = <PengajuanPembimbingModel>[].obs;
 
   @override
   void onInit() {
@@ -74,6 +74,7 @@ class AdminController extends GetxController {
     fetchTahunAjar();
     fetchRubrikNilai();
     fetchProposal();
+    fetchPengajuanPembimbing();
   }
 
   void fetchJadwal() {
@@ -106,12 +107,16 @@ class AdminController extends GetxController {
     ]);
   }
 
-  void fetchPengajuanPembimbing() {
-    // Sementara dummy data
-    listPengajuanPembimbing.assignAll([
-      {'mahasiswa': {'nama': 'Arya Dirham', 'npm': '203992'}, 'prodi': 'TI', 'judul': 'Pengembangan SI TA', 'pembimbing1': 'Dosen A', 'pembimbing2': 'Dosen B', 'status': 'Pending'},
-      {'mahasiswa': {'nama': 'Reva Dina', 'npm': '203922'}, 'prodi': 'TI', 'judul': 'Sistem Pakar Penyakit', 'pembimbing1': 'Dosen C', 'pembimbing2': 'Dosen D', 'status': 'Disetujui'},
-    ]);
+  void fetchPengajuanPembimbing() async {
+    try {
+      isLoadingPengajuanPembimbing(true);
+      var data = await _service.getPengajuanPembimbing();
+      listPengajuanPembimbing.assignAll(data);
+    } catch (e) {
+      print("Error fetchPengajuanPembimbing: $e");
+    } finally {
+      isLoadingPengajuanPembimbing(false);
+    }
   }
 
   // --- HELPER UNTUK ERROR ---

@@ -9,6 +9,7 @@ import '../models/ruangan_model.dart';
 import '../models/tahun_ajar_model.dart';
 import '../models/rubrik_nilai_model.dart';
 import '../models/proposal_model.dart';
+import '../models/pengajuan_pembimbing_model.dart';
 import '../helpers/constants.dart';
 
 class AdminService {
@@ -353,5 +354,19 @@ class AdminService {
       return data.map((e) => ProposalWithMahasiswa.fromJson(e)).toList();
     }
     throw Exception("Gagal mengambil data proposal");
+  }
+
+  // --- PENGAJUAN PEMBIMBING ---
+  Future<List<PengajuanPembimbingModel>> getPengajuanPembimbing() async {
+    final token = await _getToken();
+    final response = await http.get(Uri.parse("$baseUrl/admin/pengajuan-pembimbing"), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => PengajuanPembimbingModel.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data pengajuan pembimbing");
   }
 }

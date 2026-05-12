@@ -76,6 +76,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
     // Proposal for Admin
     Route::get('/admin/proposal', [\App\Http\Controllers\Admin\ProposalController::class, 'index']);
+
+    // Pengajuan Pembimbing for Admin
+    Route::get('/admin/pengajuan-pembimbing', [\App\Http\Controllers\Admin\PengajuanPembimbingController::class, 'index']);
 });
 
 

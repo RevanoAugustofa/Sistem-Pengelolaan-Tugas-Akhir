@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/admin_controller.dart';
+import '../../models/pengajuan_pembimbing_model.dart';
 
 class PengajuanPembimbingAdminPage extends StatefulWidget {
   const PengajuanPembimbingAdminPage({super.key});
@@ -40,16 +41,17 @@ class _PengajuanPembimbingAdminPageState extends State<PengajuanPembimbingAdminP
 
         var filteredData = controller.listPengajuanPembimbing.where((item) {
           final query = searchQuery.toLowerCase();
-          return (item['mahasiswa']['nama']?.toLowerCase().contains(query) ?? false) ||
-                 (item['mahasiswa']['npm']?.toLowerCase().contains(query) ?? false) ||
-                 (item['prodi']?.toLowerCase().contains(query) ?? false);
+          return (item.mahasiswa?.namaMahasiswa?.toLowerCase().contains(query) ?? false) ||
+                 (item.mahasiswa?.npm?.toLowerCase().contains(query) ?? false) ||
+                 (item.mahasiswa?.prodi?.toLowerCase().contains(query) ?? false) ||
+                 (item.judulTa?.toLowerCase().contains(query) ?? false);
         }).toList();
 
         int startIndex = _currentPage * _rowsPerPage;
         int endIndex = startIndex + _rowsPerPage;
         if (endIndex > filteredData.length) endIndex = filteredData.length;
         
-        var displayedData = filteredData.isEmpty ? [] : filteredData.sublist(startIndex, endIndex);
+        List<PengajuanPembimbingModel> displayedData = filteredData.isEmpty ? [] : filteredData.sublist(startIndex, endIndex);
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -73,7 +75,7 @@ class _PengajuanPembimbingAdminPageState extends State<PengajuanPembimbingAdminP
                     });
                   },
                   decoration: const InputDecoration(
-                    hintText: "Cari Mahasiswa",
+                    hintText: "Cari Mahasiswa / Judul",
                     hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
                     suffixIcon: Icon(Icons.tune, color: Colors.blue),
                     contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
@@ -172,35 +174,35 @@ class _PengajuanPembimbingAdminPageState extends State<PengajuanPembimbingAdminP
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(item['mahasiswa']['nama'] ?? "-", style: const TextStyle(fontWeight: FontWeight.bold)),
-                                      Text(item['mahasiswa']['npm'] ?? "-", style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                                      Text(item.mahasiswa?.namaMahasiswa ?? "-", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                      Text(item.mahasiswa?.npm ?? "-", style: const TextStyle(fontSize: 12, color: Colors.grey)),
                                     ],
                                   )),
-                                  DataCell(Text(item['prodi'] ?? "-")),
+                                  DataCell(Text(item.mahasiswa?.prodi ?? "-")),
                                   DataCell(SizedBox(
                                     width: 150,
-                                    child: Text(item['judul'] ?? "-", overflow: TextOverflow.ellipsis),
+                                    child: Text(item.judulTa ?? "-", overflow: TextOverflow.ellipsis),
                                   )),
                                   DataCell(Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text("1: ${item['pembimbing1'] ?? "-"}", style: const TextStyle(fontSize: 11)),
-                                      Text("2: ${item['pembimbing2'] ?? "-"}", style: const TextStyle(fontSize: 11)),
+                                      Text("1: ${item.pembimbingUtama?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 11)),
+                                      Text("2: ${item.pembimbingPendamping?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 11)),
                                     ],
                                   )),
                                   DataCell(Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                     decoration: BoxDecoration(
-                                      color: (item['status'] == 'Disetujui' ? Colors.green : (item['status'] == 'Pending' ? Colors.orange : Colors.red)).withOpacity(0.1),
+                                      color: (item.status == 'disetujui' ? Colors.green : (item.status == 'diajukan' ? Colors.orange : Colors.red)).withOpacity(0.1),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
-                                      item['status'] ?? "-",
+                                      item.status?.toUpperCase() ?? "-",
                                       style: TextStyle(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
-                                        color: item['status'] == 'Disetujui' ? Colors.green : (item['status'] == 'Pending' ? Colors.orange : Colors.red),
+                                        color: item.status == 'disetujui' ? Colors.green : (item.status == 'diajukan' ? Colors.orange : Colors.red),
                                       ),
                                     ),
                                   )),

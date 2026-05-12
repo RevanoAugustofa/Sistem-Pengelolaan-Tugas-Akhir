@@ -96,17 +96,19 @@ class AdminController extends GetxController {
     }
   }
 
-  void fetchHasilAkhir() {
-    // Sementara dummy data
-    listHasilSempro.assignAll([
-      {'mahasiswa': {'nama': 'Arya Dirham', 'npm': '203992'}, 'prodi': 'TI', 'nilai_akhir': 85.5, 'status': 'Lulus'},
-      {'mahasiswa': {'nama': 'Reva Dina', 'npm': '203922'}, 'prodi': 'TI', 'nilai_akhir': 78.0, 'status': 'Lulus'},
-    ]);
+  void fetchHasilAkhir() async {
+    try {
+      isLoadingHasilAkhir(true);
+      var sempro = await _service.getHasilSempro();
+      listHasilSempro.assignAll(sempro);
 
-    listHasilSidang.assignAll([
-      {'mahasiswa': {'nama': 'Aulia Fitri', 'npm': '205392'}, 'prodi': 'TI', 'nilai_akhir': 88.0, 'status': 'Lulus'},
-      {'mahasiswa': {'nama': 'Budi Santoso', 'npm': '203332'}, 'prodi': 'TI', 'nilai_akhir': 65.0, 'status': 'Tidak Lulus'},
-    ]);
+      var sidang = await _service.getHasilSidang();
+      listHasilSidang.assignAll(sidang);
+    } catch (e) {
+      print("Error fetchHasilAkhir: $e");
+    } finally {
+      isLoadingHasilAkhir(false);
+    }
   }
 
   void fetchPengajuanPembimbing() async {

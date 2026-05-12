@@ -84,6 +84,10 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/admin/jadwal-sempro', [\App\Http\Controllers\Admin\JadwalController::class, 'getJadwalSempro']);
     Route::get('/admin/jadwal-sidangta', [\App\Http\Controllers\Admin\JadwalController::class, 'getJadwalSidangTA']);
     Route::get('/admin/jadwal-bimbingan', [\App\Http\Controllers\Admin\JadwalController::class, 'getJadwalBimbingan']);
+
+    // Hasil Akhir for Admin
+    Route::get('/admin/hasil-sempro', [\App\Http\Controllers\Admin\HasilAkhirController::class, 'getHasilSempro']);
+    Route::get('/admin/hasil-sidang', [\App\Http\Controllers\Admin\HasilAkhirController::class, 'getHasilSidang']);
 });
 
 

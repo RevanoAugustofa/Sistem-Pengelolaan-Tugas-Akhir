@@ -410,4 +410,29 @@ class AdminService {
     }
     throw Exception("Gagal mengambil data jadwal bimbingan");
   }
+
+  // --- HASIL AKHIR ---
+  Future<List<dynamic>> getHasilSempro() async {
+    final token = await _getToken();
+    final response = await http.get(Uri.parse("$baseUrl/admin/hasil-sempro"), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    if (response.statusCode == 200) {
+      return json.decode(response.body)['data'];
+    }
+    throw Exception("Gagal mengambil data hasil sempro");
+  }
+
+  Future<List<dynamic>> getHasilSidang() async {
+    final token = await _getToken();
+    final response = await http.get(Uri.parse("$baseUrl/admin/hasil-sidang"), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    if (response.statusCode == 200) {
+      return json.decode(response.body)['data'];
+    }
+    throw Exception("Gagal mengambil data hasil sidang");
+  }
 }

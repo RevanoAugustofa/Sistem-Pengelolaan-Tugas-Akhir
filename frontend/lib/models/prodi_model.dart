@@ -12,4 +12,12 @@ class Prodi {
       kodeProdi: json['kode_prodi'] ?? "-",
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'nama_prodi': namaProdi,
+      'kode_prodi': kodeProdi,
+    };
+  }
 }

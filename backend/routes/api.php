@@ -70,6 +70,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/admin/dosen-prodi/{id}', [DosenProdiController::class, 'show']);
     Route::put('/admin/dosen-prodi/{id}', [DosenProdiController::class, 'update']);
     Route::delete('/admin/dosen-prodi/{dosen_id}/{prodi_id}', [DosenProdiController::class, 'destroy']);
+
+    // Rubrik Nilai for Admin
+    Route::get('/admin/rubrik-nilai', [\App\Http\Controllers\Admin\RubrikNilaiController::class, 'index']);
 });
 
 

@@ -6,6 +6,7 @@ import '../models/user_model.dart';
 import '../models/prodi_model.dart';
 import '../models/ruangan_model.dart';
 import '../models/tahun_ajar_model.dart';
+import '../models/rubrik_nilai_model.dart';
 import '../services/admin_service.dart';
 
 class AdminController extends GetxController {
@@ -28,6 +29,9 @@ class AdminController extends GetxController {
 
   var isLoadingTahunAjar = false.obs;
   var listTahunAjar = <TahunAjar>[].obs;
+
+  var isLoadingRubrikNilai = false.obs;
+  var listRubrikNilai = <RubrikNilai>[].obs;
 
   // --- REKAP ---
   var isLoadingRekap = false.obs;
@@ -64,6 +68,7 @@ class AdminController extends GetxController {
     fetchProdi();
     fetchRuangan();
     fetchTahunAjar();
+    fetchRubrikNilai();
   }
 
   void fetchJadwal() {
@@ -386,6 +391,19 @@ class AdminController extends GetxController {
       print("Error fetchRekap: $e");
     } finally {
       isLoadingRekap(false);
+    }
+  }
+
+  // --- RUBRIK NILAI ---
+  void fetchRubrikNilai() async {
+    try {
+      isLoadingRubrikNilai(true);
+      var data = await _service.getRubrikNilai();
+      listRubrikNilai.assignAll(data);
+    } catch (e) {
+      print("Error fetchRubrikNilai: $e");
+    } finally {
+      isLoadingRubrikNilai(false);
     }
   }
 }

@@ -7,6 +7,7 @@ import '../models/user_model.dart';
 import '../models/prodi_model.dart';
 import '../models/ruangan_model.dart';
 import '../models/tahun_ajar_model.dart';
+import '../models/rubrik_nilai_model.dart';
 import '../helpers/constants.dart';
 
 class AdminService {
@@ -323,5 +324,19 @@ class AdminService {
       return json.decode(response.body)['data'];
     }
     throw Exception("Gagal mengambil data rekap");
+  }
+
+  // --- RUBRIK NILAI ---
+  Future<List<RubrikNilai>> getRubrikNilai() async {
+    final token = await _getToken();
+    final response = await http.get(Uri.parse("$baseUrl/admin/rubrik-nilai"), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => RubrikNilai.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data rubrik nilai");
   }
 }

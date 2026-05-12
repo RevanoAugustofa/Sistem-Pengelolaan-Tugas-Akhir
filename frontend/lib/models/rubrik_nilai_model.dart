@@ -1,3 +1,5 @@
+import 'prodi_model.dart';
+
 class RubrikNilai {
   final int? id;
   final int? idProdi;
@@ -5,6 +7,7 @@ class RubrikNilai {
   final String? kelompok;
   final String? kategori;
   final int? presentse;
+  final Prodi? prodi;
 
   RubrikNilai({
     this.id,
@@ -13,6 +16,7 @@ class RubrikNilai {
     this.kelompok,
     this.kategori,
     this.presentse,
+    this.prodi,
   });
 
   factory RubrikNilai.fromJson(Map<String, dynamic> json) {
@@ -23,6 +27,7 @@ class RubrikNilai {
       kelompok: json['kelompok'],
       kategori: json['kategori'],
       presentse: json['presentse'],
+      prodi: json['prodi'] != null ? Prodi.fromJson(json['prodi']) : null,
     );
   }
 
@@ -34,6 +39,7 @@ class RubrikNilai {
       'kelompok': kelompok,
       'kategori': kategori,
       'presentse': presentse,
+      'prodi': prodi?.toJson(),
     };
   }
 }

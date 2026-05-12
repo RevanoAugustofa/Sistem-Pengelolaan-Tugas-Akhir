@@ -79,6 +79,11 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
     // Pengajuan Pembimbing for Admin
     Route::get('/admin/pengajuan-pembimbing', [\App\Http\Controllers\Admin\PengajuanPembimbingController::class, 'index']);
+
+    // Jadwal for Admin
+    Route::get('/admin/jadwal-sempro', [\App\Http\Controllers\Admin\JadwalController::class, 'getJadwalSempro']);
+    Route::get('/admin/jadwal-sidangta', [\App\Http\Controllers\Admin\JadwalController::class, 'getJadwalSidangTA']);
+    Route::get('/admin/jadwal-bimbingan', [\App\Http\Controllers\Admin\JadwalController::class, 'getJadwalBimbingan']);
 });
 
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/admin_controller.dart';
+import '../../../models/jadwal_model.dart';
 
 class JadwalProposalAdminTable extends StatefulWidget {
   final String searchQuery;
@@ -25,21 +26,16 @@ class _JadwalProposalAdminTableState extends State<JadwalProposalAdminTable> {
 
       var filteredData = controller.listJadwalProposal.where((item) {
         final query = widget.searchQuery.toLowerCase();
-        return (item['mahasiswa']['nama']?.toLowerCase().contains(query) ?? false) ||
-               (item['mahasiswa']['npm']?.toLowerCase().contains(query) ?? false) ||
-               (item['ruangan']?.toLowerCase().contains(query) ?? false);
+        return (item.mahasiswa?.namaMahasiswa?.toLowerCase().contains(query) ?? false) ||
+               (item.mahasiswa?.npm?.toLowerCase().contains(query) ?? false) ||
+               (item.ruangan?.namaRuangan?.toLowerCase().contains(query) ?? false);
       }).toList();
       
       int startIndex = _currentPage * _rowsPerPage;
       int endIndex = startIndex + _rowsPerPage;
       if (endIndex > filteredData.length) endIndex = filteredData.length;
-      if (startIndex >= filteredData.length && filteredData.isNotEmpty) {
-         _currentPage = (filteredData.length / _rowsPerPage).floor();
-         startIndex = _currentPage * _rowsPerPage;
-         endIndex = filteredData.length;
-      }
       
-      var displayedData = filteredData.isEmpty ? [] : filteredData.sublist(startIndex, endIndex);
+      List<JadwalModel> displayedData = filteredData.isEmpty ? [] : filteredData.sublist(startIndex, endIndex);
 
       return RefreshIndicator(
         onRefresh: () async => controller.fetchJadwal(),
@@ -129,17 +125,17 @@ class _JadwalProposalAdminTableState extends State<JadwalProposalAdminTable> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(item['mahasiswa']['nama'] ?? "-", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                Text(item['mahasiswa']['npm'] ?? "-", style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                                Text(item.mahasiswa?.namaMahasiswa ?? "-", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                                Text(item.mahasiswa?.npm ?? "-", style: const TextStyle(fontSize: 10, color: Colors.grey)),
                               ],
                             )),
-                            DataCell(Text(item['ruangan'] ?? "-", style: const TextStyle(fontSize: 11))),
+                            DataCell(Text(item.ruangan?.namaRuangan ?? "-", style: const TextStyle(fontSize: 11))),
                             DataCell(Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(item['tanggal'] ?? "-", style: const TextStyle(fontSize: 11)),
-                                Text(item['waktu'] ?? "-", 
+                                Text(item.tanggal ?? "-", style: const TextStyle(fontSize: 11)),
+                                Text("${item.waktuMulai ?? ''} - ${item.waktuSelesai ?? ''}", 
                                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.blue)),
                               ],
                             )),
@@ -147,8 +143,8 @@ class _JadwalProposalAdminTableState extends State<JadwalProposalAdminTable> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("1: ${item['penguji1'] ?? "-"}", style: const TextStyle(fontSize: 10)),
-                                Text("2: ${item['penguji2'] ?? "-"}", style: const TextStyle(fontSize: 9, color: Colors.black54)),
+                                Text("1: ${item.pengujiUtama?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 10)),
+                                Text("2: ${item.pengujiPendamping?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 9, color: Colors.black54)),
                               ],
                             )),
                           ],

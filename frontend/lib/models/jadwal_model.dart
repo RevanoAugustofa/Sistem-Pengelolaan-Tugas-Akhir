@@ -8,6 +8,8 @@ class JadwalModel {
   final String? jenisSidang;
   final int? idPengujiUtama;
   final int? idPengujiPendamping;
+  final int? idPembimbingUtama;
+  final int? idPembimbingPendamping;
   final String? tanggal;
   final String? waktuMulai;
   final String? waktuSelesai;
@@ -15,6 +17,8 @@ class JadwalModel {
   final Mahasiswa? mahasiswa;
   final Dosen? pengujiUtama;
   final Dosen? pengujiPendamping;
+  final Dosen? pembimbingUtama;
+  final Dosen? pembimbingPendamping;
   final Ruangan? ruangan;
 
   // Jadwal Bimbingan specific fields
@@ -32,6 +36,8 @@ class JadwalModel {
     this.jenisSidang,
     this.idPengujiUtama,
     this.idPengujiPendamping,
+    this.idPembimbingUtama,
+    this.idPembimbingPendamping,
     this.tanggal,
     this.waktuMulai,
     this.waktuSelesai,
@@ -39,6 +45,8 @@ class JadwalModel {
     this.mahasiswa,
     this.pengujiUtama,
     this.pengujiPendamping,
+    this.pembimbingUtama,
+    this.pembimbingPendamping,
     this.ruangan,
     this.idDosen,
     this.dosen,
@@ -56,6 +64,8 @@ class JadwalModel {
       jenisSidang: json['jenis_sidang'],
       idPengujiUtama: json['id_penguji_utama'],
       idPengujiPendamping: json['id_penguji_pendamping'],
+      idPembimbingUtama: json['id_pembimbing_utama'],
+      idPembimbingPendamping: json['id_pembimbing_pendamping'],
       tanggal: json['tanggal'],
       waktuMulai: json['waktu_mulai'],
       waktuSelesai: json['waktu_selesai'],
@@ -63,6 +73,8 @@ class JadwalModel {
       mahasiswa: json['mahasiswa'] != null ? Mahasiswa.fromJson(json['mahasiswa']) : null,
       pengujiUtama: json['penguji_utama'] != null ? Dosen.fromJson(json['penguji_utama']) : null,
       pengujiPendamping: json['penguji_pendamping'] != null ? Dosen.fromJson(json['penguji_pendamping']) : null,
+      pembimbingUtama: json['pembimbing_utama'] != null ? Dosen.fromJson(json['pembimbing_utama']) : null,
+      pembimbingPendamping: json['pembimbing_pendamping'] != null ? Dosen.fromJson(json['pembimbing_pendamping']) : null,
       ruangan: json['ruangan'] != null ? Ruangan.fromJson(json['ruangan']) : null,
       idDosen: json['id_dosen'],
       dosen: json['dosen'] != null ? Dosen.fromJson(json['dosen']) : null,

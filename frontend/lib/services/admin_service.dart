@@ -10,6 +10,7 @@ import '../models/tahun_ajar_model.dart';
 import '../models/rubrik_nilai_model.dart';
 import '../models/proposal_model.dart';
 import '../models/pengajuan_pembimbing_model.dart';
+import '../models/jadwal_model.dart';
 import '../helpers/constants.dart';
 
 class AdminService {
@@ -368,5 +369,45 @@ class AdminService {
       return data.map((e) => PengajuanPembimbingModel.fromJson(e)).toList();
     }
     throw Exception("Gagal mengambil data pengajuan pembimbing");
+  }
+
+  // --- JADWAL ---
+  Future<List<JadwalModel>> getJadwalSempro() async {
+    final token = await _getToken();
+    final response = await http.get(Uri.parse("$baseUrl/admin/jadwal-sempro"), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => JadwalModel.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data jadwal sempro");
+  }
+
+  Future<List<JadwalModel>> getJadwalSidangTA() async {
+    final token = await _getToken();
+    final response = await http.get(Uri.parse("$baseUrl/admin/jadwal-sidangta"), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => JadwalModel.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data jadwal sidang ta");
+  }
+
+  Future<List<JadwalModel>> getJadwalBimbingan() async {
+    final token = await _getToken();
+    final response = await http.get(Uri.parse("$baseUrl/admin/jadwal-bimbingan"), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => JadwalModel.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data jadwal bimbingan");
   }
 }

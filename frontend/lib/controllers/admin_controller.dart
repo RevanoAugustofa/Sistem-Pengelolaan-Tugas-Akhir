@@ -9,6 +9,7 @@ import '../models/tahun_ajar_model.dart';
 import '../models/rubrik_nilai_model.dart';
 import '../models/proposal_model.dart';
 import '../models/pengajuan_pembimbing_model.dart';
+import '../models/jadwal_model.dart';
 import '../services/admin_service.dart';
 
 class AdminController extends GetxController {
@@ -44,9 +45,9 @@ class AdminController extends GetxController {
 
   // --- JADWAL ---
   var isLoadingJadwal = false.obs;
-  var listJadwalProposal = <dynamic>[].obs;
-  var listJadwalBimbingan = <dynamic>[].obs;
-  var listJadwalSidang = <dynamic>[].obs;
+  var listJadwalProposal = <JadwalModel>[].obs;
+  var listJadwalBimbingan = <JadwalModel>[].obs;
+  var listJadwalSidang = <JadwalModel>[].obs;
 
   // --- HASIL AKHIR ---
   var isLoadingHasilAkhir = false.obs;
@@ -77,21 +78,22 @@ class AdminController extends GetxController {
     fetchPengajuanPembimbing();
   }
 
-  void fetchJadwal() {
-    // Sementara dummy data karena service belum ada
-    listJadwalProposal.assignAll([
-      {'mahasiswa': {'nama': 'Mahasiswa 1', 'npm': '123'}, 'ruangan': 'Lab Komputer', 'tanggal': '2026-05-15', 'waktu': '08:00 - 10:00', 'penguji1': 'Dosen A', 'penguji2': 'Dosen B'},
-      {'mahasiswa': {'nama': 'Mahasiswa 2', 'npm': '124'}, 'ruangan': 'Ruang 101', 'tanggal': '2026-05-16', 'waktu': '10:00 - 12:00', 'penguji1': 'Dosen C', 'penguji2': 'Dosen D'},
-    ]);
+  void fetchJadwal() async {
+    try {
+      isLoadingJadwal(true);
+      var sempro = await _service.getJadwalSempro();
+      listJadwalProposal.assignAll(sempro);
 
-    listJadwalBimbingan.assignAll([
-      {'metode': 'Online', 'tempat': 'Zoom Meeting', 'kuota': 5, 'waktu': '2026-05-12 09:00', 'status': 'tersedia'},
-      {'metode': 'Offline', 'tempat': 'Ruang Dosen', 'kuota': 3, 'waktu': '2026-05-13 14:00', 'status': 'tersedia'},
-    ]);
+      var sidangta = await _service.getJadwalSidangTA();
+      listJadwalSidang.assignAll(sidangta);
 
-    listJadwalSidang.assignAll([
-      {'mahasiswa': {'nama': 'Mahasiswa 3', 'npm': '125'}, 'jenis': 'Sidang Akhir', 'ruangan': 'Aula', 'tanggal': '2026-05-20', 'waktu': '13:00 - 15:00'},
-    ]);
+      var bimbingan = await _service.getJadwalBimbingan();
+      listJadwalBimbingan.assignAll(bimbingan);
+    } catch (e) {
+      print("Error fetchJadwal: $e");
+    } finally {
+      isLoadingJadwal(false);
+    }
   }
 
   void fetchHasilAkhir() {

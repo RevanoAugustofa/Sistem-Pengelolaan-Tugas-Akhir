@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/admin_controller.dart';
+import '../../../models/jadwal_model.dart';
 
 class JadwalSidangAdminTable extends StatefulWidget {
   final String searchQuery;
@@ -25,21 +26,16 @@ class _JadwalSidangAdminTableState extends State<JadwalSidangAdminTable> {
 
       var filteredData = controller.listJadwalSidang.where((item) {
         final query = widget.searchQuery.toLowerCase();
-        return (item['mahasiswa']['nama']?.toLowerCase().contains(query) ?? false) ||
-               (item['mahasiswa']['npm']?.toLowerCase().contains(query) ?? false) ||
-               (item['ruangan']?.toLowerCase().contains(query) ?? false);
+        return (item.mahasiswa?.namaMahasiswa?.toLowerCase().contains(query) ?? false) ||
+               (item.mahasiswa?.npm?.toLowerCase().contains(query) ?? false) ||
+               (item.ruangan?.namaRuangan?.toLowerCase().contains(query) ?? false);
       }).toList();
       
       int startIndex = _currentPage * _rowsPerPage;
       int endIndex = startIndex + _rowsPerPage;
       if (endIndex > filteredData.length) endIndex = filteredData.length;
-      if (startIndex >= filteredData.length && filteredData.isNotEmpty) {
-         _currentPage = (filteredData.length / _rowsPerPage).floor();
-         startIndex = _currentPage * _rowsPerPage;
-         endIndex = filteredData.length;
-      }
       
-      var displayedData = filteredData.isEmpty ? [] : filteredData.sublist(startIndex, endIndex);
+      List<JadwalModel> displayedData = filteredData.isEmpty ? [] : filteredData.sublist(startIndex, endIndex);
 
       return RefreshIndicator(
         onRefresh: () async => controller.fetchJadwal(),
@@ -59,7 +55,7 @@ class _JadwalSidangAdminTableState extends State<JadwalSidangAdminTable> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "Tabel Jadwal Sidang",
+                        "Tabel Jadwal Sidang TA",
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF1E3475)),
                       ),
                       Row(
@@ -111,10 +107,11 @@ class _JadwalSidangAdminTableState extends State<JadwalSidangAdminTable> {
                       headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
                       columns: const [
                         DataColumn(label: Text('No')),
-                        DataColumn(label: Text('Nama')),
+                        DataColumn(label: Text('Mahasiswa')),
                         DataColumn(label: Text('Jenis')),
                         DataColumn(label: Text('Ruangan')),
                         DataColumn(label: Text('Waktu')),
+                        DataColumn(label: Text('Dosen')),
                       ],
                       rows: List.generate(displayedData.length, (index) {
                         var item = displayedData[index];
@@ -129,19 +126,27 @@ class _JadwalSidangAdminTableState extends State<JadwalSidangAdminTable> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(item['mahasiswa']['nama'] ?? "-", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                Text(item['mahasiswa']['npm'] ?? "-", style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                                Text(item.mahasiswa?.namaMahasiswa ?? "-", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                                Text(item.mahasiswa?.npm ?? "-", style: const TextStyle(fontSize: 10, color: Colors.grey)),
                               ],
                             )),
-                            DataCell(Text(item['jenis'] ?? "-", style: const TextStyle(fontSize: 11))),
-                            DataCell(Text(item['ruangan'] ?? "-", style: const TextStyle(fontSize: 11))),
+                            DataCell(Text(item.jenisSidang?.toUpperCase() ?? "-", style: const TextStyle(fontSize: 10))),
+                            DataCell(Text(item.ruangan?.namaRuangan ?? "-", style: const TextStyle(fontSize: 11))),
                             DataCell(Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(item['tanggal'] ?? "-", style: const TextStyle(fontSize: 11)),
-                                Text(item['waktu'] ?? "-", 
+                                Text(item.tanggal ?? "-", style: const TextStyle(fontSize: 11)),
+                                Text("${item.waktuMulai ?? ''} - ${item.waktuSelesai ?? ''}", 
                                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.blue)),
+                              ],
+                            )),
+                            DataCell(Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("Penguji: ${item.pengujiUtama?.namaDosen ?? '-'}", style: const TextStyle(fontSize: 9)),
+                                Text("Pembimbing: ${item.pembimbingUtama?.namaDosen ?? '-'}", style: const TextStyle(fontSize: 9, color: Colors.black54)),
                               ],
                             )),
                           ],

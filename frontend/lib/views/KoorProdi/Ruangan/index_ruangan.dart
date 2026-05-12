@@ -164,7 +164,7 @@ class _IndexRuanganPageState extends State<IndexRuanganPage> {
                                     ),
                                   ),
                                 ),
-                                const Text("entries", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
+                                // const Text("entries", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
                               ],
                             ),
                           ],
@@ -222,7 +222,7 @@ class _IndexRuanganPageState extends State<IndexRuanganPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Showing ${filteredRuangan.isEmpty ? 0 : startIndex + 1} to $endIndex of ${filteredRuangan.length} entries",
+                              "Showing ${filteredRuangan.isEmpty ? 0 : startIndex + 1} to $endIndex of ${filteredRuangan.length}",
                               style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 13, color: Color.fromARGB(255, 79, 79, 79)),
                             ),
                             Row(

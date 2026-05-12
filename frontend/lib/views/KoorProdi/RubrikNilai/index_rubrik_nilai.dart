@@ -165,7 +165,7 @@ class _IndexRubrikNilaiPageState extends State<IndexRubrikNilaiPage> {
                                     ),
                                   ),
                                 ),
-                                const Text("entries", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
+                                // const Text("entries", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
                               ],
                             ),
                           ],
@@ -227,7 +227,7 @@ class _IndexRubrikNilaiPageState extends State<IndexRubrikNilaiPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Showing ${filteredRubrik.isEmpty ? 0 : startIndex + 1} to $endIndex of ${filteredRubrik.length} entries",
+                              "Showing ${filteredRubrik.isEmpty ? 0 : startIndex + 1} to $endIndex of ${filteredRubrik.length}",
                               style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 13, color: Color.fromARGB(255, 79, 79, 79)),
                             ),
                             Row(

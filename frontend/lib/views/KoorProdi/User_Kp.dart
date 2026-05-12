@@ -158,7 +158,7 @@ class _UserKpPageState extends State<UserKpPage> {
                                     ),
                                   ),
                                 ),
-                                const Text("entries", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
+                                // const Text("entries", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
                               ],
                             ),
                           ],
@@ -205,7 +205,7 @@ class _UserKpPageState extends State<UserKpPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Showing ${filteredUsers.isEmpty ? 0 : startIndex + 1} to $endIndex of ${filteredUsers.length} entries",
+                              "Showing ${filteredUsers.isEmpty ? 0 : startIndex + 1} to $endIndex of ${filteredUsers.length}",
                               style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 13, color: Color.fromARGB(255, 79, 79, 79)),
                             ),
                             Row(
@@ -223,7 +223,7 @@ class _UserKpPageState extends State<UserKpPage> {
                                       color: _currentPage > 0 ? Colors.white : Colors.grey.shade100,
                                     ),
                                     child: Text(
-                                      "Previous",
+                                      " < ",
                                       style: TextStyle(
                                         color: _currentPage > 0 ? const Color(0xFF4FA5FF) : Colors.grey,
                                         fontWeight: FontWeight.bold,
@@ -244,7 +244,7 @@ class _UserKpPageState extends State<UserKpPage> {
                                       color: endIndex < filteredUsers.length ? Colors.white : Colors.grey.shade100,
                                     ),
                                     child: Text(
-                                      "Next",
+                                      " > ",
                                       style: TextStyle(
                                         color: endIndex < filteredUsers.length ? const Color(0xFF4FA5FF) : Colors.grey,
                                         fontWeight: FontWeight.bold,

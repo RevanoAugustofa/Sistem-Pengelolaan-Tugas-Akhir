@@ -179,7 +179,7 @@ class _IndexMahasiswaPageState extends State<IndexMahasiswaPage> {
                                     ),
                                   ),
                                 ),
-                                const Text("entries", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
+                                // const Text("entries", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
                               ],
                             ),
                           ],
@@ -239,7 +239,7 @@ class _IndexMahasiswaPageState extends State<IndexMahasiswaPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Showing ${filteredMahasiswa.isEmpty ? 0 : startIndex + 1} to $endIndex of ${filteredMahasiswa.length} entries",
+                              "Showing ${filteredMahasiswa.isEmpty ? 0 : startIndex + 1} to $endIndex of ${filteredMahasiswa.length}",
                               style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 13, color: Color.fromARGB(255, 79, 79, 79)),
                             ),
                             Row(

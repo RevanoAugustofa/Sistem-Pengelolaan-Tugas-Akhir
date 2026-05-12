@@ -143,7 +143,7 @@ class _IndexPendaftarSidangPageState extends State<IndexPendaftarSidangPage> {
                                     ),
                                   ),
                                 ),
-                                const Text("entries", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
+                                // const Text("entries", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
                               ],
                             ),
                           ],
@@ -207,7 +207,7 @@ class _IndexPendaftarSidangPageState extends State<IndexPendaftarSidangPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Showing ${filteredData.isEmpty ? 0 : startIndex + 1} to $endIndex of ${filteredData.length} entries",
+                              "Showing ${filteredData.isEmpty ? 0 : startIndex + 1} to $endIndex of ${filteredData.length}",
                               style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 13, color: Color.fromARGB(255, 79, 79, 79)),
                             ),
                             Row(

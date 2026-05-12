@@ -22,7 +22,7 @@ import 'package:frontend/views/Admin/HasilAkhir/hasilAkhir_Adm.dart';
 import 'package:frontend/views/Admin/pengajuan_pembimbing_Adm.dart';
 import 'package:frontend/views/Admin/Penilaian/rekap_Adm.dart';
 import 'package:frontend/views/Admin/Penilaian/rubrik_Adm.dart';
-import 'package:frontend/views/Admin/Proposal/proposal_Adm.dart';
+import 'package:frontend/views/Admin/proposal_Adm.dart';
 import 'package:frontend/views/Admin/DosenProdi/index_dosen_prodi.dart';
 import 'package:frontend/views/Admin/rekapPembimbingPenguji_Adm.dart';
 import 'package:frontend/views/Admin/dashboard_Adm.dart';

@@ -46,6 +46,21 @@ class Mahasiswa {
       proposal: json['proposal'] != null ? Proposal.fromJson(json['proposal']) : null,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'id_user': idUser,
+      'id_prodi': idProdi,
+      'id_tahun_ajar': idTahunAjar,
+      'nim': npm,
+      'nama_mahasiswa': namaMahasiswa,
+      'tgl_lahir': tglLahir,
+      'jenis_kelamin': jenisKelamin,
+      'alamat': alamat,
+      'proposal': proposal?.toJson(),
+    };
+  }
 }
 
 class Proposal {
@@ -71,5 +86,15 @@ class Proposal {
       revisiJudulProposal: json['revisi_judul_proposal'],
       revisiFileProposal: json['revisi_file_proposal'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'judul_proposal': judulProposal,
+      'file_proposal': fileProposal,
+      'revisi_judul_proposal': revisiJudulProposal,
+      'revisi_file_proposal': revisiFileProposal,
+    };
   }
 }

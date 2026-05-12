@@ -8,6 +8,7 @@ import '../models/prodi_model.dart';
 import '../models/ruangan_model.dart';
 import '../models/tahun_ajar_model.dart';
 import '../models/rubrik_nilai_model.dart';
+import '../models/proposal_model.dart';
 import '../helpers/constants.dart';
 
 class AdminService {
@@ -338,5 +339,19 @@ class AdminService {
       return data.map((e) => RubrikNilai.fromJson(e)).toList();
     }
     throw Exception("Gagal mengambil data rubrik nilai");
+  }
+
+  // --- PROPOSAL ---
+  Future<List<ProposalWithMahasiswa>> getProposals() async {
+    final token = await _getToken();
+    final response = await http.get(Uri.parse("$baseUrl/admin/proposal"), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => ProposalWithMahasiswa.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data proposal");
   }
 }

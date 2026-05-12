@@ -73,6 +73,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
     // Rubrik Nilai for Admin
     Route::get('/admin/rubrik-nilai', [\App\Http\Controllers\Admin\RubrikNilaiController::class, 'index']);
+
+    // Proposal for Admin
+    Route::get('/admin/proposal', [\App\Http\Controllers\Admin\ProposalController::class, 'index']);
 });
 
 

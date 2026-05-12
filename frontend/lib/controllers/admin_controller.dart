@@ -7,6 +7,7 @@ import '../models/prodi_model.dart';
 import '../models/ruangan_model.dart';
 import '../models/tahun_ajar_model.dart';
 import '../models/rubrik_nilai_model.dart';
+import '../models/proposal_model.dart';
 import '../services/admin_service.dart';
 
 class AdminController extends GetxController {
@@ -32,6 +33,9 @@ class AdminController extends GetxController {
 
   var isLoadingRubrikNilai = false.obs;
   var listRubrikNilai = <RubrikNilai>[].obs;
+
+  var isLoadingProposal = false.obs;
+  var listProposal = <ProposalWithMahasiswa>[].obs;
 
   // --- REKAP ---
   var isLoadingRekap = false.obs;
@@ -69,6 +73,7 @@ class AdminController extends GetxController {
     fetchRuangan();
     fetchTahunAjar();
     fetchRubrikNilai();
+    fetchProposal();
   }
 
   void fetchJadwal() {
@@ -404,6 +409,19 @@ class AdminController extends GetxController {
       print("Error fetchRubrikNilai: $e");
     } finally {
       isLoadingRubrikNilai(false);
+    }
+  }
+
+  // --- PROPOSAL ---
+  void fetchProposal() async {
+    try {
+      isLoadingProposal(true);
+      var data = await _service.getProposals();
+      listProposal.assignAll(data);
+    } catch (e) {
+      print("Error fetchProposal: $e");
+    } finally {
+      isLoadingProposal(false);
     }
   }
 }

@@ -42,7 +42,7 @@ class _JadwalKoorPageState extends State<JadwalKoorPage> {
             margin: const EdgeInsets.all(20),
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
-              color: const Color(0xFF7E89AC),
+              color: Color.fromARGB(255, 0, 149, 255),
               borderRadius: BorderRadius.circular(30),
             ),
             child: Row(
@@ -112,7 +112,7 @@ class _JadwalKoorPageState extends State<JadwalKoorPage> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isActive ? const Color(0xFF1E3475) : Colors.transparent,
+            color: isActive ?  Color.fromARGB(74, 0, 0, 0): Colors.transparent,
             borderRadius: BorderRadius.circular(25),
           ),
           child: Text(

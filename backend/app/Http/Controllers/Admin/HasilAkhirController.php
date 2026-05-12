@@ -54,4 +54,24 @@ class HasilAkhirController extends Controller
 
         return response()->json(['data' => $data]);
     }
+
+    public function getPendaftaranSidang()
+    {
+        $pendaftaran = \App\Models\DaftarSidangTA::with(['mahasiswa.prodi', 'mahasiswa.tahunAjar'])->get();
+
+        $data = $pendaftaran->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'mahasiswa' => [
+                    'nama' => $item->mahasiswa->nama_mahasiswa ?? '-',
+                    'npm' => $item->mahasiswa->nim ?? '-',
+                    'tahun_ajar' => $item->mahasiswa->tahunAjar->tahun_ajar ?? '-',
+                ],
+                'prodi' => $item->mahasiswa->prodi->nama_prodi ?? '-',
+                'tanggal_pendaftaran' => $item->tanggal_pendaftaran,
+            ];
+        });
+
+        return response()->json(['data' => $data]);
+    }
 }

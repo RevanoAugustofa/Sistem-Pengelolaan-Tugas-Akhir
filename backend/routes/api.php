@@ -88,6 +88,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     // Hasil Akhir for Admin
     Route::get('/admin/hasil-sempro', [\App\Http\Controllers\Admin\HasilAkhirController::class, 'getHasilSempro']);
     Route::get('/admin/hasil-sidang', [\App\Http\Controllers\Admin\HasilAkhirController::class, 'getHasilSidang']);
+    Route::get('/admin/pendaftaran-sidang', [\App\Http\Controllers\Admin\HasilAkhirController::class, 'getPendaftaranSidang']);
 });
 
 

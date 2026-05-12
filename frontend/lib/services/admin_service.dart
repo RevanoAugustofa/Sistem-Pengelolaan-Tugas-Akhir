@@ -435,4 +435,17 @@ class AdminService {
     }
     throw Exception("Gagal mengambil data hasil sidang");
   }
+
+  // --- PENDAFTARAN SIDANG ---
+  Future<List<dynamic>> getPendaftaranSidang() async {
+    final token = await _getToken();
+    final response = await http.get(Uri.parse("$baseUrl/admin/pendaftaran-sidang"), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    if (response.statusCode == 200) {
+      return json.decode(response.body)['data'];
+    }
+    throw Exception("Gagal mengambil data pendaftaran sidang");
+  }
 }

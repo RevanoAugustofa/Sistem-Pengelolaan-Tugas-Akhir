@@ -54,6 +54,9 @@ class AdminController extends GetxController {
   var listHasilSempro = <dynamic>[].obs;
   var listHasilSidang = <dynamic>[].obs;
 
+  var isLoadingPendaftaranSidang = false.obs;
+  var listPendaftaranSidang = <dynamic>[].obs;
+
   var isLoadingPengajuanPembimbing = false.obs;
   var listPengajuanPembimbing = <PengajuanPembimbingModel>[].obs;
 
@@ -63,6 +66,7 @@ class AdminController extends GetxController {
     fetchAllData();
     fetchJadwal();
     fetchHasilAkhir();
+    fetchPendaftaranSidang();
     fetchPengajuanPembimbing();
   }
 
@@ -75,6 +79,7 @@ class AdminController extends GetxController {
     fetchTahunAjar();
     fetchRubrikNilai();
     fetchProposal();
+    fetchPendaftaranSidang();
     fetchPengajuanPembimbing();
   }
 
@@ -108,6 +113,18 @@ class AdminController extends GetxController {
       print("Error fetchHasilAkhir: $e");
     } finally {
       isLoadingHasilAkhir(false);
+    }
+  }
+
+  void fetchPendaftaranSidang() async {
+    try {
+      isLoadingPendaftaranSidang(true);
+      var data = await _service.getPendaftaranSidang();
+      listPendaftaranSidang.assignAll(data);
+    } catch (e) {
+      print("Error fetchPendaftaranSidang: $e");
+    } finally {
+      isLoadingPendaftaranSidang(false);
     }
   }
 

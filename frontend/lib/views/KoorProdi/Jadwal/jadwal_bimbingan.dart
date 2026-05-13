@@ -155,7 +155,6 @@ class _BimbinganTableState extends State<BimbinganTable> {
                               DataColumn(label: Text('Kuota')),
                               DataColumn(label: Text('Metode')),
                               DataColumn(label: Text('Tempat/Link')),
-                              DataColumn(label: Text('Status')),
                             ],
                             rows: List.generate(displayedData.length, (index) {
                               var item = displayedData[index];
@@ -202,21 +201,6 @@ class _BimbinganTableState extends State<BimbinganTable> {
                                     ),
                                   )),
                                   DataCell(Text(item.tempatLink ?? "-")),
-                                  DataCell(Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: item.status == 'tersedia' ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      item.status?.toUpperCase() ?? "-",
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.bold,
-                                        color: item.status == 'tersedia' ? Colors.green : Colors.red,
-                                      ),
-                                    ),
-                                  )),
                                 ],
                               );
                             }),

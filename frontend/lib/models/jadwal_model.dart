@@ -28,7 +28,6 @@ class JadwalModel {
   final int? kuota;
   final String? metodeBimbingan;
   final String? tempatLink;
-  final String? status;
 
   JadwalModel({
     this.id,
@@ -54,7 +53,6 @@ class JadwalModel {
     this.kuota,
     this.metodeBimbingan,
     this.tempatLink,
-    this.status,
   });
 
   factory JadwalModel.fromJson(Map<String, dynamic> json) {
@@ -82,7 +80,6 @@ class JadwalModel {
       kuota: json['kuota'],
       metodeBimbingan: json['metode_bimbingan'],
       tempatLink: json['tempat_link'],
-      status: json['status'],
     );
   }
 }

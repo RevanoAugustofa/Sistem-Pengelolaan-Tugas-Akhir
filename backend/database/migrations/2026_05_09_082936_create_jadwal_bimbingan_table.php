@@ -18,7 +18,6 @@ return new class extends Migration
             $blueprint->integer('kuota')->default(1);
             $blueprint->enum('metode_bimbingan', ['offline', 'online']);
             $blueprint->string('tempat_link')->nullable()->comment('tempat:ruang dosen, link:gmeet/zoom');
-            $blueprint->string('status')->default('tersedia');
             $blueprint->timestamp('created_at')->useCurrent();
             $blueprint->timestamp('update_at')->useCurrent()->useCurrentOnUpdate();
 

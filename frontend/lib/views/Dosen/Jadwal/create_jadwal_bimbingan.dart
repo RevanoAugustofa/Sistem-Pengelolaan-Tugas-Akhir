@@ -196,7 +196,6 @@ class _CreateJadwalBimbinganPageState extends State<CreateJadwalBimbinganPage> {
                         'kuota': int.parse(kuotaController.text),
                         'metode_bimbingan': selectedMetode,
                         'tempat_link': tempatLinkController.text,
-                        'status': 'tersedia',
                       };
                       
                       controller.addJadwalBimbingan(data);

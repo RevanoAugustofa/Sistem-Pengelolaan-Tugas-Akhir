@@ -20,7 +20,6 @@ class JadwalBimbingan extends Model
         'kuota',
         'metode_bimbingan',
         'tempat_link',
-        'status',
     ];
 
     public function dosen()

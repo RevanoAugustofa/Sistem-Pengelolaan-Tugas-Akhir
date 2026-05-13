@@ -144,7 +144,6 @@ class _JadwalBimbinganDosenTableState extends State<JadwalBimbinganDosenTable> {
                             DataColumn(label: Text('Tempat / Link')),
                             DataColumn(label: Text('Kuota')),
                             DataColumn(label: Text('Waktu')),
-                            DataColumn(label: Text('Status')),
                           ],
                           rows: List.generate(displayedData.length, (index) {
                             var item = displayedData[index];
@@ -197,14 +196,6 @@ class _JadwalBimbinganDosenTableState extends State<JadwalBimbinganDosenTable> {
                                       )
                                     : const Text("-", style: TextStyle(fontSize: 11)),
                                 ),
-                                DataCell(Text(
-                                  item.status?.toUpperCase() ?? "-",
-                                  style: TextStyle(
-                                    color: item.status == 'tersedia' ? Colors.green : Colors.red,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 10,
-                                  ),
-                                )),
                               ],
                             );
                           }),

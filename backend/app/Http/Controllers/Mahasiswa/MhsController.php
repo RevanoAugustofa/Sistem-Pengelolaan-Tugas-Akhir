@@ -51,7 +51,7 @@ class MhsController extends Controller
 
     public function jadwalBimbingan()
     {
-        $data = JadwalBimbingan::with(['dosen.user'])->where('status', 'tersedia')->get();
+        $data = JadwalBimbingan::with(['dosen.user'])->get();
         return response()->json(['data' => $data]);
     }
 

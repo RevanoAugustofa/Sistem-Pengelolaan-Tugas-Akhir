@@ -115,7 +115,6 @@ class _JadwalBimbinganAdminTableState extends State<JadwalBimbinganAdminTable> {
                         DataColumn(label: Text('Tempat / Link')),
                         DataColumn(label: Text('Waktu')),
                         DataColumn(label: Text('Kuota')),
-                        DataColumn(label: Text('Status')),
                       ],
                       rows: List.generate(displayedData.length, (index) {
                         var item = displayedData[index];
@@ -151,21 +150,6 @@ class _JadwalBimbinganAdminTableState extends State<JadwalBimbinganAdminTable> {
                                 : const Text("-", style: TextStyle(fontSize: 10)),
                             ),
                             DataCell(Center(child: Text(item.kuota?.toString() ?? "0", style: const TextStyle(fontSize: 11)))),
-                            DataCell(Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: (item.status == 'tersedia' ? Colors.green : Colors.red).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Text(
-                                item.status?.toUpperCase() ?? "-",
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.bold,
-                                  color: item.status == 'tersedia' ? Colors.green : Colors.red,
-                                ),
-                              ),
-                            )),
                           ],
                         );
                       }),

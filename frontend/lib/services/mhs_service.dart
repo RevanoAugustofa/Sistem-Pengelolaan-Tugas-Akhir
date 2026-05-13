@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/constants.dart';
@@ -119,6 +120,33 @@ class MhsService {
       },
       body: jsonEncode(data),
     );
+
+    return jsonDecode(response.body);
+  }
+
+  Future<Map<String, dynamic>> uploadProposal(String judul, Uint8List fileBytes, String fileName) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('${AppConstants.baseUrl}/mahasiswa/upload-proposal'),
+    );
+
+    request.headers.addAll({
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    request.fields['judul_proposal'] = judul;
+    request.files.add(http.MultipartFile.fromBytes(
+      'file_proposal',
+      fileBytes,
+      filename: fileName,
+    ));
+
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
 
     return jsonDecode(response.body);
   }

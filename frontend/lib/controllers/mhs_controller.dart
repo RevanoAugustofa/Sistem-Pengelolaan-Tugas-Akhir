@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/dosen_model.dart';
@@ -130,6 +131,25 @@ class MhsController extends GetxController {
         Get.snackbar("Sukses", result['message'] ?? "Pendaftaran berhasil");
       } else {
         Get.snackbar("Gagal", result['message'] ?? "Gagal melakukan pendaftaran",
+            backgroundColor: Colors.orange.withOpacity(0.8), colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Terjadi kesalahan: ${e.toString()}");
+    } finally {
+      isLoadingAction(false);
+    }
+  }
+
+  Future<void> uploadProposal(String judul, Uint8List fileBytes, String fileName) async {
+    try {
+      isLoadingAction(true);
+      final result = await _service.uploadProposal(judul, fileBytes, fileName);
+      if (result['success'] == true) {
+        fetchDashboardData();
+        Get.back();
+        Get.snackbar("Sukses", result['message'] ?? "Proposal berhasil diunggah");
+      } else {
+        Get.snackbar("Gagal", result['message'] ?? "Gagal mengunggah proposal",
             backgroundColor: Colors.orange.withOpacity(0.8), colorText: Colors.white);
       }
     } catch (e) {

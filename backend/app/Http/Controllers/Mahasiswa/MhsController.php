@@ -125,5 +125,43 @@ class MhsController extends Controller
         }
     }
 
+    public function storeProposal(Request $request)
+    {
+        $request->validate([
+            'judul_proposal' => 'required|string|max:255',
+            'file_proposal' => 'required|file|mimes:pdf,doc,docx|max:2048',
+        ]);
+
+        $user = $request->user();
+        if (!$user->mahasiswa) {
+            return response()->json(['message' => 'Data mahasiswa tidak ditemukan'], 404);
+        }
+
+        try {
+            $file = $request->file('file_proposal');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('proposals', $fileName, 'public');
+
+            $proposal = Proposal::updateOrCreate(
+                ['id_mahasiswa' => $user->mahasiswa->id],
+                [
+                    'judul_proposal' => $request->judul_proposal,
+                    'file_proposal' => $filePath,
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Proposal berhasil diunggah',
+                'data' => $proposal
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengunggah proposal: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     // Tambahkan fungsi manajemen user di sini nanti
 }

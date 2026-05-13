@@ -1,7 +1,8 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
-import 'dart:io';
+import '../../../controllers/mhs_controller.dart';
 
 class FormProposalModal extends StatefulWidget {
   const FormProposalModal({super.key});
@@ -11,21 +12,27 @@ class FormProposalModal extends StatefulWidget {
 }
 
 class _FormProposalModalState extends State<FormProposalModal> {
+  final MhsController controller = Get.find<MhsController>();
   final TextEditingController _judulController = TextEditingController();
-  File? _selectedFile;
+  Uint8List? _fileBytes;
   String? _fileName;
 
   Future<void> _pickFile() async {
-    FilePickerResult? result = await FilePicker.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx'],
-    );
+    try {
+      FilePickerResult? result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx'],
+        withData: true,
+      );
 
-    if (result != null) {
-      setState(() {
-        _selectedFile = File(result.files.single.path!);
-        _fileName = result.files.single.name;
-      });
+      if (result != null && result.files.isNotEmpty) {
+        setState(() {
+          _fileBytes = result.files.first.bytes;
+          _fileName = result.files.first.name;
+        });
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Gagal memilih file: $e");
     }
   }
 
@@ -137,40 +144,41 @@ class _FormProposalModalState extends State<FormProposalModal> {
           SizedBox(
             width: double.infinity,
             height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                // Logika upload akan dihandle controller nanti
-                if (_judulController.text.isNotEmpty && _selectedFile != null) {
-                  Get.back();
-                  Get.snackbar(
-                    "Informasi",
-                    "Proposal sedang diproses",
-                    backgroundColor: Colors.blue,
-                    colorText: Colors.white,
-                  );
-                } else {
-                  Get.snackbar(
-                    "Peringatan",
-                    "Mohon isi judul dan pilih file",
-                    backgroundColor: Colors.orange,
-                    colorText: Colors.white,
-                  );
-                }
-              },
+            child: Obx(() => ElevatedButton(
+              onPressed: controller.isLoadingAction.value 
+                ? null 
+                : () {
+                    if (_judulController.text.isNotEmpty && _fileBytes != null) {
+                      controller.uploadProposal(_judulController.text, _fileBytes!, _fileName!);
+                    } else {
+                      Get.snackbar(
+                        "Peringatan",
+                        "Mohon isi judul dan pilih file",
+                        backgroundColor: Colors.orange,
+                        colorText: Colors.white,
+                      );
+                    }
+                  },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF4A89FF),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Text(
-                "SIMPAN",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+              child: controller.isLoadingAction.value
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                  )
+                : const Text(
+                    "SIMPAN",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+            )),
           ),
         ],
       ),

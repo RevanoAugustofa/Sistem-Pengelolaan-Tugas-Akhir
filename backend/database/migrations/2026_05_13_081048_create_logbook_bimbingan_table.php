@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('logbook_bimbingan', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id', true);
             $table->integer('id_mahasiswa');
-            $table->unsignedBigInteger('id_daftar_bimbingan');
+            $table->integer('id_daftar_bimbingan');
             $table->string('permasalahan')->nullable();
             $table->string('file_bimbingan')->nullable();
             $table->string('rekom_pembimbing_utama')->nullable();

@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('jadwal_bimbingan', function (Blueprint $blueprint) {
-            $blueprint->id();
-            $blueprint->unsignedBigInteger('id_dosen');
+            $blueprint->integer('id', true);
+            $blueprint->integer('id_dosen');
             $blueprint->dateTime('waktu_tanggal');
             $blueprint->integer('kuota')->default(1);
             $blueprint->enum('metode_bimbingan', ['offline', 'online']);

@@ -14,7 +14,7 @@ class DaftarBimbingan extends Model
     protected $fillable = [
         'id_mahasiswa',
         'id_jadwal_bimbingan',
-        'status',
+        'status', // enum: menunggu, diterima, ditolak, dibatalkan
     ];
 
     public function mahasiswa()

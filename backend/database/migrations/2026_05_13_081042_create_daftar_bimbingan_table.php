@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('daftar_bimbingan', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id', true);
             $table->integer('id_mahasiswa');
             $table->integer('id_jadwal_bimbingan');
-            $table->enum('status', ['diajukan', 'disetujui', 'selesai', 'dibatalkan'])->default('diajukan');
+            $table->enum('status', ['menunggu', 'diterima', 'ditolak', 'dibatalkan'])->default('menunggu');
             $table->timestamps();
 
             $table->foreign('id_mahasiswa')->references('id')->on('mahasiswa')->onDelete('cascade');

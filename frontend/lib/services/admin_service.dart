@@ -291,13 +291,13 @@ class AdminService {
     return response.statusCode == 201;
   }
 
-  Future<bool> updateDosenProdi(int dosenId, List<int> prodiIds) async {
+  Future<bool> updateDosenProdi(int dosenId, List<Map<String, dynamic>> prodis) async {
     final token = await _getToken();
     final response = await http.put(
       Uri.parse("$baseUrl/admin/dosen-prodi/$dosenId"),
       headers: {'Authorization': 'Bearer $token', 'Accept': 'application/json', 'Content-Type': 'application/json'},
       body: jsonEncode({
-        'prodi_ids': prodiIds,
+        'prodis': prodis,
       }),
     );
     return response.statusCode == 200;

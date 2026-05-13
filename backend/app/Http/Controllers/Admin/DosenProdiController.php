@@ -26,12 +26,14 @@ class DosenProdiController extends Controller
         $request->validate([
             'id_dosen' => 'required|exists:dosen,id',
             'id_prodi' => 'required|exists:prodi,id',
+            'jabatan' => 'nullable|in:koorprodi,admin',
         ]);
 
         $dosen = Dosen::findOrFail($request->id_dosen);
         
-        // Use syncWithoutDetaching to avoid duplicates
-        $dosen->prodi()->syncWithoutDetaching([$request->id_prodi]);
+        $dosen->prodi()->syncWithoutDetaching([
+            $request->id_prodi => ['jabatan' => $request->jabatan]
+        ]);
 
         return response()->json([
             'message' => 'Relasi Dosen & Prodi berhasil ditambahkan',
@@ -54,12 +56,19 @@ class DosenProdiController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'prodi_ids' => 'required|array',
-            'prodi_ids.*' => 'exists:prodi,id',
+            'prodis' => 'required|array',
+            'prodis.*.id' => 'required|exists:prodi,id',
+            'prodis.*.jabatan' => 'nullable|in:koorprodi,admin',
         ]);
 
         $dosen = Dosen::findOrFail($id);
-        $dosen->prodi()->sync($request->prodi_ids);
+        
+        $syncData = [];
+        foreach ($request->prodis as $item) {
+            $syncData[$item['id']] = ['jabatan' => $item['jabatan'] ?? null];
+        }
+
+        $dosen->prodi()->sync($syncData);
 
         return response()->json([
             'message' => 'Relasi Dosen & Prodi berhasil diperbarui',

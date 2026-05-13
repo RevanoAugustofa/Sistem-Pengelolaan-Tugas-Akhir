@@ -15,6 +15,7 @@ class _EditDosenProdiPageState extends State<EditDosenProdiPage> {
   final AdminController controller = Get.find<AdminController>();
   
   List<int> selectedProdiIds = []; 
+  Map<int, String?> selectedJabatan = {}; // Untuk menyimpan jabatan per prodi
 
   @override
   void initState() {
@@ -22,6 +23,9 @@ class _EditDosenProdiPageState extends State<EditDosenProdiPage> {
     controller.fetchProdi();
     if (widget.dosen.prodi != null) {
       selectedProdiIds = widget.dosen.prodi!.map((p) => p.id!).toList();
+      for (var p in widget.dosen.prodi!) {
+        selectedJabatan[p.id!] = p.jabatan;
+      }
     }
   }
 
@@ -60,7 +64,7 @@ class _EditDosenProdiPageState extends State<EditDosenProdiPage> {
             ),
             const SizedBox(height: 30),
             const Text(
-              "Pilih Program Studi:",
+              "Pilih Program Studi & Jabatan:",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 15),
@@ -74,19 +78,48 @@ class _EditDosenProdiPageState extends State<EditDosenProdiPage> {
               itemBuilder: (context, index) {
                 var prodi = controller.listProdi[index];
                 bool isChecked = selectedProdiIds.contains(prodi.id);
-                return CheckboxListTile(
-                  title: Text(prodi.namaProdi ?? "-"),
-                  subtitle: Text(prodi.kodeProdi ?? ""),
-                  value: isChecked,
-                  onChanged: (val) {
-                    setState(() {
-                      if (val == true) {
-                        selectedProdiIds.add(prodi.id!);
-                      } else {
-                        selectedProdiIds.remove(prodi.id);
-                      }
-                    });
-                  },
+                
+                return Column(
+                  children: [
+                    CheckboxListTile(
+                      title: Text(prodi.namaProdi ?? "-"),
+                      subtitle: Text(prodi.kodeProdi ?? ""),
+                      value: isChecked,
+                      onChanged: (val) {
+                        setState(() {
+                          if (val == true) {
+                            selectedProdiIds.add(prodi.id!);
+                          } else {
+                            selectedProdiIds.remove(prodi.id);
+                            selectedJabatan.remove(prodi.id);
+                          }
+                        });
+                      },
+                    ),
+                    if (isChecked) 
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: DropdownButtonFormField<String>(
+                          decoration: const InputDecoration(
+                            labelText: "Jabatan di Prodi ini",
+                            border: OutlineInputBorder(),
+                            isDense: true,
+                          ),
+                          value: selectedJabatan[prodi.id],
+                          items: const [
+                            DropdownMenuItem(value: null, child: Text("Dosen Biasa")),
+                            DropdownMenuItem(value: "koorprodi", child: Text("Koorprodi")),
+                            DropdownMenuItem(value: "admin", child: Text("Admin")),
+                          ],
+                          onChanged: (val) {
+                            setState(() {
+                              selectedJabatan[prodi.id!] = val;
+                            });
+                          },
+                        ),
+                      ),
+                    const Divider(),
+                  ],
                 );
               },
             )),
@@ -97,7 +130,11 @@ class _EditDosenProdiPageState extends State<EditDosenProdiPage> {
               width: double.infinity,
               child: Obx(() => ElevatedButton(
                 onPressed: controller.isLoadingDosenProdi.value ? null : () {
-                  controller.updateDosenProdi(widget.dosen.id!, selectedProdiIds);
+                  List<Map<String, dynamic>> prodisData = selectedProdiIds.map((id) => {
+                    "id": id,
+                    "jabatan": selectedJabatan[id]
+                  }).toList();
+                  controller.updateDosenProdi(widget.dosen.id!, prodisData);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 15),
@@ -108,7 +145,7 @@ class _EditDosenProdiPageState extends State<EditDosenProdiPage> {
                 ),
                 child: controller.isLoadingDosenProdi.value 
                   ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                  : const Text("Perbarui Relasi", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  : const Text("Perbarui Relasi & Jabatan", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               )),
             ),
           ],

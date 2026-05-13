@@ -383,10 +383,10 @@ class AdminController extends GetxController {
     }
   }
 
-  Future<void> updateDosenProdi(int dosenId, List<int> prodiIds) async {
+  Future<void> updateDosenProdi(int dosenId, List<Map<String, dynamic>> prodis) async {
     try {
       isLoadingDosenProdi(true);
-      if (await _service.updateDosenProdi(dosenId, prodiIds)) {
+      if (await _service.updateDosenProdi(dosenId, prodis)) {
         fetchDosenProdi();
         Get.back();
         Get.snackbar("Sukses", "Relasi Dosen & Prodi berhasil diperbarui");

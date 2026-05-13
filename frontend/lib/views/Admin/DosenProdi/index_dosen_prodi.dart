@@ -189,7 +189,7 @@ class _IndexDosenProdiPageState extends State<IndexDosenProdiPage> {
                                   DataCell(
                                     Wrap(
                                       spacing: 4,
-                                      children: dosen.prodi?.map<Widget>((p) => _buildProdiChip(p.namaProdi ?? "-")).toList() ?? <Widget>[const Text("-")],
+                                      children: dosen.prodi?.map<Widget>((p) => _buildProdiChip(p.namaProdi ?? "-", p.jabatan)).toList() ?? <Widget>[const Text("-")],
                                     ),
                                   ),
                                   DataCell(Row(
@@ -276,7 +276,11 @@ class _IndexDosenProdiPageState extends State<IndexDosenProdiPage> {
     );
   }
 
-  Widget _buildProdiChip(String label) {
+  Widget _buildProdiChip(String label, String? jabatan) {
+    String displayLabel = label;
+    if (jabatan != null) {
+      displayLabel += " ($jabatan)";
+    }
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -286,7 +290,7 @@ class _IndexDosenProdiPageState extends State<IndexDosenProdiPage> {
         border: Border.all(color: Colors.blue.shade200),
       ),
       child: Text(
-        label,
+        displayLabel,
         style: TextStyle(fontSize: 10, color: Colors.blue.shade700, fontWeight: FontWeight.bold),
       ),
     );

@@ -158,4 +158,26 @@ class KoorProdiController extends Controller
         $data = $query->get();
         return response()->json(['data' => $data]);
     }
+
+    public function daftarSidang(Request $request)
+    {
+        $user = $request->user();
+        if (!$user->dosen) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $idProdi = $user->dosen->prodi()->first()?->id;
+
+        $query = \App\Models\DaftarSidangTA::with(['mahasiswa.prodi', 'mahasiswa.tahunAjar']);
+
+        if ($idProdi) {
+            $query->whereHas('mahasiswa', function ($q) use ($idProdi) {
+                $q->where('id_prodi', $idProdi);
+            });
+        }
+
+        $data = $query->orderBy('created_at', 'desc')->get();
+
+        return response()->json(['data' => $data]);
+    }
 }

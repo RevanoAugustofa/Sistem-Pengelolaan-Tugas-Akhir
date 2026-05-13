@@ -17,7 +17,7 @@ import 'package:frontend/views/Admin/Data/pendaftaranSidang_Admin.dart';
 import 'package:frontend/views/Admin/Import/importdataDosen.dart';
 import 'package:frontend/views/Admin/Import/importdataMahasiswa.dart';
 import 'package:frontend/views/Admin/Jadwal/jadwal_Admin.dart';
-import 'package:frontend/views/Admin/logbook_Adm.dart';
+import 'package:frontend/views/Admin/detail_logbook_Adm.dart';
 import 'package:frontend/views/Admin/HasilAkhir/hasilAkhir_Adm.dart';
 import 'package:frontend/views/Admin/pengajuan_pembimbing_Adm.dart';
 import 'package:frontend/views/Admin/Penilaian/rekap_Adm.dart';

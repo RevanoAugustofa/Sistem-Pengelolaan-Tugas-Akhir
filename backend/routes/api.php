@@ -138,6 +138,9 @@ Route::middleware('auth:sanctum', 'role:koorprodi')->group(function () {
 
     // Rekap for KoorProdi
     Route::get('/koorprodi/rekap', [KoorProdiController::class, 'rekap']);
+
+    // Daftar Sidang for KoorProdi
+    Route::get('/koorprodi/daftar-sidang', [KoorProdiController::class, 'daftarSidang']);
 });
 
 

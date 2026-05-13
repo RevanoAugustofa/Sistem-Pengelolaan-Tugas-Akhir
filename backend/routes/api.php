@@ -152,6 +152,8 @@ Route::middleware('auth:sanctum', 'role:dosen')->group(function () {
     Route::post('/dosen/hasil-sempro', [\App\Http\Controllers\Dosen\MahasiswaController::class, 'storeHasilSempro']);
     Route::get('/dosen/mahasiswa/{id}/logbook', [\App\Http\Controllers\Dosen\MahasiswaController::class, 'getLogbook']);
     Route::put('/dosen/logbook/{id}', [\App\Http\Controllers\Dosen\MahasiswaController::class, 'updateLogbook']);
+    Route::get('/dosen/mahasiswa/{id}/jadwal-sidang', [\App\Http\Controllers\Dosen\MahasiswaController::class, 'getJadwalSidang']);
+    Route::post('/dosen/hasil-sidang', [\App\Http\Controllers\Dosen\MahasiswaController::class, 'storeHasilSidang']);
 });
 
 

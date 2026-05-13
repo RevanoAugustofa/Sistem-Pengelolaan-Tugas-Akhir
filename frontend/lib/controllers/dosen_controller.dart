@@ -23,6 +23,14 @@ class DosenController extends GetxController {
   var hasilSempro = {}.obs;
   var isPengujiSempro = false.obs;
   var isLoadingSempro = false.obs;
+  
+  // Sidang state
+  var jadwalSidangTA = {}.obs;
+  var hasilSidangTA = {}.obs;
+  var isPengujiSidang = false.obs;
+  var isPembimbingSidang = false.obs;
+  var isLoadingSidang = false.obs;
+
   var idDosenLoggedIn = 0.obs;
   var currentGrade = "".obs;
 
@@ -73,6 +81,52 @@ class DosenController extends GetxController {
       Get.snackbar("Error", e.toString());
     } finally {
       isLoadingSempro(false);
+    }
+  }
+
+  void fetchJadwalSidangTA(int idMahasiswa) async {
+    try {
+      isLoadingSidang(true);
+      var data = await _service.getJadwalSidang(idMahasiswa);
+      jadwalSidangTA.value = data['jadwal'] ?? {};
+      hasilSidangTA.value = data['hasil'] ?? {};
+      isPengujiSidang.value = data['is_penguji'] ?? false;
+      isPembimbingSidang.value = data['is_pembimbing'] ?? false;
+      idDosenLoggedIn.value = data['id_dosen_logged_in'] ?? 0;
+
+      if (isPengujiSidang.value || isPembimbingSidang.value) {
+        if (jadwalSidangTA['id_penguji_utama'] == idDosenLoggedIn.value) {
+          currentGrade.value = hasilSidangTA['nilai_penguji_utama']?.toString() ?? "";
+        } else if (jadwalSidangTA['id_penguji_pendamping'] == idDosenLoggedIn.value) {
+          currentGrade.value = hasilSidangTA['nilai_penguji_pendamping']?.toString() ?? "";
+        } else if (jadwalSidangTA['id_pembimbing_utama'] == idDosenLoggedIn.value) {
+          currentGrade.value = hasilSidangTA['nilai_pembimbing_utama']?.toString() ?? "";
+        } else if (jadwalSidangTA['id_pembimbing_pendamping'] == idDosenLoggedIn.value) {
+          currentGrade.value = hasilSidangTA['nilai_pembimbing_pendamping']?.toString() ?? "";
+        }
+      } else {
+        currentGrade.value = "";
+      }
+    } catch (e) {
+      print("Error fetching sidang TA: $e");
+    } finally {
+      isLoadingSidang(false);
+    }
+  }
+
+  Future<void> submitHasilSidang(Map<String, dynamic> data) async {
+    try {
+      isLoadingSidang(true);
+      bool success = await _service.storeHasilSidang(data);
+      if (success) {
+        fetchJadwalSidangTA(data['id_mahasiswa_temp']); // Refresh
+        Get.snackbar("Sukses", "Nilai sidang berhasil disimpan",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingSidang(false);
     }
   }
 

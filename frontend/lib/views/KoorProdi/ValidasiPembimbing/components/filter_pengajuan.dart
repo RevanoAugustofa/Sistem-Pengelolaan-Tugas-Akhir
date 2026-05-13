@@ -61,7 +61,7 @@ class _FilterPengajuanState extends State<FilterPengajuan> {
           // --- Filter Dosen ---
           const Text("Dosen Pembimbing", style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Wrap(
+          Obx(() => Wrap(
             spacing: 8,
             children: controller.availableDosen.map((name) {
               bool isSelected = tempSelectedDosen.contains(name);
@@ -77,13 +77,13 @@ class _FilterPengajuanState extends State<FilterPengajuan> {
                 checkmarkColor: Colors.blue,
               );
             }).toList(),
-          ),
+          )),
           const SizedBox(height: 16),
 
           // --- Filter Tahun Ajar ---
           const Text("Tahun Ajar", style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Wrap(
+          Obx(() => Wrap(
             spacing: 8,
             children: controller.availableTahunAjar.map((year) {
               bool isSelected = tempSelectedTahunAjar.contains(year);
@@ -99,7 +99,7 @@ class _FilterPengajuanState extends State<FilterPengajuan> {
                 checkmarkColor: Colors.blue,
               );
             }).toList(),
-          ),
+          )),
           const SizedBox(height: 16),
 
           // --- Filter Status ---

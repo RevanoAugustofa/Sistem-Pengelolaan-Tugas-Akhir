@@ -422,22 +422,22 @@ class KoorProdiController extends GetxController {
     }
   }
 
-  // Get unique Dosen names from list (Note: with server pagination, this only shows from loaded items)
+  // Get unique Dosen names from master list
   List<String> get availableDosen {
-    var names = <String>{};
-    for (var p in listPengajuan) {
-      if (p.pembimbingUtama?.namaDosen != null) names.add(p.pembimbingUtama!.namaDosen!);
-      if (p.pembimbingPendamping?.namaDosen != null) names.add(p.pembimbingPendamping!.namaDosen!);
-    }
-    return names.toList()..sort();
+    return listDosen
+        .where((d) => d.namaDosen != null)
+        .map((d) => d.namaDosen!)
+        .toList()
+      ..sort();
   }
 
+  // Get academic years from master list
   List<String> get availableTahunAjar {
-    var years = <String>{};
-    for (var p in listPengajuan) {
-      if (p.mahasiswa?.angkatan != null) years.add(p.mahasiswa!.angkatan!);
-    }
-    return years.toList()..sort((a, b) => b.compareTo(a));
+    return listTahunAjar
+        .where((t) => t.tahunAjar != null)
+        .map((t) => t.tahunAjar!)
+        .toList()
+      ..sort((a, b) => b.compareTo(a));
   }
 
   void applyFilter({

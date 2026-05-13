@@ -1,104 +1,144 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../../controllers/dosen_controller.dart';
+import '../../../models/mahasiswa_model.dart';
+import 'package:intl/intl.dart';
 
-class TugasAkhirProposalTable extends StatelessWidget {
-  const TugasAkhirProposalTable({super.key, required String searchQuery});
+class TugasAkhirProposalTable extends StatefulWidget {
+  final String searchQuery;
+  const TugasAkhirProposalTable({super.key, required this.searchQuery});
+
+  @override
+  State<TugasAkhirProposalTable> createState() => _TugasAkhirProposalTableState();
+}
+
+class _TugasAkhirProposalTableState extends State<TugasAkhirProposalTable> {
+  final DosenController controller = Get.find<DosenController>();
+  final TextEditingController nilaiController = TextEditingController();
+  late Mahasiswa mahasiswa;
+  Worker? _worker;
+
+  @override
+  void initState() {
+    super.initState();
+    mahasiswa = Get.arguments as Mahasiswa;
+    controller.fetchJadwalSempro(mahasiswa.id!);
+    
+    _worker = ever(controller.currentGrade, (String grade) {
+      if (grade.isNotEmpty) {
+        nilaiController.text = grade;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _worker?.dispose();
+    nilaiController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Gunakan SingleChildScrollView agar halaman bisa di-scroll jika layar kecil
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 1. CARD JADWAL SEMINAR PROPOSAL
-          _buildJadwalCard(),
-          
-          const SizedBox(height: 24),
-          const Divider(thickness: 1, color: Colors.grey), // Garis pembatas abu-abu
-          const SizedBox(height: 20),
+    return Obx(() {
+      if (controller.isLoadingSempro.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-          // 2. BAGIAN PENILAIAN SEMINAR PROPOSAL
-          const Text(
-            "Penilaian Seminar Proposal",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-          ),
-          const SizedBox(height: 16),
+      if (controller.jadwalSempro.isEmpty) {
+        return const Center(child: Text("Jadwal seminar proposal belum tersedia"));
+      }
 
-          // Tombol Lihat File TA (Dashed Border)
-          _buildDashedButton("lihat file Proposal"),
-          
-          const SizedBox(height: 20),
+      final jadwal = controller.jadwalSempro;
+      final isPenguji = controller.isPengujiSempro.value;
 
-          // Input Field: Nilai Seminar Proposal
-          const Text(
-            "Nilai Seminar Proposal",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(height: 8),
-          _buildTextField("Masukkan nilai"),
-
-          const SizedBox(height: 20),
-
-          // Input Field: Catatan Revisi
-          const Text(
-            "Catatan Revisi",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(height: 8),
-          _buildTextField("Masukkan Catatan Revisi", maxLines: 5),
-
-          const SizedBox(height: 30),
-
-          // Tombol Simpan
-          SizedBox(
-            width: double.infinity,
-            height: 48,
-            child: ElevatedButton(
-              onPressed: () {
-                // TODO: Tambahkan logika simpan di sini
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2196F3), // Biru Primary
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                "SIMPAN",
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1.2),
-              ),
+      return SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildJadwalCard(jadwal),
+            const SizedBox(height: 24),
+            const Divider(thickness: 1, color: Colors.grey),
+            const SizedBox(height: 20),
+            const Text(
+              "Penilaian Seminar Proposal",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
             ),
-          ),
-          
-          const SizedBox(height: 20), // Spasi bawah
-        ],
-      ),
-    );
+            const SizedBox(height: 16),
+            _buildDashedButton("Lihat File Proposal", jadwal['mahasiswa']?['proposal']?['file_proposal']),
+            const SizedBox(height: 20),
+            const Text(
+              "Nilai Seminar Proposal",
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 8),
+            _buildTextField(
+              nilaiController,
+              isPenguji ? "Masukkan nilai" : "Hanya Penguji yang dapat memberi nilai",
+              enabled: isPenguji,
+            ),
+            const SizedBox(height: 30),
+            if (isPenguji)
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (nilaiController.text.isEmpty) {
+                      Get.snackbar("Peringatan", "Nilai tidak boleh kosong");
+                      return;
+                    }
+                    controller.submitHasilSempro({
+                      'id_jadwal_sempro': jadwal['id'],
+                      'id_proposal': jadwal['mahasiswa']['proposal']['id'],
+                      'nilai': nilaiController.text,
+                      'id_mahasiswa_temp': mahasiswa.id, // For refresh
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2196F3),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    "SIMPAN",
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1.2),
+                  ),
+                ),
+              ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      );
+    });
   }
 
-  // --- HELPER WIDGETS ---
+  Widget _buildJadwalCard(Map<dynamic, dynamic> jadwal) {
+    String formattedDate = "-";
+    if (jadwal['tanggal'] != null) {
+      DateTime date = DateTime.parse(jadwal['tanggal']);
+      formattedDate = DateFormat('EEEE, d MMMM yyyy', 'id_ID').format(date);
+    }
 
-  // Card Jadwal
-  Widget _buildJadwalCard() {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF3F8FF), // Warna latar biru sangat pucat
+        color: const Color(0xFFF3F8FF),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.blue.shade100),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header Biru Gelap
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: const BoxDecoration(
-              color: Color(0xFF0056A8), // Biru Gelap
+              color: Color(0xFF0056A8),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(8),
-                topRight: Radius.circular(8), // Disesuaikan dengan desain, ada versi yang asimetris
+                topRight: Radius.circular(8),
               ),
             ),
             child: const Text(
@@ -106,52 +146,48 @@ class TugasAkhirProposalTable extends StatelessWidget {
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 13),
             ),
           ),
-          // Isi Card
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Kolom Kiri: Waktu & Tempat
                 Expanded(
                   flex: 5,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Jum'at 20, Februari 2026",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      Text(
+                        formattedDate,
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       const SizedBox(height: 8),
-                      // Badge Jam
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF6C7A89), // Abu-abu kebiruan
+                          color: const Color(0xFF6C7A89),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text(
-                          "08.30.00 - 09.45.00 WIB",
-                          style: TextStyle(color: Colors.white, fontSize: 12),
+                        child: Text(
+                          "${jadwal['waktu_mulai'] ?? '00:00'} - ${jadwal['waktu_selesai'] ?? '00:00'} WIB",
+                          style: const TextStyle(color: Colors.white, fontSize: 12),
                         ),
                       ),
                       const SizedBox(height: 12),
-                      const Text(
-                        "Lab. Jaringan",
-                        style: TextStyle(color: Colors.black87, fontSize: 13),
+                      Text(
+                        jadwal['ruangan']?['nama_ruangan'] ?? "-",
+                        style: const TextStyle(color: Colors.black87, fontSize: 13),
                       ),
                     ],
                   ),
                 ),
-                // Kolom Kanan: Penguji
                 Expanded(
                   flex: 4,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildPengujiInfo("Penguji 1", "Arfilal Faiznadi S,Pd"),
+                      _buildPengujiInfo("Penguji Utama", jadwal['penguji_utama']?['nama_dosen'] ?? "-"),
                       const SizedBox(height: 12),
-                      _buildPengujiInfo("Penguji 2", "Arfilal Faiznadi S,Pd"),
+                      _buildPengujiInfo("Penguji Pendamping", jadwal['penguji_pendamping']?['nama_dosen'] ?? "-"),
                     ],
                   ),
                 ),
@@ -179,14 +215,15 @@ class TugasAkhirProposalTable extends StatelessWidget {
     );
   }
 
-  // Tombol Lihat File TA (Garis Putus-putus)
-  // Karena Flutter tidak punya native dashed border untuk Container,
-  // kita gunakan CustomPaint sederhana atau bisa juga pakai package 'dotted_border'
-  // Di sini saya pakai style sederhana yang mirip.
-  Widget _buildDashedButton(String text) {
+  Widget _buildDashedButton(String text, String? fileName) {
     return InkWell(
       onTap: () {
-        // TODO: Logika buka file TA
+        if (fileName != null) {
+          // Open file logic
+          Get.snackbar("Info", "Membuka file: $fileName");
+        } else {
+          Get.snackbar("Error", "File tidak tersedia");
+        }
       },
       child: Container(
         width: double.infinity,
@@ -194,11 +231,10 @@ class TugasAkhirProposalTable extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(8),
-          // Menggunakan solid border sementara. Jika HARUS dashed, disarankan install package 'dotted_border'
           border: Border.all(color: Colors.grey.shade400, style: BorderStyle.solid), 
         ),
         child: Text(
-          text,
+          fileName ?? text,
           textAlign: TextAlign.center,
           style: const TextStyle(color: Colors.black87, fontSize: 14),
         ),
@@ -206,25 +242,21 @@ class TugasAkhirProposalTable extends StatelessWidget {
     );
   }
 
-  // Text Field Generic
-  Widget _buildTextField(String hintText, {int maxLines = 1}) {
+  Widget _buildTextField(TextEditingController controller, String hintText, {int maxLines = 1, bool enabled = true}) {
     return TextField(
+      controller: controller,
       maxLines: maxLines,
+      enabled: enabled,
+      keyboardType: TextInputType.number,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: const TextStyle(color: Colors.black54, fontSize: 14),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        filled: !enabled,
+        fillColor: enabled ? Colors.transparent : Colors.grey.shade100,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: Colors.grey),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Colors.grey.shade400),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.blue),
         ),
       ),
     );

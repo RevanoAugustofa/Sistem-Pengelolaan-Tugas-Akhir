@@ -148,6 +148,8 @@ Route::middleware('auth:sanctum', 'role:dosen')->group(function () {
     Route::get('/dosen/jadwal', [\App\Http\Controllers\Dosen\JadwalController::class, 'index']);
     Route::post('/dosen/jadwal', [\App\Http\Controllers\Dosen\JadwalController::class, 'store']);
     Route::get('/dosen/mahasiswa', [\App\Http\Controllers\Dosen\MahasiswaController::class, 'index']);
+    Route::get('/dosen/mahasiswa/{id}/jadwal-sempro', [\App\Http\Controllers\Dosen\MahasiswaController::class, 'getJadwalSempro']);
+    Route::post('/dosen/hasil-sempro', [\App\Http\Controllers\Dosen\MahasiswaController::class, 'storeHasilSempro']);
 });
 
 

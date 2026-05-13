@@ -16,6 +16,14 @@ class DosenController extends GetxController {
   var isLoadingJadwal = false.obs;
   var isLoadingMahasiswa = false.obs;
 
+  // Sempro state
+  var jadwalSempro = {}.obs;
+  var hasilSempro = {}.obs;
+  var isPengujiSempro = false.obs;
+  var isLoadingSempro = false.obs;
+  var idDosenLoggedIn = 0.obs;
+  var currentGrade = "".obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -23,6 +31,47 @@ class DosenController extends GetxController {
     fetchJadwalSidang();
     fetchJadwalBimbingan();
     fetchMahasiswa();
+  }
+
+  void fetchJadwalSempro(int idMahasiswa) async {
+    try {
+      isLoadingSempro(true);
+      var data = await _service.getJadwalSempro(idMahasiswa);
+      jadwalSempro.value = data['jadwal'] ?? {};
+      hasilSempro.value = data['hasil'] ?? {};
+      isPengujiSempro.value = data['is_penguji'] ?? false;
+      idDosenLoggedIn.value = data['id_dosen_logged_in'] ?? 0;
+
+      if (isPengujiSempro.value) {
+        if (jadwalSempro['id_penguji_utama'] == idDosenLoggedIn.value) {
+          currentGrade.value = hasilSempro['nilai_penguji_utama']?.toString() ?? "";
+        } else {
+          currentGrade.value = hasilSempro['nilai_penguji_pendamping']?.toString() ?? "";
+        }
+      } else {
+        currentGrade.value = "";
+      }
+    } catch (e) {
+      print("Error fetching sempro: $e");
+    } finally {
+      isLoadingSempro(false);
+    }
+  }
+
+  Future<void> submitHasilSempro(Map<String, dynamic> data) async {
+    try {
+      isLoadingSempro(true);
+      bool success = await _service.storeHasilSempro(data);
+      if (success) {
+        fetchJadwalSempro(data['id_mahasiswa_temp']); // Refresh
+        Get.snackbar("Sukses", "Nilai proposal berhasil disimpan",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingSempro(false);
+    }
   }
 
   void fetchMahasiswa() async {

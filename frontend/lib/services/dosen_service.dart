@@ -31,6 +31,42 @@ class DosenService {
     throw Exception("Gagal mengambil data mahasiswa bimbingan");
   }
 
+  Future<Map<String, dynamic>> getJadwalSempro(int idMahasiswa) async {
+    final token = await _getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/dosen/mahasiswa/$idMahasiswa/jadwal-sempro"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    }
+    throw Exception("Gagal mengambil data jadwal sempro");
+  }
+
+  Future<bool> storeHasilSempro(Map<String, dynamic> data) async {
+    final token = await _getToken();
+    final response = await http.post(
+      Uri.parse("$baseUrl/dosen/hasil-sempro"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      final body = json.decode(response.body);
+      throw Exception(body['message'] ?? "Gagal menyimpan nilai");
+    }
+  }
+
   Future<List<JadwalModel>> getJadwal(String jenisSidang) async {
     final token = await _getToken();
     // Assuming we use the same endpoint but it will be filtered by the backend based on auth user

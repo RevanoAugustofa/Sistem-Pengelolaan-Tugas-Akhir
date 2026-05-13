@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../models/mahasiswa_model.dart';
 import 'tugas_akhir_proposal.dart';
 import 'tugas_akhir_bimbingan.dart';
 import 'tugas_akhir_sidang.dart';
@@ -15,6 +16,13 @@ class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
   final TextEditingController searchController = TextEditingController();
   String selectedTab = "Proposal";
   String searchQuery = "";
+  late Mahasiswa mahasiswa;
+
+  @override
+  void initState() {
+    super.initState();
+    mahasiswa = Get.arguments as Mahasiswa;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,9 +119,9 @@ class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
       padding: const EdgeInsets.all(20.0),
       child: Column(
         children: [
-          _buildDetailRow("NPM", "230102078"),
+          _buildDetailRow("NPM", mahasiswa.npm ?? "-"),
           const SizedBox(height: 10),
-          _buildDetailRow("Nama", "Revano Augustofa"),
+          _buildDetailRow("Nama", mahasiswa.namaMahasiswa ?? "-"),
           const SizedBox(height: 10),
           // Khusus untuk Judul TA, kita buat Row manual agar teksnya bisa underline dan multiline dengan baik
           Row(
@@ -125,7 +133,7 @@ class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
               ),
               Expanded(
                 child: Text(
-                  "Sistem Informasi Pengelolaan Tugas Akhir",
+                  mahasiswa.proposal?.judulProposal ?? "Belum ada judul",
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     decoration: TextDecoration.underline, // Menambahkan garis bawah (underline)

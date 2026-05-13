@@ -3,13 +3,18 @@ import 'package:get/get.dart';
 import '../models/jadwal_model.dart';
 import '../services/dosen_service.dart';
 
+import '../models/mahasiswa_model.dart';
+
 class DosenController extends GetxController {
   final DosenService _service = DosenService();
 
   var listJadwalProposal = <JadwalModel>[].obs;
   var listJadwalSidang = <JadwalModel>[].obs;
   var listJadwalBimbingan = <JadwalModel>[].obs;
+  var listMahasiswa = <Mahasiswa>[].obs;
+  var filteredMahasiswa = <Mahasiswa>[].obs;
   var isLoadingJadwal = false.obs;
+  var isLoadingMahasiswa = false.obs;
 
   @override
   void onInit() {
@@ -17,6 +22,30 @@ class DosenController extends GetxController {
     fetchJadwalProposal();
     fetchJadwalSidang();
     fetchJadwalBimbingan();
+    fetchMahasiswa();
+  }
+
+  void fetchMahasiswa() async {
+    try {
+      isLoadingMahasiswa(true);
+      var data = await _service.getMahasiswaBimbingan();
+      listMahasiswa.assignAll(data);
+      filteredMahasiswa.assignAll(data);
+    } catch (e) {
+      print("Error fetching mahasiswa: $e");
+    } finally {
+      isLoadingMahasiswa(false);
+    }
+  }
+
+  void searchMahasiswa(String query) {
+    if (query.isEmpty) {
+      filteredMahasiswa.assignAll(listMahasiswa);
+    } else {
+      filteredMahasiswa.assignAll(listMahasiswa.where((m) =>
+          m.namaMahasiswa!.toLowerCase().contains(query.toLowerCase()) ||
+          m.npm!.toLowerCase().contains(query.toLowerCase())));
+    }
   }
 
   void fetchJadwalProposal() async {

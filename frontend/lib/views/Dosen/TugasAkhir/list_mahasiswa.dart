@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../controllers/dosen_controller.dart';
+import '../../../models/mahasiswa_model.dart';
 
 class ListMahasiswaPage extends StatefulWidget {
   const ListMahasiswaPage({super.key});
@@ -9,8 +11,8 @@ class ListMahasiswaPage extends StatefulWidget {
 }
 
 class _ListMahasiswaPageState extends State<ListMahasiswaPage> {
+  final DosenController controller = Get.put(DosenController());
   final TextEditingController searchController = TextEditingController();
-  String searchQuery = "";
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +20,8 @@ class _ListMahasiswaPageState extends State<ListMahasiswaPage> {
       backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Color(0xFF2196F3),
+        backgroundColor: const Color(0xFF2196F3),
         elevation: 0,
-        
         title: const Text(
           "Daftar Mahasiswa",
           style: TextStyle(
@@ -31,87 +32,89 @@ class _ListMahasiswaPageState extends State<ListMahasiswaPage> {
         ),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          // Search Bar Section
-          Container(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey.shade300),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+      body: RefreshIndicator(
+        onRefresh: () async => controller.fetchMahasiswa(),
+        child: Column(
+          children: [
+            // Search Bar Section
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey.shade300),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.03),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      controller: searchController,
+                      onChanged: (value) {
+                        controller.searchMahasiswa(value);
+                      },
+                      decoration: const InputDecoration(
+                        hintText: "Cari Mahasiswa...",
+                        hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                        prefixIcon: Icon(Icons.search, color: Colors.grey),
+                        suffixIcon: Icon(Icons.tune, color: Color(0xFF10A8E5)),
+                        contentPadding: EdgeInsets.symmetric(vertical: 14),
+                        border: InputBorder.none,
                       ),
-                    ],
-                  ),
-                  child: TextField(
-                    controller: searchController,
-                    onChanged: (value) {
-                      setState(() {
-                        searchQuery = value;
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      hintText: "Cari Mahasiswa...",
-                      hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                      prefixIcon: Icon(Icons.search, color: Colors.grey),
-                      suffixIcon: Icon(Icons.tune, color: Color(0xFF10A8E5)),
-                      contentPadding: EdgeInsets.symmetric(vertical: 14),
-                      border: InputBorder.none,
                     ),
                   ),
-                ),
-                const SizedBox(height: 15),
-                const Text(
-                  "Menampilkan Mahasiswa Bimbingan",
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
+                  const SizedBox(height: 15),
+                  const Text(
+                    "Menampilkan Mahasiswa Bimbingan",
+                    style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
 
-          // List Area
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: 4, // Placeholder
-              itemBuilder: (context, index) {
-                final names = [
-                  "Revano Augustofa",
-                  "Arya Awikwok",
-                  "Alle Danaralle",
-                  "Budi Setiawan"
-                ];
-                final npms = ["230102078", "230102071", "230102072", "230102080"];
-                
-                return _buildStudentCard(
-                  names[index % names.length],
-                  npms[index % npms.length],
-                  "TI-3C",
+            // List Area
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoadingMahasiswa.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (controller.filteredMahasiswa.isEmpty) {
+                  return const Center(
+                    child: Text("Tidak ada mahasiswa ditemukan"),
+                  );
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: controller.filteredMahasiswa.length,
+                  itemBuilder: (context, index) {
+                    final mahasiswa = controller.filteredMahasiswa[index];
+                    return _buildStudentCard(mahasiswa);
+                  },
                 );
-              },
+              }),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       bottomNavigationBar: _buildBottomNav(),
     );
   }
 
-  Widget _buildStudentCard(String nama, String npm, String kelas) {
+  Widget _buildStudentCard(Mahasiswa mahasiswa) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -137,7 +140,7 @@ class _ListMahasiswaPageState extends State<ListMahasiswaPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  nama,
+                  mahasiswa.namaMahasiswa ?? "-",
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
@@ -146,7 +149,7 @@ class _ListMahasiswaPageState extends State<ListMahasiswaPage> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "$npm • $kelas",
+                  "${mahasiswa.npm ?? "-"} • ${mahasiswa.prodi ?? "-"}",
                   style: const TextStyle(
                     color: Colors.grey,
                     fontSize: 13,
@@ -157,7 +160,7 @@ class _ListMahasiswaPageState extends State<ListMahasiswaPage> {
           ),
           ElevatedButton(
             onPressed: () {
-               Get.toNamed('/tugasAkhirDsn');
+               Get.toNamed('/tugasAkhirDsn', arguments: mahasiswa);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF10A8E5),

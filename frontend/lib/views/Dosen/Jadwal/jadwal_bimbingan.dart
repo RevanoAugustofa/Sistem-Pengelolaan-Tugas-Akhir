@@ -27,8 +27,7 @@ class _JadwalBimbinganDosenTableState extends State<JadwalBimbinganDosenTable> {
       var filteredData = controller.listJadwalBimbingan.where((item) {
         final query = widget.searchQuery.toLowerCase();
         return (item.tempatLink?.toLowerCase().contains(query) ?? false) ||
-               (item.metodeBimbingan?.toLowerCase().contains(query) ?? false) ||
-               (item.status?.toLowerCase().contains(query) ?? false);
+               (item.metodeBimbingan?.toLowerCase().contains(query) ?? false);
       }).toList();
       
       int startIndex = _currentPage * _rowsPerPage;

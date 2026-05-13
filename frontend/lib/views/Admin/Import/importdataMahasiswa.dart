@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart' hide Border;
 import '../../../controllers/admin_controller.dart';
+import '../../../helpers/download_helper.dart';
 
 class ImportDataMahasiswaPage extends StatefulWidget {
   const ImportDataMahasiswaPage({super.key});
@@ -12,7 +13,7 @@ class ImportDataMahasiswaPage extends StatefulWidget {
   State<ImportDataMahasiswaPage> createState() => _ImportDataMahasiswaPageState();
 }
 
-class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
+class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> with DownloadCooldownMixin {
   final AdminController controller = Get.find<AdminController>();
   String? _fileName;
   List<Map<String, dynamic>> _previewData = [];
@@ -21,6 +22,11 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
 
   // Fungsi untuk mengunduh template
   Future<void> _downloadTemplate() async {
+    if (isCooldown) {
+      showCooldownMessage();
+      return;
+    }
+
     var excel = Excel.createExcel();
     Sheet sheetObject = excel['Sheet1'];
 
@@ -58,6 +64,7 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> {
 
     if (outputFile != null) {
       Get.snackbar("Sukses", "Template berhasil diunduh", backgroundColor: Colors.green, colorText: Colors.white);
+      startCooldown();
     }
   }
 

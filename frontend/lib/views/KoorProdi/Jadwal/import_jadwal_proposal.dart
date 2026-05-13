@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart' hide Border;
 import '../../../controllers/koorprodi_controller.dart';
+import '../../../helpers/download_helper.dart';
 
 class ImportJadwalProposalPage extends StatefulWidget {
   const ImportJadwalProposalPage({super.key});
@@ -12,7 +13,7 @@ class ImportJadwalProposalPage extends StatefulWidget {
   State<ImportJadwalProposalPage> createState() => _ImportJadwalProposalPageState();
 }
 
-class _ImportJadwalProposalPageState extends State<ImportJadwalProposalPage> {
+class _ImportJadwalProposalPageState extends State<ImportJadwalProposalPage> with DownloadCooldownMixin {
   final KoorProdiController controller = Get.put(KoorProdiController());
   String? _fileName;
   List<Map<String, dynamic>> _previewData = [];
@@ -21,6 +22,11 @@ class _ImportJadwalProposalPageState extends State<ImportJadwalProposalPage> {
 
   // Fungsi untuk mengunduh template Jadwal Proposal
   Future<void> _downloadTemplate() async {
+    if (isCooldown) {
+      showCooldownMessage();
+      return;
+    }
+
     var excel = Excel.createExcel();
     Sheet sheetObject = excel['Sheet1'];
 
@@ -68,6 +74,7 @@ class _ImportJadwalProposalPageState extends State<ImportJadwalProposalPage> {
 
     if (outputFile != null) {
       Get.snackbar("Sukses", "Template berhasil diunduh", backgroundColor: Colors.green, colorText: Colors.white);
+      startCooldown();
     }
   }
 

@@ -123,4 +123,51 @@ class MahasiswaController extends Controller
 
         return response()->json(['message' => 'Nilai berhasil disimpan', 'hasil' => $hasil]);
     }
+
+    public function getLogbook($id_mahasiswa)
+    {
+        $logbooks = \App\Models\LogbookBimbingan::with(['daftarBimbingan.jadwalBimbingan'])
+            ->where('id_mahasiswa', $id_mahasiswa)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($logbooks);
+    }
+
+    public function updateLogbook(Request $request, $id_logbook)
+    {
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            'permasalahan' => 'nullable|string',
+            'rekom_pembimbing' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user = Auth::user();
+        $dosen = $user->dosen;
+
+        $logbook = \App\Models\LogbookBimbingan::findOrFail($id_logbook);
+        $pengajuan = \App\Models\PengajuanPembimbing::where('id_mahasiswa', $logbook->id_mahasiswa)
+            ->where('status', 'disetujui')
+            ->first();
+
+        if (!$pengajuan) {
+            return response()->json(['message' => 'Mahasiswa tidak memiliki pembimbing'], 403);
+        }
+
+        if ($pengajuan->id_pembimbing_utama == $dosen->id) {
+            if ($request->has('permasalahan')) $logbook->permasalahan = $request->permasalahan;
+            if ($request->has('rekom_pembimbing')) $logbook->rekom_pembimbing_utama = $request->rekom_pembimbing;
+        } elseif ($pengajuan->id_pembimbing_pendamping == $dosen->id) {
+            if ($request->has('rekom_pembimbing')) $logbook->rekom_pembimbing_pendamping = $request->rekom_pembimbing;
+        } else {
+            return response()->json(['message' => 'Anda bukan pembimbing mahasiswa ini'], 403);
+        }
+
+        $logbook->save();
+
+        return response()->json(['message' => 'Logbook berhasil diperbarui', 'logbook' => $logbook]);
+    }
 }

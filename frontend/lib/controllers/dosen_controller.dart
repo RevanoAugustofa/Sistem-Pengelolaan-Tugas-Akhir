@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/jadwal_model.dart';
 import '../services/dosen_service.dart';
-
 import '../models/mahasiswa_model.dart';
+import '../models/logbook_model.dart';
 
 class DosenController extends GetxController {
   final DosenService _service = DosenService();
@@ -13,8 +13,10 @@ class DosenController extends GetxController {
   var listJadwalBimbingan = <JadwalModel>[].obs;
   var listMahasiswa = <Mahasiswa>[].obs;
   var filteredMahasiswa = <Mahasiswa>[].obs;
+  var listLogbook = <LogbookBimbingan>[].obs;
   var isLoadingJadwal = false.obs;
   var isLoadingMahasiswa = false.obs;
+  var isLoadingLogbook = false.obs;
 
   // Sempro state
   var jadwalSempro = {}.obs;
@@ -147,6 +149,34 @@ class DosenController extends GetxController {
       Get.snackbar("Error", e.toString());
     } finally {
       isLoadingJadwal(false);
+    }
+  }
+
+  void fetchLogbook(int idMahasiswa) async {
+    try {
+      isLoadingLogbook(true);
+      var data = await _service.getLogbookMahasiswa(idMahasiswa);
+      listLogbook.assignAll(data);
+    } catch (e) {
+      print("Error fetching logbook: $e");
+    } finally {
+      isLoadingLogbook(false);
+    }
+  }
+
+  Future<void> updateLogbook(int idLogbook, int idMahasiswa, Map<String, dynamic> data) async {
+    try {
+      isLoadingLogbook(true);
+      bool success = await _service.updateLogbook(idLogbook, data);
+      if (success) {
+        fetchLogbook(idMahasiswa);
+        Get.snackbar("Sukses", "Logbook berhasil diperbarui",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingLogbook(false);
     }
   }
 }

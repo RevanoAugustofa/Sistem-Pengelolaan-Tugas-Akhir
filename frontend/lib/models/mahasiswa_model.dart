@@ -11,6 +11,7 @@ class Mahasiswa {
   final String? tglLahir;
   final String? jenisKelamin;
   final String? alamat;
+  final String? role_pembimbing;
   final Proposal? proposal;
 
   Mahasiswa({
@@ -26,6 +27,7 @@ class Mahasiswa {
     this.tglLahir,
     this.jenisKelamin,
     this.alamat,
+    this.role_pembimbing,
     this.proposal,
   });
 
@@ -43,6 +45,7 @@ class Mahasiswa {
       tglLahir: json['tgl_lahir'],
       jenisKelamin: json['jenis_kelamin'],
       alamat: json['alamat'],
+      role_pembimbing: json['role_pembimbing'],
       proposal: json['proposal'] != null ? Proposal.fromJson(json['proposal']) : null,
     );
   }
@@ -58,6 +61,7 @@ class Mahasiswa {
       'tgl_lahir': tglLahir,
       'jenis_kelamin': jenisKelamin,
       'alamat': alamat,
+      'role_pembimbing': role_pembimbing,
       'proposal': proposal?.toJson(),
     };
   }

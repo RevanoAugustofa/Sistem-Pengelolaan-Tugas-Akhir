@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../../../controllers/admin_controller.dart';
 import '../../../models/jadwal_model.dart';
 
@@ -103,6 +104,8 @@ class _JadwalBimbinganAdminTableState extends State<JadwalBimbinganAdminTable> {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
+                      dataRowMinHeight: 48,
+                      dataRowMaxHeight: 65,
                       headingRowColor: WidgetStateProperty.all(const Color.fromARGB(255, 110, 110, 110)),
                       headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
                       columns: const [
@@ -129,7 +132,24 @@ class _JadwalBimbinganAdminTableState extends State<JadwalBimbinganAdminTable> {
                               width: 120,
                               child: Text(item.tempatLink ?? "-", overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 10)),
                             )),
-                            DataCell(Text(item.waktuTanggal ?? "-", style: const TextStyle(fontSize: 10))),
+                            DataCell(
+                              item.waktuTanggal != null 
+                                ? Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        DateFormat('EEEE, d MMMM yyyy', 'id_ID').format(DateTime.parse(item.waktuTanggal!)).toLowerCase(),
+                                        style: const TextStyle(fontSize: 9, color: Colors.black87),
+                                      ),
+                                      Text(
+                                        DateFormat('HH:mm').format(DateTime.parse(item.waktuTanggal!)),
+                                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  )
+                                : const Text("-", style: TextStyle(fontSize: 10)),
+                            ),
                             DataCell(Center(child: Text(item.kuota?.toString() ?? "0", style: const TextStyle(fontSize: 11)))),
                             DataCell(Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

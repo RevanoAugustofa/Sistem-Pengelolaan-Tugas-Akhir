@@ -133,6 +133,8 @@ class _JadwalBimbinganDosenTableState extends State<JadwalBimbinganDosenTable> {
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: DataTable(
+                          dataRowMinHeight: 48,
+                          dataRowMaxHeight: 65,
                           headingRowColor: WidgetStateProperty.all(const Color.fromARGB(255, 110, 110, 110)),
                           headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
                           columnSpacing: 25,
@@ -177,12 +179,24 @@ class _JadwalBimbinganDosenTableState extends State<JadwalBimbinganDosenTable> {
                                   ),
                                 )),
                                 DataCell(Center(child: Text(item.kuota.toString(), style: const TextStyle(fontSize: 11)))),
-                                DataCell(Text(
+                                DataCell(
                                   item.waktuTanggal != null 
-                                    ? DateFormat('HH:mm, dd-MM-yyyy').format(DateTime.parse(item.waktuTanggal!))
-                                    : "-",
-                                  style: const TextStyle(fontSize: 11),
-                                )),
+                                    ? Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            DateFormat('EEEE, d MMMM yyyy', 'id_ID').format(DateTime.parse(item.waktuTanggal!)).toLowerCase(),
+                                            style: const TextStyle(fontSize: 10, color: Colors.black87),
+                                          ),
+                                          Text(
+                                            DateFormat('HH:mm').format(DateTime.parse(item.waktuTanggal!)),
+                                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      )
+                                    : const Text("-", style: TextStyle(fontSize: 11)),
+                                ),
                                 DataCell(Text(
                                   item.status?.toUpperCase() ?? "-",
                                   style: TextStyle(

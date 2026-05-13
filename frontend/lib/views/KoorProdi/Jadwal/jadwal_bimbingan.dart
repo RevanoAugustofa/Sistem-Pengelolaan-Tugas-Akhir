@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../../../controllers/koorprodi_controller.dart';
 
 class BimbinganTable extends StatefulWidget {
@@ -141,6 +142,8 @@ class _BimbinganTableState extends State<BimbinganTable> {
                         child: ConstrainedBox(
                           constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width - 72),
                           child: DataTable(
+                            dataRowMinHeight: 48,
+                            dataRowMaxHeight: 65,
                             headingRowColor: WidgetStateProperty.all(const Color.fromARGB(255, 110, 110, 110)),
                             headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
                             columnSpacing: 20,
@@ -164,7 +167,24 @@ class _BimbinganTableState extends State<BimbinganTable> {
                                 cells: [
                                   DataCell(Text((startIndex + index + 1).toString())),
                                   DataCell(Text(item.dosen?.namaDosen ?? "-")),
-                                  DataCell(Text(item.waktuTanggal ?? "-")),
+                                  DataCell(
+                                    item.waktuTanggal != null 
+                                      ? Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              DateFormat('EEEE, d MMMM yyyy', 'id_ID').format(DateTime.parse(item.waktuTanggal!)).toLowerCase(),
+                                              style: const TextStyle(fontSize: 11, color: Colors.black87),
+                                            ),
+                                            Text(
+                                              DateFormat('HH:mm').format(DateTime.parse(item.waktuTanggal!)),
+                                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        )
+                                      : const Text("-"),
+                                  ),
                                   DataCell(Text(item.kuota?.toString() ?? "0")),
                                   DataCell(Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

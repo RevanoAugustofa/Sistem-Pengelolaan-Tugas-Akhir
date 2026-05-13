@@ -16,6 +16,7 @@ class KoorProdiController extends GetxController {
 
   var isLoading = false.obs;
   var isMoreLoading = false.obs;
+  var isActionLoading = false.obs;
   var listPengajuan = <PengajuanPembimbingModel>[].obs;
   var listDosen = <Dosen>[].obs;
   
@@ -405,7 +406,7 @@ class KoorProdiController extends GetxController {
 
   Future<void> updateSupervisor(int id, int idUtama, int idPendamping) async {
     try {
-      isLoading(true);
+      isActionLoading(true);
       bool success = await _service.updateSupervisor(id, idUtama, idPendamping);
       if (success) {
         refreshData();
@@ -417,7 +418,7 @@ class KoorProdiController extends GetxController {
     } catch (e) {
       Get.snackbar("Error", e.toString());
     } finally {
-      isLoading(false);
+      isActionLoading(false);
     }
   }
 
@@ -465,7 +466,7 @@ class KoorProdiController extends GetxController {
 
   void refreshData() {
     currentPage = 1;
-    listPengajuan.clear();
+    // listPengajuan.clear(); // Remove clear to avoid "no data" message during refresh
     fetchPengajuan();
   }
 
@@ -513,7 +514,7 @@ class KoorProdiController extends GetxController {
 
   Future<void> validasi(int id, String status) async {
     try {
-      isLoading(true);
+      isActionLoading(true);
       bool success = await _service.validasiPengajuan(id, status);
       if (success) {
         refreshData();
@@ -525,13 +526,13 @@ class KoorProdiController extends GetxController {
     } catch (e) {
       Get.snackbar("Error", e.toString());
     } finally {
-      isLoading(false);
+      isActionLoading(false);
     }
   }
 
   Future<void> validasiMassal(List<int> ids, String status) async {
     try {
-      isLoading(true);
+      isActionLoading(true);
       int successCount = 0;
       for (int id in ids) {
         bool success = await _service.validasiPengajuan(id, status);
@@ -546,7 +547,7 @@ class KoorProdiController extends GetxController {
     } catch (e) {
       Get.snackbar("Error", e.toString());
     } finally {
-      isLoading(false);
+      isActionLoading(false);
     }
   }
 

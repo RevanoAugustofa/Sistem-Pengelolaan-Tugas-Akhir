@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../../controllers/dosen_controller.dart';
 import '../../../models/mahasiswa_model.dart';
+import '../../../helpers/constants.dart';
+import 'pdf_preview_page.dart';
 
 class TugasAkhirSidangTable extends StatefulWidget {
   final String searchQuery;
@@ -79,7 +81,7 @@ class _TugasAkhirSidangTableState extends State<TugasAkhirSidangTable> {
             const SizedBox(height: 16),
 
             // Tombol Lihat File TA
-            _buildDashedButton("lihat file TA"),
+            _buildDashedButton("lihat file TA", jadwal['mahasiswa']?['daftar_sidangta']?['file_tugas_akhir']),
             
             const SizedBox(height: 20),
 
@@ -235,10 +237,17 @@ class _TugasAkhirSidangTableState extends State<TugasAkhirSidangTable> {
     );
   }
 
-  Widget _buildDashedButton(String text) {
+  Widget _buildDashedButton(String text, String? filePath) {
     return InkWell(
       onTap: () {
-        // TODO: Logika buka file TA
+        if (filePath != null) {
+          final baseUrl = AppConstants.baseUrl.replaceAll('/api', '');
+          final fullUrl = "$baseUrl/storage/$filePath";
+          Get.to(() => PdfPreviewPage(url: fullUrl, title: "Preview Tugas Akhir"));
+        } else {
+          Get.snackbar("Peringatan", "File tidak tersedia", 
+            backgroundColor: Colors.orange, colorText: Colors.white);
+        }
       },
       child: Container(
         width: double.infinity,
@@ -249,7 +258,7 @@ class _TugasAkhirSidangTableState extends State<TugasAkhirSidangTable> {
           border: Border.all(color: Colors.grey.shade400, style: BorderStyle.solid), 
         ),
         child: Text(
-          text,
+          filePath != null ? "Lihat File Tugas Akhir" : "File tidak tersedia",
           textAlign: TextAlign.center,
           style: const TextStyle(color: Colors.black87, fontSize: 14),
         ),

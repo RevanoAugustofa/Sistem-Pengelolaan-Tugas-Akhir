@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../../controllers/dosen_controller.dart';
 import '../../../models/mahasiswa_model.dart';
+import '../../../helpers/constants.dart';
+import 'pdf_preview_page.dart';
 
 class TugasAkhirBimbinganTable extends StatefulWidget {
   final String searchQuery;
@@ -86,6 +88,7 @@ class _TugasAkhirBimbinganTableState extends State<TugasAkhirBimbinganTable> {
                         catatanMahasiswa: log.permasalahan,
                         rekomUtama: log.rekomPembimbingUtama,
                         rekomPendamping: log.rekomPembimbingPendamping,
+                        filePath: log.fileBimbingan,
                       ),
                       const SizedBox(height: 16),
                     ],
@@ -141,6 +144,7 @@ class _TugasAkhirBimbinganTableState extends State<TugasAkhirBimbinganTable> {
     String? catatanMahasiswa,
     String? rekomUtama,
     String? rekomPendamping,
+    String? filePath,
   }) {
     String? catatanDosen = (mahasiswa.role_pembimbing == "Utama") ? rekomUtama : rekomPendamping;
 
@@ -183,10 +187,17 @@ class _TugasAkhirBimbinganTableState extends State<TugasAkhirBimbinganTable> {
                   height: 28,
                   child: ElevatedButton(
                     onPressed: () {
-                      // TODO: Logika lihat file
+                      if (filePath != null) {
+                        final baseUrl = AppConstants.baseUrl.replaceAll('/api', '');
+                        final fullUrl = "$baseUrl/storage/$filePath";
+                        Get.to(() => PdfPreviewPage(url: fullUrl, title: "Preview Logbook"));
+                      } else {
+                        Get.snackbar("Peringatan", "File tidak tersedia", 
+                          backgroundColor: Colors.orange, colorText: Colors.white);
+                      }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF4A89F3),
+                      backgroundColor: filePath != null ? const Color(0xFF4A89F3) : Colors.grey,
                       foregroundColor: Colors.white,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(horizontal: 16),

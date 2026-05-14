@@ -57,4 +57,9 @@ class Mahasiswa extends Model
     {
         return $this->hasOne(JadwalSidangTA::class, 'id_mahasiswa');
     }
+
+    public function daftarSidangTA()
+    {
+        return $this->hasOne(DaftarSidangTA::class, 'id_mahasiswa')->latestOfMany();
+    }
 }

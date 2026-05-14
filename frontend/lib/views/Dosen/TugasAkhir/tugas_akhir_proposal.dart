@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import '../../../controllers/dosen_controller.dart';
 import '../../../models/mahasiswa_model.dart';
 import 'package:intl/intl.dart';
+import '../../../helpers/constants.dart';
+import 'pdf_preview_page.dart';
 
 class TugasAkhirProposalTable extends StatefulWidget {
   final String searchQuery;
@@ -215,14 +217,16 @@ class _TugasAkhirProposalTableState extends State<TugasAkhirProposalTable> {
     );
   }
 
-  Widget _buildDashedButton(String text, String? fileName) {
+  Widget _buildDashedButton(String text, String? filePath) {
     return InkWell(
       onTap: () {
-        if (fileName != null) {
-          // Open file logic
-          Get.snackbar("Info", "Membuka file: $fileName");
+        if (filePath != null) {
+          final baseUrl = AppConstants.baseUrl.replaceAll('/api', '');
+          final fullUrl = "$baseUrl/storage/$filePath";
+          Get.to(() => PdfPreviewPage(url: fullUrl, title: "Preview Proposal"));
         } else {
-          Get.snackbar("Error", "File tidak tersedia");
+          Get.snackbar("Peringatan", "File tidak tersedia", 
+            backgroundColor: Colors.orange, colorText: Colors.white);
         }
       },
       child: Container(
@@ -234,7 +238,7 @@ class _TugasAkhirProposalTableState extends State<TugasAkhirProposalTable> {
           border: Border.all(color: Colors.grey.shade400, style: BorderStyle.solid), 
         ),
         child: Text(
-          fileName ?? text,
+          filePath != null ? "Lihat File Proposal" : "File tidak tersedia",
           textAlign: TextAlign.center,
           style: const TextStyle(color: Colors.black87, fontSize: 14),
         ),

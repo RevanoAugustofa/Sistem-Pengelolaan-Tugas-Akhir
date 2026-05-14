@@ -180,7 +180,7 @@ class MahasiswaController extends Controller
             return response()->json(['message' => 'Dosen record not found'], 404);
         }
 
-        $jadwal = \App\Models\JadwalSidangTA::with(['pengujiUtama', 'pengujiPendamping', 'ruangan', 'mahasiswa.proposal'])
+        $jadwal = \App\Models\JadwalSidangTA::with(['pengujiUtama', 'pengujiPendamping', 'ruangan', 'mahasiswa.proposal', 'mahasiswa.daftarSidangTA'])
             ->where('id_mahasiswa', $id_mahasiswa)
             ->first();
 

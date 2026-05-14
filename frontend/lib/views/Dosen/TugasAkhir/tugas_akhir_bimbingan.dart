@@ -99,34 +99,58 @@ class _TugasAkhirBimbinganTableState extends State<TugasAkhirBimbinganTable> {
 
               // --- Tombol Rekomendasikan Sidang (Kondisional) ---
               if (jumlahLogbook >= 5)
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      // TODO: Logika untuk merekomendasikan sidang
-                      Get.snackbar(
-                        "Info",
-                        "Merekomendasikan sidang TA...",
-                        snackPosition: SnackPosition.BOTTOM,
-                      );
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        color: Color(0xFF2196F3),
+                Builder(
+                  builder: (context) {
+                    final latestLog = controller.listLogbook.first;
+                    final isRecommended = (mahasiswa.role_pembimbing == "Utama")
+                        ? latestLog.rekomPembimbingUtama == "Direkomendasikan"
+                        : latestLog.rekomPembimbingPendamping == "Direkomendasikan";
+
+                    return SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: isRecommended ? null : () {
+                          Get.dialog(
+                            AlertDialog(
+                              title: const Text("Konfirmasi"),
+                              content: const Text("Apakah Anda yakin ingin merekomendasikan mahasiswa ini untuk Sidang TA?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Get.back(),
+                                  child: const Text("Batal"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    controller.updateLogbook(
+                                      latestLog.id!,
+                                      mahasiswa.id!,
+                                      {"rekom_pembimbing": "Direkomendasikan"}
+                                    );
+                                    Get.back();
+                                  },
+                                  child: const Text("Ya, Rekomendasikan"),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isRecommended ? Colors.green : const Color(0xFF2196F3),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          isRecommended ? "Sudah Direkomendasikan Sidang" : "Rekomendasikan Sidang TA",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      "Rekomendasikan Sidang TA",
-                      style: TextStyle(
-                        color: Color(0xFF2196F3),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                    );
+                  }
                 ),
 
               const SizedBox(height: 20),

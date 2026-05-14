@@ -58,7 +58,7 @@ class MhsController extends GetxController {
       final result = await _service.storeLogbook(data, fileBytes: fileBytes, fileName: fileName);
       if (result['success'] == true) {
         fetchLogbook();
-        Get.back();
+        if (Get.isDialogOpen ?? false) Get.back();
         Get.snackbar("Sukses", result['message'] ?? "Logbook berhasil ditambahkan");
       } else {
         Get.snackbar("Gagal", result['message'] ?? "Gagal menambahkan logbook",

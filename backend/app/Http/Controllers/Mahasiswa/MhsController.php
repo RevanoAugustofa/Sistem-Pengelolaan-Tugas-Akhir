@@ -144,7 +144,7 @@ class MhsController extends Controller
     {
         $request->validate([
             'id_daftar_bimbingan' => 'required|exists:daftar_bimbingan,id',
-            'permasalahan' => 'required|string',
+            'permasalahan' => 'nullable|string',
             'file_bimbingan' => 'nullable|file|mimes:pdf|max:2048',
         ]);
 

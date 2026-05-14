@@ -143,7 +143,9 @@ class MhsService {
       });
 
       request.fields['id_daftar_bimbingan'] = data['id_daftar_bimbingan'].toString();
-      request.fields['permasalahan'] = data['permasalahan'];
+      if (data.containsKey('permasalahan')) {
+        request.fields['permasalahan'] = data['permasalahan'];
+      }
       request.files.add(http.MultipartFile.fromBytes(
         'file_bimbingan',
         fileBytes,

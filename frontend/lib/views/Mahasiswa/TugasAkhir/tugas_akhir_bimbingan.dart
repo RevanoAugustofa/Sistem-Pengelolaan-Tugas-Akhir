@@ -147,6 +147,7 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
   }
 
   Widget _buildLogbookItem(DaftarBimbinganModel p, JadwalModel j, LogbookBimbingan? log) {
+    final MhsController controller = Get.find<MhsController>();
     String formattedDate = "";
     if (j.waktuTanggal != null) {
       try {
@@ -201,34 +202,57 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
                     "lihat file",
                     style: TextStyle(fontSize: 12, color: Colors.blue),
                   ),
+                )
+              else
+                Obx(() => controller.isLoadingAction.value 
+                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                  : OutlinedButton(
+                    onPressed: () async {
+                      FilePickerResult? result = await FilePicker.pickFiles(
+                        type: FileType.custom,
+                        allowedExtensions: ['pdf'],
+                        withData: true,
+                      );
+                      if (result != null) {
+                        Uint8List? fileBytes = result.files.first.bytes;
+                        String fileName = result.files.first.name;
+                        
+                        controller.submitLogbook({
+                          'id_daftar_bimbingan': p.id,
+                        }, fileBytes: fileBytes, fileName: fileName);
+                      }
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.blue),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                    ),
+                    child: const Text(
+                      "upload file",
+                      style: TextStyle(fontSize: 12, color: Colors.blue),
+                    ),
+                  ),
                 ),
             ],
           ),
-          const SizedBox(height: 14),
-          if (log == null)
-            Center(
-              child: Column(
-                children: [
-                  const Text(
-                    "Belum ada catatan bimbingan",
-                    style: TextStyle(fontSize: 13, color: Colors.grey, fontStyle: FontStyle.italic),
-                  ),
-                  const SizedBox(height: 10),
-                  OutlinedButton(
-                    onPressed: () => _showTambahLogbookDialog(p.id!),
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.blue),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                    ),
-                    child: const Text("tambah catatan", style: TextStyle(color: Colors.blue)),
-                  ),
-                ],
-              ),
-            )
-          else ...[
+          if (log != null) ...[
+            const SizedBox(height: 14),
             Text(
-              log.permasalahan ?? "-",
-              style: const TextStyle(fontSize: 14, height: 1.5),
+              (log.permasalahan == null || log.permasalahan!.isEmpty || log.permasalahan == "-")
+                  ? "Belum ada isi permasalahan"
+                  : log.permasalahan!,
+              style: TextStyle(
+                fontSize: 14,
+                height: 1.5,
+                color: (log.permasalahan == null || log.permasalahan!.isEmpty || log.permasalahan == "-")
+                    ? Colors.grey
+                    : Colors.black87,
+                fontStyle: (log.permasalahan == null || log.permasalahan!.isEmpty || log.permasalahan == "-")
+                    ? FontStyle.italic
+                    : FontStyle.normal,
+              ),
             ),
             if (log.rekomPembimbingUtama != null || log.rekomPembimbingPendamping != null) ...[
               const Divider(height: 24),
@@ -260,7 +284,6 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
   }
 
   Widget _buildJadwalBimbinganCard(JadwalModel jadwal) {
-    final MhsController controller = Get.find<MhsController>();
     String formattedDate = "";
     if (jadwal.waktuTanggal != null) {
       try {
@@ -274,18 +297,6 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
     bool isRegistered = jadwal.pendaftaran != null && jadwal.pendaftaran!.isNotEmpty;
     String status = isRegistered ? (jadwal.pendaftaran!.first.status ?? "Menunggu") : "Daftar";
     
-    // Mencari data logbook yang sesuai dengan pendaftaran ini
-    LogbookBimbingan? log;
-    if (isRegistered) {
-      final pId = jadwal.pendaftaran!.first.id;
-      for (var l in controller.listLogbook) {
-        if (l.idDaftarBimbingan == pId) {
-          log = l;
-          break;
-        }
-      }
-    }
-
     return GestureDetector(
       onTap: () {
         if (isRegistered) {
@@ -319,27 +330,6 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      if (log?.fileBimbingan != null)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: InkWell(
-                            onTap: () {
-                              final url = "${AppConstants.storageUrl}/${log!.fileBimbingan}";
-                              Get.to(() => PdfPreviewPage(url: url, title: "File Bimbingan"));
-                            },
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.file_present, size: 14, color: Colors.blue),
-                                SizedBox(width: 2),
-                                Text(
-                                  "lihat file",
-                                  style: TextStyle(fontSize: 11, color: Colors.blue, fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
                     ],
                   ),
                   Text(
@@ -490,82 +480,6 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
                   ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showTambahLogbookDialog(int idDaftarBimbingan) {
-    final TextEditingController masalahController = TextEditingController();
-    var fileName = "".obs;
-    Uint8List? fileBytes;
-
-    Get.dialog(
-      AlertDialog(
-        title: const Text("Isi Logbook Bimbingan"),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: masalahController,
-                maxLines: 4,
-                decoration: const InputDecoration(
-                  labelText: "Permasalahan / Progress",
-                  border: OutlineInputBorder(),
-                  hintText: "Tuliskan progress atau kendala bimbingan Anda...",
-                ),
-              ),
-              const SizedBox(height: 16),
-              Obx(() => Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      fileName.value.isEmpty ? "Belum ada file dipilih" : fileName.value,
-                      style: const TextStyle(fontSize: 12),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.attach_file),
-                    onPressed: () async {
-                      FilePickerResult? result = await FilePicker.pickFiles(
-                        type: FileType.custom,
-                        allowedExtensions: ['pdf'],
-                        withData: true, // Tambahkan ini agar bytes tidak null
-                      );
-                      if (result != null) {
-                        fileBytes = result.files.first.bytes;
-                        fileName.value = result.files.first.name;
-                      }
-                    },
-                  ),
-                ],
-              )),
-              const Text(
-                "*Hanya file PDF (max 2MB)",
-                style: TextStyle(fontSize: 10, color: Colors.red),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text("Batal")),
-          ElevatedButton(
-            onPressed: () {
-              if (masalahController.text.isEmpty) {
-                Get.snackbar("Peringatan", "Permasalahan harus diisi",
-                    backgroundColor: Colors.orange, colorText: Colors.white);
-                return;
-              }
-              final MhsController controller = Get.find<MhsController>();
-              controller.submitLogbook({
-                'id_daftar_bimbingan': idDaftarBimbingan,
-                'permasalahan': masalahController.text,
-              }, fileBytes: fileBytes, fileName: fileName.value);
-            },
-            child: const Text("Simpan"),
           ),
         ],
       ),

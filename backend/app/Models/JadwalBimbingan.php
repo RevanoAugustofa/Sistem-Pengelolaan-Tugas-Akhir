@@ -26,4 +26,9 @@ class JadwalBimbingan extends Model
     {
         return $this->belongsTo(Dosen::class, 'id_dosen');
     }
+
+    public function pendaftaran()
+    {
+        return $this->hasMany(DaftarBimbingan::class, 'id_jadwal_bimbingan');
+    }
 }

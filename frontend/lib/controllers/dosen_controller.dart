@@ -4,6 +4,7 @@ import '../models/jadwal_model.dart';
 import '../services/dosen_service.dart';
 import '../models/mahasiswa_model.dart';
 import '../models/logbook_model.dart';
+import '../models/daftar_bimbingan_model.dart';
 
 class DosenController extends GetxController {
   final DosenService _service = DosenService();
@@ -11,12 +12,14 @@ class DosenController extends GetxController {
   var listJadwalProposal = <JadwalModel>[].obs;
   var listJadwalSidang = <JadwalModel>[].obs;
   var listJadwalBimbingan = <JadwalModel>[].obs;
+  var listPendaftaranBimbingan = <DaftarBimbinganModel>[].obs;
   var listMahasiswa = <Mahasiswa>[].obs;
   var filteredMahasiswa = <Mahasiswa>[].obs;
   var listLogbook = <LogbookBimbingan>[].obs;
   var isLoadingJadwal = false.obs;
   var isLoadingMahasiswa = false.obs;
   var isLoadingLogbook = false.obs;
+  var isLoadingPendaftaran = false.obs;
 
   // Sempro state
   var jadwalSempro = {}.obs;
@@ -231,6 +234,34 @@ class DosenController extends GetxController {
       Get.snackbar("Error", e.toString());
     } finally {
       isLoadingLogbook(false);
+    }
+  }
+
+  void fetchPendaftaranBimbingan(int idJadwal) async {
+    try {
+      isLoadingPendaftaran(true);
+      var data = await _service.getPendaftaranBimbingan(idJadwal);
+      listPendaftaranBimbingan.assignAll(data);
+    } catch (e) {
+      print("Error fetching pendaftaran bimbingan: $e");
+    } finally {
+      isLoadingPendaftaran(false);
+    }
+  }
+
+  Future<void> updateStatusPendaftaran(int idPendaftaran, int idJadwal, String status) async {
+    try {
+      isLoadingPendaftaran(true);
+      bool success = await _service.updateStatusPendaftaran(idPendaftaran, status);
+      if (success) {
+        fetchPendaftaranBimbingan(idJadwal);
+        Get.snackbar("Sukses", "Status pendaftaran berhasil diperbarui",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingPendaftaran(false);
     }
   }
 }

@@ -9,6 +9,7 @@ use App\Models\Proposal;
 use App\Models\JadwalSempro;
 use App\Models\JadwalSidangTA;
 use App\Models\JadwalBimbingan;
+use App\Models\DaftarBimbingan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -49,10 +50,79 @@ class MhsController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public function jadwalBimbingan()
+    public function jadwalBimbingan(Request $request)
     {
-        $data = JadwalBimbingan::with(['dosen.user'])->get();
+        $user = $request->user();
+        $idMahasiswa = $user->mahasiswa ? $user->mahasiswa->id : null;
+
+        $data = JadwalBimbingan::with(['dosen.user', 'pendaftaran' => function($query) use ($idMahasiswa) {
+            $query->where('id_mahasiswa', $idMahasiswa);
+        }])->get();
+
         return response()->json(['data' => $data]);
+    }
+
+    public function storeDaftarBimbingan(Request $request)
+    {
+        $request->validate([
+            'id_jadwal_bimbingan' => 'required|exists:jadwal_bimbingan,id',
+        ]);
+
+        $user = $request->user();
+        if (!$user->mahasiswa) {
+            return response()->json(['message' => 'Data mahasiswa tidak ditemukan'], 404);
+        }
+
+        $idMahasiswa = $user->mahasiswa->id;
+
+        // Check if already registered
+        $existing = DaftarBimbingan::where('id_mahasiswa', $idMahasiswa)
+            ->where('id_jadwal_bimbingan', $request->id_jadwal_bimbingan)
+            ->first();
+
+        if ($existing) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda sudah mendaftar untuk jadwal ini',
+            ], 400);
+        }
+
+        // Check quota
+        $jadwal = JadwalBimbingan::find($request->id_jadwal_bimbingan);
+        if ($jadwal->kuota <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kuota bimbingan sudah penuh',
+            ], 400);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Create registration
+            DaftarBimbingan::create([
+                'id_mahasiswa' => $idMahasiswa,
+                'id_jadwal_bimbingan' => $request->id_jadwal_bimbingan,
+                'status' => 'menunggu',
+            ]);
+
+            // Decrease quota
+            $jadwal->decrement('kuota');
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pendaftaran bimbingan berhasil',
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function dosenList(Request $request)

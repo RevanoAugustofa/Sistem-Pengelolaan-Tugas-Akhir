@@ -31,6 +31,7 @@ import 'package:frontend/views/Dosen/detailProposal_Dsn.dart';
 import 'package:frontend/views/Dosen/detailTA_Dsn.dart';
 import 'package:frontend/views/Dosen/Jadwal/create_jadwal_bimbingan.dart';
 import 'package:frontend/views/Dosen/Jadwal/jadwal_Dsn.dart';
+import 'package:frontend/views/Dosen/Jadwal/detail_pendaftaran_bimbingan.dart';
 import 'package:frontend/views/Dosen/TugasAkhir/tugasAkhir_Dsn.dart';
 import 'package:frontend/views/Dosen/TugasAkhir/list_mahasiswa.dart';
 import 'package:frontend/views/KoorProdi/dashboard_KP.dart';
@@ -120,6 +121,7 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/createJadwalBimbinganDsn', page: () => const CreateJadwalBimbinganPage() ),
         GetPage(name: '/detailTugasAkhirDsn', page: () => DetailTugasAkhirDosenPage() ),
         GetPage(name: '/detailProposalDsn', page: () => DetailProposalDosenPage() ),
+        GetPage(name: '/detailPendaftaranBimbinganDsn', page: () => const DetailPendaftaranBimbinganView() ),
 
 
 

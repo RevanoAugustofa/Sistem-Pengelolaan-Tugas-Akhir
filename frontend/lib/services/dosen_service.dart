@@ -5,6 +5,7 @@ import '../helpers/constants.dart';
 import '../models/jadwal_model.dart';
 import '../models/mahasiswa_model.dart';
 import '../models/logbook_model.dart';
+import '../models/daftar_bimbingan_model.dart';
 
 class DosenService {
   final String baseUrl = AppConstants.baseUrl;
@@ -169,5 +170,37 @@ class DosenService {
       body: jsonEncode(data),
     );
     return response.statusCode == 201;
+  }
+
+  Future<List<DaftarBimbinganModel>> getPendaftaranBimbingan(int idJadwal) async {
+    final token = await _getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/dosen/jadwal-bimbingan/$idJadwal/pendaftaran"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => DaftarBimbinganModel.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data pendaftaran bimbingan");
+  }
+
+  Future<bool> updateStatusPendaftaran(int idPendaftaran, String status) async {
+    final token = await _getToken();
+    final response = await http.post(
+      Uri.parse("$baseUrl/dosen/pendaftaran-bimbingan/$idPendaftaran/status"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'status': status}),
+    );
+
+    return response.statusCode == 200;
   }
 }

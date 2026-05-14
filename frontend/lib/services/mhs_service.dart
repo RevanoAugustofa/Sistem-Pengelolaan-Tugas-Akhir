@@ -106,6 +106,25 @@ class MhsService {
     }
   }
 
+  Future<Map<String, dynamic>> daftarBimbingan(int idJadwalBimbingan) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.post(
+      Uri.parse('${AppConstants.baseUrl}/mahasiswa/daftar-bimbingan'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'id_jadwal_bimbingan': idJadwalBimbingan,
+      }),
+    );
+
+    return jsonDecode(response.body);
+  }
+
   Future<Map<String, dynamic>> daftarPembimbing(Map<String, dynamic> data) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');

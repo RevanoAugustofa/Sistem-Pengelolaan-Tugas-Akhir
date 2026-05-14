@@ -140,6 +140,24 @@ class MhsController extends GetxController {
     }
   }
 
+  Future<void> daftarBimbingan(int idJadwal) async {
+    try {
+      isLoadingAction(true);
+      final result = await _service.daftarBimbingan(idJadwal);
+      if (result['success'] == true) {
+        fetchJadwalBimbingan();
+        Get.snackbar("Sukses", result['message'] ?? "Berhasil mendaftar bimbingan");
+      } else {
+        Get.snackbar("Gagal", result['message'] ?? "Gagal mendaftar bimbingan",
+            backgroundColor: Colors.orange.withOpacity(0.8), colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Terjadi kesalahan: ${e.toString()}");
+    } finally {
+      isLoadingAction(false);
+    }
+  }
+
   Future<void> uploadProposal(String judul, Uint8List fileBytes, String fileName) async {
     try {
       isLoadingAction(true);

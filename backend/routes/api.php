@@ -147,6 +147,8 @@ Route::middleware('auth:sanctum', 'role:koorprodi')->group(function () {
 Route::middleware('auth:sanctum', 'role:dosen')->group(function () {
     Route::get('/dosen/jadwal', [\App\Http\Controllers\Dosen\JadwalController::class, 'index']);
     Route::post('/dosen/jadwal', [\App\Http\Controllers\Dosen\JadwalController::class, 'store']);
+    Route::get('/dosen/jadwal-bimbingan/{id}/pendaftaran', [\App\Http\Controllers\Dosen\JadwalController::class, 'pendaftaran']);
+    Route::post('/dosen/pendaftaran-bimbingan/{id}/status', [\App\Http\Controllers\Dosen\JadwalController::class, 'updateStatusPendaftaran']);
     Route::get('/dosen/mahasiswa', [\App\Http\Controllers\Dosen\MahasiswaController::class, 'index']);
     Route::get('/dosen/mahasiswa/{id}/jadwal-sempro', [\App\Http\Controllers\Dosen\MahasiswaController::class, 'getJadwalSempro']);
     Route::post('/dosen/hasil-sempro', [\App\Http\Controllers\Dosen\MahasiswaController::class, 'storeHasilSempro']);
@@ -164,5 +166,6 @@ Route::middleware('auth:sanctum', 'role:mahasiswa')->group(function () {
     Route::get('/mahasiswa/jadwal-sempro', [MhsController::class, 'jadwalSempro']);
     Route::get('/mahasiswa/jadwal-sidang', [MhsController::class, 'jadwalSidang']);
     Route::get('/mahasiswa/jadwal-bimbingan', [MhsController::class, 'jadwalBimbingan']);
+    Route::post('/mahasiswa/daftar-bimbingan', [MhsController::class, 'storeDaftarBimbingan']);
     Route::post('/mahasiswa/upload-proposal', [MhsController::class, 'storeProposal']);
 });

@@ -84,6 +84,7 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
   }
 
   Widget _buildJadwalBimbinganCard(JadwalModel jadwal) {
+    final MhsController controller = Get.find<MhsController>();
     String formattedDate = "";
     if (jadwal.waktuTanggal != null) {
       try {
@@ -94,53 +95,160 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
       }
     }
 
-    return Container(
-      margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.white,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  jadwal.dosen?.user?.name ?? jadwal.dosen?.namaDosen ?? "Dosen Tidak Diketahui",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange,
+    bool isRegistered = jadwal.pendaftaran != null && jadwal.pendaftaran!.isNotEmpty;
+    String status = isRegistered ? (jadwal.pendaftaran!.first.status ?? "Menunggu") : "Daftar";
+
+    return GestureDetector(
+      onTap: () {
+        if (isRegistered) {
+          _showDetailPendaftaran(jadwal);
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    jadwal.dosen?.user?.name ?? jadwal.dosen?.namaDosen ?? "Dosen Tidak Diketahui",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.orange,
+                    ),
                   ),
-                ),
-                Text(
-                  formattedDate,
-                  style: const TextStyle(fontSize: 11),
-                ),
-                Text(
-                  "Kuota tersisa (${jadwal.kuota ?? 0})",
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
+                  Text(
+                    formattedDate,
+                    style: const TextStyle(fontSize: 11),
                   ),
-                ),
-              ],
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF42A5F5),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                  Text(
+                    "Kuota tersisa (${jadwal.kuota ?? 0})",
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
-            child: const Text("Daftar", style: TextStyle(color: Colors.white)),
+            ElevatedButton(
+              onPressed: isRegistered
+                  ? null
+                  : () {
+                      _showDaftarConfirmation(jadwal);
+                    },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isRegistered ? Colors.grey : const Color(0xFF42A5F5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                status.capitalizeFirst!,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showDaftarConfirmation(JadwalModel jadwal) {
+    Get.dialog(
+      AlertDialog(
+        title: const Text("Konfirmasi"),
+        content: const Text("Apakah Anda yakin ingin mendaftar bimbingan ini?"),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text("Tidak"),
           ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              final MhsController controller = Get.find<MhsController>();
+              if (jadwal.id != null) {
+                controller.daftarBimbingan(jadwal.id!);
+              }
+            },
+            child: const Text("Ya"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDetailPendaftaran(JadwalModel jadwal) {
+    String formattedDate = "";
+    if (jadwal.waktuTanggal != null) {
+      try {
+        DateTime dt = DateTime.parse(jadwal.waktuTanggal!);
+        formattedDate = DateFormat("EEEE dd, MMMM yyyy  HH:mm 'WIB'", 'id_ID').format(dt);
+      } catch (e) {
+        formattedDate = jadwal.waktuTanggal!;
+      }
+    }
+
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Center(
+              child: Text(
+                "Detail Pendaftaran Bimbingan",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 20),
+            _buildDetailRow("Dosen", jadwal.dosen?.user?.name ?? "-"),
+            _buildDetailRow("Waktu", formattedDate),
+            _buildDetailRow("Metode", jadwal.metodeBimbingan ?? "-"),
+            _buildDetailRow("Tempat/Link", jadwal.tempatLink ?? "-"),
+            _buildDetailRow("Status", jadwal.pendaftaran?.first.status?.capitalizeFirst ?? "-"),
+            const SizedBox(height: 20),
+            _buildFullBlueButton("Tutup", onPressed: () => Get.back()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              label,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          const Text(": "),
+          Expanded(child: Text(value)),
         ],
       ),
     );
@@ -220,8 +328,8 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
     );
   }
 
-  Widget _buildBlueButton(String text) => ElevatedButton(
-    onPressed: () {},
+  Widget _buildBlueButton(String text, {VoidCallback? onPressed}) => ElevatedButton(
+    onPressed: onPressed ?? () {},
     style: ElevatedButton.styleFrom(
       backgroundColor: const Color(0xFF4A89FF),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -229,6 +337,6 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
     ),
     child: Text(text, style: const TextStyle(color: Colors.white)),
   );
-  Widget _buildFullBlueButton(String text) =>
-      SizedBox(width: double.infinity, child: _buildBlueButton(text));
+  Widget _buildFullBlueButton(String text, {VoidCallback? onPressed}) =>
+      SizedBox(width: double.infinity, child: _buildBlueButton(text, onPressed: onPressed));
 }

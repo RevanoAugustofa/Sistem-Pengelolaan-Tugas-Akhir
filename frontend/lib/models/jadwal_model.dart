@@ -1,6 +1,7 @@
 import 'mahasiswa_model.dart';
 import 'dosen_model.dart';
 import 'ruangan_model.dart';
+import 'daftar_bimbingan_model.dart';
 
 class JadwalModel {
   final int? id;
@@ -28,6 +29,7 @@ class JadwalModel {
   final int? kuota;
   final String? metodeBimbingan;
   final String? tempatLink;
+  final List<DaftarBimbinganModel>? pendaftaran;
 
   JadwalModel({
     this.id,
@@ -53,6 +55,7 @@ class JadwalModel {
     this.kuota,
     this.metodeBimbingan,
     this.tempatLink,
+    this.pendaftaran,
   });
 
   factory JadwalModel.fromJson(Map<String, dynamic> json) {
@@ -80,6 +83,11 @@ class JadwalModel {
       kuota: json['kuota'],
       metodeBimbingan: json['metode_bimbingan'],
       tempatLink: json['tempat_link'],
+      pendaftaran: json['pendaftaran'] != null
+          ? (json['pendaftaran'] as List)
+              .map((i) => DaftarBimbinganModel.fromJson(i))
+              .toList()
+          : null,
     );
   }
 }

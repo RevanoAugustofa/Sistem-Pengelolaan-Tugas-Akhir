@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\JadwalSempro;
 use App\Models\JadwalSidangTA;
 use App\Models\JadwalBimbingan;
+use App\Models\DaftarBimbingan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -66,5 +67,41 @@ class JadwalController extends Controller
             'message' => 'Jadwal bimbingan berhasil ditambahkan',
             'data' => $jadwal
         ], 201);
+    }
+
+    public function pendaftaran($id)
+    {
+        $jadwal = JadwalBimbingan::with(['pendaftaran.mahasiswa.user'])->find($id);
+
+        if (!$jadwal) {
+            return response()->json(['status' => 'error', 'message' => 'Jadwal not found'], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $jadwal->pendaftaran
+        ]);
+    }
+
+    public function updateStatusPendaftaran(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:menunggu,diterima,ditolak,dibatalkan'
+        ]);
+
+        $pendaftaran = DaftarBimbingan::find($id);
+
+        if (!$pendaftaran) {
+            return response()->json(['status' => 'error', 'message' => 'Pendaftaran not found'], 404);
+        }
+
+        $pendaftaran->status = $request->status;
+        $pendaftaran->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Status pendaftaran berhasil diperbarui',
+            'data' => $pendaftaran
+        ]);
     }
 }

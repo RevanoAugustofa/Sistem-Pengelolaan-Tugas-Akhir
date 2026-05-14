@@ -143,6 +143,7 @@ class _JadwalBimbinganDosenTableState extends State<JadwalBimbinganDosenTable> {
                             DataColumn(label: Text('Tempat / Link')),
                             DataColumn(label: Text('Kuota')),
                             DataColumn(label: Text('Waktu')),
+                            DataColumn(label: Text('Aksi')),
                           ],
                           rows: List.generate(displayedData.length, (index) {
                             var item = displayedData[index];
@@ -194,6 +195,18 @@ class _JadwalBimbinganDosenTableState extends State<JadwalBimbinganDosenTable> {
                                         ],
                                       )
                                     : const Text("-", style: TextStyle(fontSize: 11)),
+                                ),
+                                DataCell(
+                                  ElevatedButton(
+                                    onPressed: () => Get.toNamed('/detailPendaftaranBimbinganDsn', arguments: item),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF1E3475),
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                                      minimumSize: const Size(60, 30),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                                    ),
+                                    child: const Text("Detail", style: TextStyle(color: Colors.white, fontSize: 10)),
+                                  ),
                                 ),
                               ],
                             );

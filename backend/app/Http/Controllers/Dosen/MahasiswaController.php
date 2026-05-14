@@ -157,11 +157,18 @@ class MahasiswaController extends Controller
             return response()->json(['message' => 'Mahasiswa tidak memiliki pembimbing'], 403);
         }
 
-        if ($pengajuan->id_pembimbing_utama == $dosen->id) {
-            if ($request->has('permasalahan')) $logbook->permasalahan = $request->permasalahan;
-            if ($request->has('rekom_pembimbing')) $logbook->rekom_pembimbing_utama = $request->rekom_pembimbing;
-        } elseif ($pengajuan->id_pembimbing_pendamping == $dosen->id) {
-            if ($request->has('rekom_pembimbing')) $logbook->rekom_pembimbing_pendamping = $request->rekom_pembimbing;
+        if ($pengajuan->id_pembimbing_utama == $dosen->id || $pengajuan->id_pembimbing_pendamping == $dosen->id) {
+            if ($request->has('permasalahan')) {
+                $logbook->permasalahan = $request->permasalahan;
+            }
+            
+            if ($request->has('rekom_pembimbing')) {
+                if ($pengajuan->id_pembimbing_utama == $dosen->id) {
+                    $logbook->rekom_pembimbing_utama = $request->rekom_pembimbing;
+                } else {
+                    $logbook->rekom_pembimbing_pendamping = $request->rekom_pembimbing;
+                }
+            }
         } else {
             return response()->json(['message' => 'Anda bukan pembimbing mahasiswa ini'], 403);
         }

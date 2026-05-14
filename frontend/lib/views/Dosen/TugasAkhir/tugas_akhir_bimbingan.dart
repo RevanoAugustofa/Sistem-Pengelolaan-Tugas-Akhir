@@ -220,21 +220,11 @@ class _TugasAkhirBimbinganTableState extends State<TugasAkhirBimbinganTable> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "Permasalahan Mahasiswa:",
+                  "Permasalahan :",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  catatanMahasiswa ?? "Tidak ada catatan permasalahan.",
-                  style: const TextStyle(fontSize: 13),
-                ),
-                const Divider(height: 24),
-                const Text(
-                  "Rekomendasi Dosen:",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                ),
-                const SizedBox(height: 4),
-                _buildLogbookContent(idLog, catatanDosen),
+                const SizedBox(height: 8),
+                _buildPermasalahanContent(idLog, catatanMahasiswa),
               ],
             ),
           ),
@@ -243,11 +233,11 @@ class _TugasAkhirBimbinganTableState extends State<TugasAkhirBimbinganTable> {
     );
   }
 
-  Widget _buildLogbookContent(int idLog, String? catatan) {
-    if (catatan == null || catatan.isEmpty) {
+  Widget _buildPermasalahanContent(int idLog, String? catatan) {
+    if (catatan == null || catatan.isEmpty || catatan == "-") {
       return Center(
         child: ElevatedButton.icon(
-          onPressed: () => _showAddCatatanDialog(idLog),
+          onPressed: () => _showEditPermasalahanDialog(idLog),
           icon: const Icon(Icons.add, size: 16, color: Colors.white),
           label: const Text("Tambah Catatan"),
           style: ElevatedButton.styleFrom(
@@ -267,9 +257,7 @@ class _TugasAkhirBimbinganTableState extends State<TugasAkhirBimbinganTable> {
           Expanded(
             child: Text(
               catatan,
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-                color: Colors.grey.shade800,
+              style: const TextStyle(
                 fontSize: 13,
                 height: 1.4,
               ),
@@ -277,24 +265,24 @@ class _TugasAkhirBimbinganTableState extends State<TugasAkhirBimbinganTable> {
           ),
           IconButton(
             icon: const Icon(Icons.edit, size: 18, color: Colors.blue),
-            onPressed: () => _showAddCatatanDialog(idLog, existingCatatan: catatan),
+            onPressed: () => _showEditPermasalahanDialog(idLog, existingCatatan: catatan),
           ),
         ],
       );
     }
   }
 
-  void _showAddCatatanDialog(int idLog, {String? existingCatatan}) {
-    final TextEditingController catatanController = TextEditingController(text: existingCatatan);
+  void _showEditPermasalahanDialog(int idLog, {String? existingCatatan}) {
+    final TextEditingController catatanController = TextEditingController(text: existingCatatan == "-" ? "" : existingCatatan);
     
     Get.dialog(
       AlertDialog(
-        title: Text(existingCatatan == null ? "Tambah Catatan" : "Edit Catatan"),
+        title: Text(existingCatatan == null || existingCatatan == "-" ? "Tambah Catatan" : "Edit Catatan"),
         content: TextField(
           controller: catatanController,
           maxLines: 4,
           decoration: const InputDecoration(
-            hintText: "Masukkan rekomendasi pembimbing...",
+            hintText: "Masukkan catatan permasalahan bimbingan...",
             border: OutlineInputBorder(),
           ),
         ),
@@ -309,7 +297,7 @@ class _TugasAkhirBimbinganTableState extends State<TugasAkhirBimbinganTable> {
                 controller.updateLogbook(
                   idLog, 
                   mahasiswa.id!, 
-                  {"rekom_pembimbing": catatanController.text}
+                  {"permasalahan": catatanController.text}
                 );
                 Get.back();
               }

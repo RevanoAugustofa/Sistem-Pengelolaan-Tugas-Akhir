@@ -348,23 +348,34 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: isRegistered
-                  ? null
-                  : () {
-                      _showDaftarConfirmation(jadwal);
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isRegistered ? Colors.grey : const Color(0xFF42A5F5),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+            if (status.toLowerCase() == 'diterima')
+              const Padding(
+                padding: EdgeInsets.only(right: 8),
+                child: Icon(Icons.check_circle, color: Colors.green, size: 30),
+              )
+            else if (status.toLowerCase() == 'ditolak')
+              const Padding(
+                padding: EdgeInsets.only(right: 8),
+                child: Icon(Icons.cancel, color: Colors.red, size: 30),
+              )
+            else
+              ElevatedButton(
+                onPressed: isRegistered
+                    ? null
+                    : () {
+                        _showDaftarConfirmation(jadwal);
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isRegistered ? Colors.grey : const Color(0xFF42A5F5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  status.capitalizeFirst!,
+                  style: const TextStyle(color: Colors.white),
                 ),
               ),
-              child: Text(
-                status.capitalizeFirst!,
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
           ],
         ),
       ),

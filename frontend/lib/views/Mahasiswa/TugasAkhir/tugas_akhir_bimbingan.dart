@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../../controllers/mhs_controller.dart';
@@ -36,7 +37,20 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
                 );
               }
 
-              if (controller.listJadwalBimbingan.isEmpty) {
+              // Filter: Sembunyikan jadwal yang sudah lewat 24 jam
+              final now = DateTime.now();
+              final activeJadwal = controller.listJadwalBimbingan.where((jadwal) {
+                if (jadwal.waktuTanggal == null) return true;
+                try {
+                  final scheduledTime = DateTime.parse(jadwal.waktuTanggal!);
+                  final expirationTime = scheduledTime.add(const Duration(hours: 24));
+                  return now.isBefore(expirationTime);
+                } catch (e) {
+                  return true; // Tampilkan jika ada error parsing
+                }
+              }).toList();
+
+              if (activeJadwal.isEmpty) {
                 return Container(
                   width: double.infinity,
                   margin: const EdgeInsets.only(top: 10),
@@ -56,7 +70,7 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
               }
 
               return Column(
-                children: controller.listJadwalBimbingan.map((jadwal) {
+                children: activeJadwal.map((jadwal) {
                   return _buildJadwalBimbinganCard(jadwal);
                 }).toList(),
               );
@@ -224,7 +238,19 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
             _buildDetailRow("Dosen", jadwal.dosen?.user?.name ?? "-"),
             _buildDetailRow("Waktu", formattedDate),
             _buildDetailRow("Metode", jadwal.metodeBimbingan ?? "-"),
-            _buildDetailRow("Tempat/Link", jadwal.tempatLink ?? "-"),
+            _buildDetailRow(
+              "Tempat/Link",
+              jadwal.tempatLink ?? "-",
+              showCopyButton: jadwal.metodeBimbingan?.toLowerCase() == "online" && jadwal.tempatLink != null,
+              onCopy: () {
+                Clipboard.setData(ClipboardData(text: jadwal.tempatLink!));
+                Get.snackbar("Sukses", "Link berhasil disalin",
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: Colors.black87,
+                    colorText: Colors.white,
+                    duration: const Duration(seconds: 1));
+              },
+            ),
             _buildDetailRow("Status", jadwal.pendaftaran?.first.status?.capitalizeFirst ?? "-"),
             const SizedBox(height: 20),
             _buildFullBlueButton("Tutup", onPressed: () => Get.back()),
@@ -234,7 +260,7 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(String label, String value, {bool showCopyButton = false, VoidCallback? onCopy}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -248,7 +274,20 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
             ),
           ),
           const Text(": "),
-          Expanded(child: Text(value)),
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(child: Text(value)),
+                if (showCopyButton)
+                  IconButton(
+                    icon: const Icon(Icons.copy, size: 16, color: Colors.blue),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: onCopy,
+                  ),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../../controllers/dosen_controller.dart';
@@ -29,6 +30,9 @@ class _JadwalBimbinganDosenTableState extends State<JadwalBimbinganDosenTable> {
         return (item.tempatLink?.toLowerCase().contains(query) ?? false) ||
                (item.metodeBimbingan?.toLowerCase().contains(query) ?? false);
       }).toList();
+
+      // Sort descending by ID (newest first)
+      filteredData.sort((a, b) => (b.id ?? 0).compareTo(a.id ?? 0));
       
       int startIndex = _currentPage * _rowsPerPage;
       int endIndex = startIndex + _rowsPerPage;
@@ -171,10 +175,34 @@ class _JadwalBimbinganDosenTableState extends State<JadwalBimbinganDosenTable> {
                                 )),
                                 DataCell(SizedBox(
                                   width: 140,
-                                  child: Text(
-                                    item.tempatLink ?? "-",
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontSize: 11),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          item.tempatLink ?? "-",
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontSize: 11),
+                                        ),
+                                      ),
+                                      if (item.tempatLink != null && item.tempatLink!.isNotEmpty && item.metodeBimbingan?.toLowerCase() == 'online')
+                                        IconButton(
+                                          icon: const Icon(Icons.copy, size: 14, color: Colors.blue),
+                                          padding: EdgeInsets.zero,
+                                          constraints: const BoxConstraints(),
+                                          onPressed: () {
+                                            Clipboard.setData(ClipboardData(text: item.tempatLink!));
+                                            Get.snackbar(
+                                              "Copied",
+                                              "Link berhasil disalin",
+                                              snackPosition: SnackPosition.BOTTOM,
+                                              backgroundColor: Colors.black87,
+                                              colorText: Colors.white,
+                                              duration: const Duration(seconds: 1),
+                                              margin: const EdgeInsets.all(10),
+                                            );
+                                          },
+                                        ),
+                                    ],
                                   ),
                                 )),
                                 DataCell(Center(child: Text(item.kuota.toString(), style: const TextStyle(fontSize: 11)))),

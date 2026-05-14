@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../controllers/dosen_controller.dart';
 import '../../../models/jadwal_model.dart';
@@ -76,7 +77,11 @@ class DetailPendaftaranBimbinganView extends StatelessWidget {
           children: [
             _buildInfoRow("Metode", jadwal.metodeBimbingan?.toUpperCase() ?? "-"),
             const Divider(),
-            _buildInfoRow("Tempat/Link", jadwal.tempatLink ?? "-"),
+            _buildInfoRow(
+              "Tempat/Link", 
+              jadwal.tempatLink ?? "-", 
+              isLink: jadwal.metodeBimbingan?.toLowerCase() == 'online'
+            ),
             const Divider(),
             _buildInfoRow("Kuota", jadwal.kuota.toString()),
             const Divider(),
@@ -87,14 +92,34 @@ class DetailPendaftaranBimbinganView extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(String label, String value, {bool isLink = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
+          Row(
+            children: [
+              Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
+              if (isLink && value != "-")
+                IconButton(
+                  icon: const Icon(Icons.copy, size: 16, color: Colors.blue),
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(text: value));
+                    Get.snackbar(
+                      "Copied",
+                      "Link berhasil disalin",
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.black87,
+                      colorText: Colors.white,
+                      duration: const Duration(seconds: 1),
+                      margin: const EdgeInsets.all(10),
+                    );
+                  },
+                ),
+            ],
+          ),
         ],
       ),
     );

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/dosen_model.dart';
 import '../models/jadwal_model.dart';
+import '../models/logbook_model.dart';
 import '../services/mhs_service.dart';
 
 class MhsController extends GetxController {
@@ -18,6 +19,8 @@ class MhsController extends GetxController {
   var listJadwalSidang = <JadwalModel>[].obs;
   var isLoadingJadwalBimbingan = false.obs;
   var listJadwalBimbingan = <JadwalModel>[].obs;
+  var listLogbook = <LogbookBimbingan>[].obs;
+  var isLoadingLogbook = false.obs;
   var pengajuanStatus = "".obs;
   var pembimbingUtama = "".obs;
   var nipUtama = "".obs;
@@ -34,6 +37,38 @@ class MhsController extends GetxController {
     fetchJadwalSempro();
     fetchJadwalSidang();
     fetchJadwalBimbingan();
+    fetchLogbook();
+  }
+
+  void fetchLogbook() async {
+    try {
+      isLoadingLogbook(true);
+      var data = await _service.getLogbook();
+      listLogbook.assignAll(data);
+    } catch (e) {
+      print(e);
+    } finally {
+      isLoadingLogbook(false);
+    }
+  }
+
+  Future<void> submitLogbook(Map<String, dynamic> data, {Uint8List? fileBytes, String? fileName}) async {
+    try {
+      isLoadingAction(true);
+      final result = await _service.storeLogbook(data, fileBytes: fileBytes, fileName: fileName);
+      if (result['success'] == true) {
+        fetchLogbook();
+        Get.back();
+        Get.snackbar("Sukses", result['message'] ?? "Logbook berhasil ditambahkan");
+      } else {
+        Get.snackbar("Gagal", result['message'] ?? "Gagal menambahkan logbook",
+            backgroundColor: Colors.orange.withOpacity(0.8), colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Terjadi kesalahan: ${e.toString()}");
+    } finally {
+      isLoadingAction(false);
+    }
   }
 
   void fetchJadwalBimbingan() async {

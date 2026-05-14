@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:file_picker/file_picker.dart';
 import '../../../controllers/mhs_controller.dart';
 import '../../../models/jadwal_model.dart';
+import '../../../models/logbook_model.dart';
+import '../../../models/daftar_bimbingan_model.dart';
+import '../../../helpers/constants.dart';
 
 class TugasAkhirBimbinganMhsView extends StatelessWidget {
   const TugasAkhirBimbinganMhsView({super.key});
@@ -15,6 +19,7 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () async {
         controller.fetchJadwalBimbingan();
+        controller.fetchLogbook();
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -28,6 +33,10 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             Obx(() {
+              // Menambahkan listLogbook.length agar Obx ini rebuild saat data logbook dimuat
+              // ignore: unused_local_variable
+              int logCount = controller.listLogbook.length;
+              
               if (controller.isLoadingJadwalBimbingan.value) {
                 return const Center(
                   child: Padding(
@@ -46,7 +55,7 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
                   final expirationTime = scheduledTime.add(const Duration(hours: 24));
                   return now.isBefore(expirationTime);
                 } catch (e) {
-                  return true; // Tampilkan jika ada error parsing
+                  return true; 
                 }
               }).toList();
 
@@ -75,24 +84,177 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
                 }).toList(),
               );
             }),
-            const SizedBox(height: 24),
-            const Text(
-              "Logbook Bimbingan",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            // TAB
+            Obx(() {
+              // Get all accepted registrations
+              final acceptedRegs = <Map<String, dynamic>>[];
+              for (var jadwal in controller.listJadwalBimbingan) {
+                if (jadwal.pendaftaran != null) {
+                  for (var p in jadwal.pendaftaran!) {
+                    if (p.status?.toLowerCase() == 'diterima') {
+                      acceptedRegs.add({
+                        'pendaftaran': p,
+                        'jadwal': jadwal,
+                      });
+                    }
+                  }
+                }
+              }
 
-            // LIST LOGBOOK
-            _buildLogbookCard(isEmpty: true),
+              if (acceptedRegs.isEmpty) {
+                return const SizedBox.shrink();
+              }
 
-            const SizedBox(height: 16),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 24),
+                  const Text(
+                    "Logbook Bimbingan",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  
+                  if (controller.isLoadingLogbook.value)
+                    const Center(child: CircularProgressIndicator())
+                  else
+                    Column(
+                      children: acceptedRegs.map((item) {
+                        final DaftarBimbinganModel p = item['pendaftaran'];
+                        final JadwalModel j = item['jadwal'];
+                        
+                        // Find matching logbook
+                        LogbookBimbingan? log;
+                        for (var l in controller.listLogbook) {
+                          if (l.idDaftarBimbingan == p.id) {
+                            log = l;
+                            break;
+                          }
+                        }
 
-            _buildLogbookCard(isEmpty: false),
-            const SizedBox(height: 16),
-            _buildFullBlueButton("Tambah Logbook"),
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: _buildLogbookItem(p, j, log),
+                        );
+                      }).toList(),
+                    ),
+                ],
+              );
+            }),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildLogbookItem(DaftarBimbinganModel p, JadwalModel j, LogbookBimbingan? log) {
+    String formattedDate = "";
+    if (j.waktuTanggal != null) {
+      try {
+        DateTime dt = DateTime.parse(j.waktuTanggal!);
+        formattedDate = DateFormat("EEEE dd, MMMM yyyy", 'id_ID').format(dt);
+      } catch (e) {
+        formattedDate = j.waktuTanggal!;
+      }
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    formattedDate,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    j.dosen?.user?.name ?? "-",
+                    style: const TextStyle(fontSize: 11, color: Colors.blue),
+                  ),
+                ],
+              ),
+              if (log != null && log.fileBimbingan != null)
+                OutlinedButton(
+                  onPressed: () {
+                    final url = "${AppConstants.storageUrl}/${log!.fileBimbingan}";
+                    Get.to(() => PdfPreviewPage(url: url, title: "File Bimbingan"));
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.blue),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                  ),
+                  child: const Text(
+                    "lihat file",
+                    style: TextStyle(fontSize: 12, color: Colors.blue),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          if (log == null)
+            Center(
+              child: Column(
+                children: [
+                  const Text(
+                    "Belum ada catatan bimbingan",
+                    style: TextStyle(fontSize: 13, color: Colors.grey, fontStyle: FontStyle.italic),
+                  ),
+                  const SizedBox(height: 10),
+                  OutlinedButton(
+                    onPressed: () => _showTambahLogbookDialog(p.id!),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.blue),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                    ),
+                    child: const Text("tambah catatan", style: TextStyle(color: Colors.blue)),
+                  ),
+                ],
+              ),
+            )
+          else ...[
+            Text(
+              log.permasalahan ?? "-",
+              style: const TextStyle(fontSize: 14, height: 1.5),
+            ),
+            if (log.rekomPembimbingUtama != null || log.rekomPembimbingPendamping != null) ...[
+              const Divider(height: 24),
+              const Text(
+                "Rekomendasi Pembimbing:",
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.blueGrey),
+              ),
+              if (log.rekomPembimbingUtama != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    "Utama: ${log.rekomPembimbingUtama}",
+                    style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+                  ),
+                ),
+              if (log.rekomPembimbingPendamping != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    "Pendamping: ${log.rekomPembimbingPendamping}",
+                    style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+                  ),
+                ),
+            ]
+          ],
+        ],
       ),
     );
   }
@@ -111,6 +273,18 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
 
     bool isRegistered = jadwal.pendaftaran != null && jadwal.pendaftaran!.isNotEmpty;
     String status = isRegistered ? (jadwal.pendaftaran!.first.status ?? "Menunggu") : "Daftar";
+    
+    // Mencari data logbook yang sesuai dengan pendaftaran ini
+    LogbookBimbingan? log;
+    if (isRegistered) {
+      final pId = jadwal.pendaftaran!.first.id;
+      for (var l in controller.listLogbook) {
+        if (l.idDaftarBimbingan == pId) {
+          log = l;
+          break;
+        }
+      }
+    }
 
     return GestureDetector(
       onTap: () {
@@ -133,12 +307,40 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    jadwal.dosen?.user?.name ?? jadwal.dosen?.namaDosen ?? "Dosen Tidak Diketahui",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.orange,
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          jadwal.dosen?.user?.name ?? jadwal.dosen?.namaDosen ?? "Dosen Tidak Diketahui",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (log?.fileBimbingan != null)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: InkWell(
+                            onTap: () {
+                              final url = "${AppConstants.storageUrl}/${log!.fileBimbingan}";
+                              Get.to(() => PdfPreviewPage(url: url, title: "File Bimbingan"));
+                            },
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.file_present, size: 14, color: Colors.blue),
+                                SizedBox(width: 2),
+                                Text(
+                                  "lihat file",
+                                  style: TextStyle(fontSize: 11, color: Colors.blue, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                   Text(
                     formattedDate,
@@ -155,6 +357,7 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(width: 8),
             ElevatedButton(
               onPressed: isRegistered
                   ? null
@@ -293,75 +496,77 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
     );
   }
 
-  Widget _buildLogbookCard({bool isEmpty = false}) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // HEADER
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Jum’at 23 Juli 2026 \npembimbing utama / pendamping",
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-              ),
+  void _showTambahLogbookDialog(int idDaftarBimbingan) {
+    final TextEditingController masalahController = TextEditingController();
+    var fileName = "".obs;
+    Uint8List? fileBytes;
 
-              OutlinedButton(
-                onPressed: () {},
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.blue),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 4,
-                  ),
+    Get.dialog(
+      AlertDialog(
+        title: const Text("Isi Logbook Bimbingan"),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: masalahController,
+                maxLines: 4,
+                decoration: const InputDecoration(
+                  labelText: "Permasalahan / Progress",
+                  border: OutlineInputBorder(),
+                  hintText: "Tuliskan progress atau kendala bimbingan Anda...",
                 ),
-                child: const Text(
-                  "lihat file",
-                  style: TextStyle(fontSize: 12, color: Colors.blue),
-                ),
+              ),
+              const SizedBox(height: 16),
+              Obx(() => Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      fileName.value.isEmpty ? "Belum ada file dipilih" : fileName.value,
+                      style: const TextStyle(fontSize: 12),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.attach_file),
+                    onPressed: () async {
+                      FilePickerResult? result = await FilePicker.pickFiles(
+                        type: FileType.custom,
+                        allowedExtensions: ['pdf'],
+                        withData: true, // Tambahkan ini agar bytes tidak null
+                      );
+                      if (result != null) {
+                        fileBytes = result.files.first.bytes;
+                        fileName.value = result.files.first.name;
+                      }
+                    },
+                  ),
+                ],
+              )),
+              const Text(
+                "*Hanya file PDF (max 2MB)",
+                style: TextStyle(fontSize: 10, color: Colors.red),
               ),
             ],
           ),
-
-          const SizedBox(height: 14),
-
-          // ISI
-          if (isEmpty)
-            Center(
-              child: OutlinedButton(
-                onPressed: () {},
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.blue),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-                child: const Text(
-                  "tambah catatan",
-                  style: TextStyle(color: Colors.blue),
-                ),
-              ),
-            )
-          else
-            const Text(
-              "Lorem ipsum dolor sit amet consectetur adipiscing elit. "
-              "Consectetur adipiscing elit quisque faucibus ex sapien vitae. "
-              "Ex sapien vitae pellentesque sem placerat in id. "
-              "Placerat in id cursus mi pretium tellus duis. "
-              "Pretium tellus duis convallis tempus leo eu aenean.",
-              style: TextStyle(fontSize: 14, height: 1.5),
-            ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Get.back(), child: const Text("Batal")),
+          ElevatedButton(
+            onPressed: () {
+              if (masalahController.text.isEmpty) {
+                Get.snackbar("Peringatan", "Permasalahan harus diisi",
+                    backgroundColor: Colors.orange, colorText: Colors.white);
+                return;
+              }
+              final MhsController controller = Get.find<MhsController>();
+              controller.submitLogbook({
+                'id_daftar_bimbingan': idDaftarBimbingan,
+                'permasalahan': masalahController.text,
+              }, fileBytes: fileBytes, fileName: fileName.value);
+            },
+            child: const Text("Simpan"),
+          ),
         ],
       ),
     );
@@ -378,4 +583,34 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
   );
   Widget _buildFullBlueButton(String text, {VoidCallback? onPressed}) =>
       SizedBox(width: double.infinity, child: _buildBlueButton(text, onPressed: onPressed));
+}
+
+class PdfPreviewPage extends StatelessWidget {
+  final String url;
+  final String title;
+  const PdfPreviewPage({super.key, required this.url, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.picture_as_pdf, size: 100, color: Colors.red),
+            const SizedBox(height: 20),
+            Text(url, textAlign: TextAlign.center),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Launch URL
+              },
+              child: const Text("Buka di Browser"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

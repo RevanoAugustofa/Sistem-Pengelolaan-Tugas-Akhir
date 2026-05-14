@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/constants.dart';
 import '../models/dosen_model.dart';
 import '../models/jadwal_model.dart';
+import '../models/logbook_model.dart';
 
 class MhsService {
   Future<Map<String, dynamic>> getDashboardData() async {
@@ -103,6 +104,66 @@ class MhsService {
       return data.map((item) => JadwalModel.fromJson(item)).toList();
     } else {
       throw Exception('Gagal memuat data jadwal bimbingan');
+    }
+  }
+
+  Future<List<LogbookBimbingan>> getLogbook() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.get(
+      Uri.parse('${AppConstants.baseUrl}/mahasiswa/logbook'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = jsonDecode(response.body)['data'];
+      return data.map((item) => LogbookBimbingan.fromJson(item)).toList();
+    } else {
+      throw Exception('Gagal memuat data logbook');
+    }
+  }
+
+  Future<Map<String, dynamic>> storeLogbook(Map<String, dynamic> data, {Uint8List? fileBytes, String? fileName}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (fileBytes != null && fileName != null) {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('${AppConstants.baseUrl}/mahasiswa/logbook'),
+      );
+
+      request.headers.addAll({
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      request.fields['id_daftar_bimbingan'] = data['id_daftar_bimbingan'].toString();
+      request.fields['permasalahan'] = data['permasalahan'];
+      request.files.add(http.MultipartFile.fromBytes(
+        'file_bimbingan',
+        fileBytes,
+        filename: fileName,
+      ));
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return jsonDecode(response.body);
+    } else {
+      final response = await http.post(
+        Uri.parse('${AppConstants.baseUrl}/mahasiswa/logbook'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(data),
+      );
+      return jsonDecode(response.body);
     }
   }
 

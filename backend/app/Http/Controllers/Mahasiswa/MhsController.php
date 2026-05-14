@@ -125,6 +125,62 @@ class MhsController extends Controller
         }
     }
 
+    public function logbook(Request $request)
+    {
+        $user = $request->user();
+        if (!$user->mahasiswa) {
+            return response()->json(['message' => 'Data mahasiswa tidak ditemukan'], 404);
+        }
+
+        $logbooks = \App\Models\LogbookBimbingan::with(['daftarBimbingan.jadwalBimbingan'])
+            ->where('id_mahasiswa', $user->mahasiswa->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json(['data' => $logbooks]);
+    }
+
+    public function storeLogbook(Request $request)
+    {
+        $request->validate([
+            'id_daftar_bimbingan' => 'required|exists:daftar_bimbingan,id',
+            'permasalahan' => 'required|string',
+            'file_bimbingan' => 'nullable|file|mimes:pdf|max:2048',
+        ]);
+
+        $user = $request->user();
+        if (!$user->mahasiswa) {
+            return response()->json(['message' => 'Data mahasiswa tidak ditemukan'], 404);
+        }
+
+        try {
+            $filePath = null;
+            if ($request->hasFile('file_bimbingan')) {
+                $file = $request->file('file_bimbingan');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $filePath = $file->storeAs('logbooks', $fileName, 'public');
+            }
+
+            $logbook = \App\Models\LogbookBimbingan::create([
+                'id_mahasiswa' => $user->mahasiswa->id,
+                'id_daftar_bimbingan' => $request->id_daftar_bimbingan,
+                'permasalahan' => $request->permasalahan,
+                'file_bimbingan' => $filePath,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Logbook berhasil ditambahkan',
+                'data' => $logbook
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan logbook: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function dosenList(Request $request)
     {
         $user = $request->user();

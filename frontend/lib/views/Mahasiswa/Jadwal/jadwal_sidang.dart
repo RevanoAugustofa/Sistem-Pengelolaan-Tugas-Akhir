@@ -31,16 +31,26 @@ class JadwalSidangList extends StatelessWidget {
         itemBuilder: (context, index) {
           final jadwal = filteredList[index];
           String nama = jadwal.mahasiswa?.namaMahasiswa ?? "Tidak ada nama";
+          String npm = jadwal.mahasiswa?.npm ?? "-";
           String tanggal = jadwal.tanggal ?? "-";
-          String jam = "${jadwal.waktuMulai ?? ''} - ${jadwal.waktuSelesai ?? ''} WIB";
+          String jam = "${_formatTime(jadwal.waktuMulai)} - ${_formatTime(jadwal.waktuSelesai)} WIB";
           
-          return _buildJadwalCard(nama, tanggal, jam);
+          return _buildJadwalCard(nama, npm, tanggal, jam);
         },
       );
     });
   }
 
-  Widget _buildJadwalCard(String nama, String tanggal, String jam) {
+  String _formatTime(String? time) {
+    if (time == null || time.isEmpty) return "-";
+    List<String> parts = time.split(':');
+    if (parts.length >= 2) {
+      return "${parts[0]}.${parts[1]}";
+    }
+    return time;
+  }
+
+  Widget _buildJadwalCard(String nama, String npm, String tanggal, String jam) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -52,9 +62,28 @@ class JadwalSidangList extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            nama,
-            style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF283D70), fontSize: 15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  nama,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF283D70),
+                    fontSize: 15,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "NPM: $npm",
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,

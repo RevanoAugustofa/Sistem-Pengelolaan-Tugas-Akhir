@@ -1,16 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../../../models/jadwal_model.dart';
 
 class DetailJadwalSemproModal extends StatelessWidget {
   final JadwalModel jadwal;
   const DetailJadwalSemproModal({super.key, required this.jadwal});
 
+  String _formatTime(String? time) {
+    if (time == null || time.isEmpty) return "-";
+    List<String> parts = time.split(':');
+    if (parts.length >= 2) {
+      return "${parts[0]}.${parts[1]}";
+    }
+    return time;
+  }
+
+  String _formatDate(String? date) {
+    if (date == null || date.isEmpty) return "-";
+    try {
+      DateTime dateTime = DateTime.parse(date);
+      return DateFormat('d MMMM yyyy', 'id_ID').format(dateTime);
+    } catch (e) {
+      return date;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     String nama = jadwal.mahasiswa?.namaMahasiswa ?? "Tidak ada nama";
-    String tanggal = jadwal.tanggal ?? "-";
-    String jam = "${jadwal.waktuMulai ?? ''} - ${jadwal.waktuSelesai ?? ''} WIB";
+    String npm = jadwal.mahasiswa?.npm ?? "-";
+    String tanggal = _formatDate(jadwal.tanggal);
+    String jam = "${_formatTime(jadwal.waktuMulai)} - ${_formatTime(jadwal.waktuSelesai)} WIB";
     String ruangan = jadwal.ruangan?.namaRuangan ?? "-";
     String penguji = "Penguji\n${jadwal.pengujiUtama?.namaDosen ?? '-'} \n${jadwal.pengujiPendamping?.namaDosen ?? '-'}";
     
@@ -51,7 +72,7 @@ class DetailJadwalSemproModal extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue,
+                color: Color(0xFF283D70),
               ),
             ),
 
@@ -65,8 +86,18 @@ class DetailJadwalSemproModal extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 4),
+            Text(
+              "NPM: $npm",
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 25),
 
             // DETAIL ITEM
             _buildDetailItem(

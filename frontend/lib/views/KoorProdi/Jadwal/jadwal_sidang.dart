@@ -183,22 +183,29 @@ class _SidangTableState extends State<SidangTable> {
                                 }),
                                 cells: [
                                   DataCell(Text((startIndex + index + 1).toString())),
-                                  DataCell(Text(item.mahasiswa?.namaMahasiswa ?? "-")),
+                                  DataCell(Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(item.mahasiswa?.namaMahasiswa ?? "-", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                      Text(item.mahasiswa?.npm ?? "-", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
+                                    ],
+                                  )),
                                   DataCell(Text(item.jenisSidang ?? "-", style: const TextStyle(fontSize: 11))),
                                   DataCell(Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text("1: ${item.pembimbingUtama?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 10)),
-                                      Text("2: ${item.pembimbingPendamping?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 9, color: Colors.black54)),
+                                      Text("1: ${item.pembimbingUtama?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
+                                      Text("2: ${item.pembimbingPendamping?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 10, color: Colors.black87)),
                                     ],
                                   )),
                                   DataCell(Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text("1: ${item.pengujiUtama?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 10)),
-                                      Text("2: ${item.pengujiPendamping?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 9, color: Colors.black54)),
+                                      Text("1: ${item.pengujiUtama?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
+                                      Text("2: ${item.pengujiPendamping?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 10, color: Colors.black87)),
                                     ],
                                   )),
                                   DataCell(Text(item.ruangan?.namaRuangan ?? "-")),

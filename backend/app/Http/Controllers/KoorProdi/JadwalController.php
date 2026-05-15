@@ -19,7 +19,7 @@ class JadwalController extends Controller
         } elseif ($jenisSidang === 'bimbingan') {
             $data = JadwalBimbingan::with(['dosen'])->get();
         } else {
-            $data = JadwalSidangTA::with(['mahasiswa.proposal', 'pengujiUtama', 'pengujiPendamping', 'ruangan'])->get();
+            $data = JadwalSidangTA::with(['mahasiswa.proposal', 'pengujiUtama', 'pengujiPendamping', 'pembimbingUtama', 'pembimbingPendamping', 'ruangan'])->get();
         }
 
         return response()->json([

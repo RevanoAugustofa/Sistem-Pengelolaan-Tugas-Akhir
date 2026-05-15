@@ -167,12 +167,10 @@ class _ProposalTableState extends State<ProposalTable> {
                             horizontalMargin: 15,
                             columns: const [
                               DataColumn(label: Text('No')),
-                              DataColumn(label: Text('NPM')),
-                              DataColumn(label: Text('Nama')),
+                              DataColumn(label: Text('Mahasiswa')),
                               DataColumn(label: Text('Ruangan')),
+                              DataColumn(label: Text('Penguji')),
                               DataColumn(label: Text('Waktu')),
-                              DataColumn(label: Text('Penguji Utama')),
-                              DataColumn(label: Text('Penguji Pendamping')),
                             ],
                             rows: List.generate(displayedData.length, (index) {
                               var item = displayedData[index];
@@ -183,20 +181,32 @@ class _ProposalTableState extends State<ProposalTable> {
                                 }),
                                 cells: [
                                   DataCell(Text((startIndex + index + 1).toString())),
-                                  DataCell(Text(item.mahasiswa?.npm ?? "-")),
-                                  DataCell(Text(item.mahasiswa?.namaMahasiswa ?? "-")),
+                                  DataCell(Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(item.mahasiswa?.namaMahasiswa ?? "-", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                      Text(item.mahasiswa?.npm ?? "-", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
+                                    ],
+                                  )),
                                   DataCell(Text(item.ruangan?.namaRuangan ?? "-")),
                                   DataCell(Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(item.tanggal ?? "-", style: const TextStyle(fontSize: 12)),
-                                      Text("${item.waktuMulai} - ${item.waktuSelesai}", 
-                                           style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.blue)),
+                                      Text("1: ${item.pengujiUtama?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
+                                      Text("2: ${item.pengujiPendamping?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 10, color: Colors.black87)),
                                     ],
                                   )),
-                                  DataCell(Text(item.pengujiUtama?.namaDosen ?? "-")),
-                                  DataCell(Text(item.pengujiPendamping?.namaDosen ?? "-")),
+                                  DataCell(Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(item.tanggal ?? "-", style: const TextStyle(fontSize: 11)),
+                                      Text("${item.waktuMulai} - ${item.waktuSelesai}", 
+                                           style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.blue)),
+                                    ],
+                                  )),
                                 ],
                               );
                             }),

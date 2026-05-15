@@ -42,6 +42,16 @@ class JadwalSidangTA extends Model
         return $this->belongsTo(Dosen::class, 'id_penguji_pendamping');
     }
 
+    public function pembimbingUtama()
+    {
+        return $this->belongsTo(Dosen::class, 'id_pembimbing_utama');
+    }
+
+    public function pembimbingPendamping()
+    {
+        return $this->belongsTo(Dosen::class, 'id_pembimbing_pendamping');
+    }
+
     public function ruangan()
     {
         return $this->belongsTo(Ruangan::class, 'id_ruang_sidang');

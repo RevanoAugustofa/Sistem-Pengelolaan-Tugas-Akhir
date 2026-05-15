@@ -14,6 +14,8 @@ class Mahasiswa {
   final String? role_pembimbing;
   final Proposal? proposal;
 
+  var tahunAjar;
+
   Mahasiswa({
     this.id, 
     this.idUser, 

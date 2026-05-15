@@ -34,8 +34,13 @@ class _JadwalSidangAdminTableState extends State<JadwalSidangAdminTable> {
       int startIndex = _currentPage * _rowsPerPage;
       int endIndex = startIndex + _rowsPerPage;
       if (endIndex > filteredData.length) endIndex = filteredData.length;
+      if (startIndex >= filteredData.length && filteredData.isNotEmpty) {
+         _currentPage = (filteredData.length / _rowsPerPage).floor();
+         startIndex = _currentPage * _rowsPerPage;
+         endIndex = filteredData.length;
+      }
       
-      List<JadwalModel> displayedData = filteredData.isEmpty ? [] : filteredData.sublist(startIndex, endIndex);
+      var displayedData = filteredData.isEmpty ? [] : filteredData.sublist(startIndex, endIndex);
 
       return RefreshIndicator(
         onRefresh: () async => controller.fetchJadwal(),
@@ -55,15 +60,15 @@ class _JadwalSidangAdminTableState extends State<JadwalSidangAdminTable> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "Tabel Jadwal Sidang TA",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF1E3475)),
+                        "Tabel Jadwal",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: Color(0xFF1E3475)),
                       ),
                       Row(
                         children: [
-                          const Text("Show ", style: TextStyle(fontSize: 12)),
+                          const Text("Show ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
-                            height: 30,
+                            height: 35,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(color: Colors.grey.shade300),
@@ -74,7 +79,7 @@ class _JadwalSidangAdminTableState extends State<JadwalSidangAdminTable> {
                                 items: [5, 10, 25, 50].map((int value) {
                                   return DropdownMenuItem<int>(
                                     value: value,
-                                    child: Text(value.toString(), style: const TextStyle(fontSize: 12)),                                 
+                                    child: Text(value.toString(), style: const TextStyle(fontSize: 14)),                                 
                                   );
                                 }).toList(),
                                 onChanged: (value) {
@@ -102,56 +107,70 @@ class _JadwalSidangAdminTableState extends State<JadwalSidangAdminTable> {
                 else
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: DataTable(
-                      headingRowColor: WidgetStateProperty.all(const Color.fromARGB(255, 110, 110, 110)),
-                      headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
-                      columns: const [
-                        DataColumn(label: Text('No')),
-                        DataColumn(label: Text('Mahasiswa')),
-                        DataColumn(label: Text('Jenis')),
-                        DataColumn(label: Text('Ruangan')),
-                        DataColumn(label: Text('Waktu')),
-                        DataColumn(label: Text('Dosen')),
-                      ],
-                      rows: List.generate(displayedData.length, (index) {
-                        var item = displayedData[index];
-                        return DataRow(
-                          color: WidgetStateProperty.resolveWith<Color?>((states) {
-                            if (index % 2 != 0) return Colors.grey.withOpacity(0.05);
-                            return null;
-                          }),
-                          cells: [
-                            DataCell(Text((startIndex + index + 1).toString(), style: const TextStyle(fontSize: 11))),
-                            DataCell(Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(item.mahasiswa?.namaMahasiswa ?? "-", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                                Text(item.mahasiswa?.npm ?? "-", style: const TextStyle(fontSize: 10, color: Colors.grey)),
-                              ],
-                            )),
-                            DataCell(Text(item.jenisSidang?.toUpperCase() ?? "-", style: const TextStyle(fontSize: 10))),
-                            DataCell(Text(item.ruangan?.namaRuangan ?? "-", style: const TextStyle(fontSize: 11))),
-                            DataCell(Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(item.tanggal ?? "-", style: const TextStyle(fontSize: 11)),
-                                Text("${item.waktuMulai ?? ''} - ${item.waktuSelesai ?? ''}", 
-                                     style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.blue)),
-                              ],
-                            )),
-                            DataCell(Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text("Penguji: ${item.pengujiUtama?.namaDosen ?? '-'}", style: const TextStyle(fontSize: 9)),
-                                Text("Pembimbing: ${item.pembimbingUtama?.namaDosen ?? '-'}", style: const TextStyle(fontSize: 9, color: Colors.black54)),
-                              ],
-                            )),
-                          ],
-                        );
-                      }),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width - 72),
+                      child: DataTable(
+                        headingRowColor: WidgetStateProperty.all(const Color.fromARGB(255, 110, 110, 110)),
+                        headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                        columnSpacing: 20,
+                        horizontalMargin: 15,
+                        columns: const [
+                          DataColumn(label: Text('No')),
+                          DataColumn(label: Text('Nama')),
+                          DataColumn(label: Text('Jenis')),
+                          DataColumn(label: Text('Pembimbing')),
+                          DataColumn(label: Text('Penguji')),
+                          DataColumn(label: Text('Ruangan')),
+                          DataColumn(label: Text('Waktu')),
+                        ],
+                        rows: List.generate(displayedData.length, (index) {
+                          var item = displayedData[index];
+                          return DataRow(
+                            color: WidgetStateProperty.resolveWith<Color?>((states) {
+                              if (index % 2 != 0) return Colors.grey.withOpacity(0.05);
+                              return null;
+                            }),
+                            cells: [
+                              DataCell(Text((startIndex + index + 1).toString())),
+                              DataCell(Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(item.mahasiswa?.namaMahasiswa ?? "-", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                  Text(item.mahasiswa?.npm ?? "-", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
+                                ],
+                              )),
+                              DataCell(Text(item.jenisSidang ?? "-", style: const TextStyle(fontSize: 11))),
+                              DataCell(Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text("1: ${item.pembimbingUtama?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
+                                  Text("2: ${item.pembimbingPendamping?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 10, color: Colors.black87)),
+                                ],
+                              )),
+                              DataCell(Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text("1: ${item.pengujiUtama?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
+                                  Text("2: ${item.pengujiPendamping?.namaDosen ?? "-"}", style: const TextStyle(fontSize: 10, color: Colors.black87)),
+                                ],
+                              )),
+                              DataCell(Text(item.ruangan?.namaRuangan ?? "-")),
+                              DataCell(Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(item.tanggal ?? "-", style: const TextStyle(fontSize: 11)),
+                                  Text("${item.waktuMulai} - ${item.waktuSelesai}", 
+                                       style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.blue)),
+                                ],
+                              )),
+                            ],
+                          );
+                        }),
+                      ),
                     ),
                   ),
 
@@ -162,18 +181,51 @@ class _JadwalSidangAdminTableState extends State<JadwalSidangAdminTable> {
                     children: [
                       Text(
                         "Showing ${filteredData.isEmpty ? 0 : startIndex + 1} to $endIndex of ${filteredData.length}",
-                        style: const TextStyle(fontSize: 11, color: Colors.grey),
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color.fromARGB(255, 79, 79, 79)),
                       ),
                       Row(
                         children: [
-                          IconButton(
-                            icon: const Icon(Icons.chevron_left, size: 20),
-                            onPressed: _currentPage > 0 ? () => setState(() => _currentPage--) : null,
+                          InkWell(
+                            onTap: _currentPage > 0 ? () => setState(() => _currentPage--) : null,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(8),
+                                  bottomLeft: Radius.circular(8),
+                                ),
+                                color: _currentPage > 0 ? Colors.white : Colors.grey.shade100,
+                              ),
+                              child: Text(
+                                "<",
+                                style: TextStyle(
+                                  color: _currentPage > 0 ? const Color(0xFF4FA5FF) : Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                           ),
-                          Text("${_currentPage + 1}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                          IconButton(
-                            icon: const Icon(Icons.chevron_right, size: 20),
-                            onPressed: endIndex < filteredData.length ? () => setState(() => _currentPage++) : null,
+                          InkWell(
+                            onTap: endIndex < filteredData.length ? () => setState(() => _currentPage++) : null,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(8),
+                                  bottomRight: Radius.circular(8),
+                                ),
+                                color: endIndex < filteredData.length ? Colors.white : Colors.grey.shade100,
+                              ),
+                              child: Text(
+                                ">",
+                                style: TextStyle(
+                                  color: endIndex < filteredData.length ? const Color(0xFF4FA5FF) : Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),

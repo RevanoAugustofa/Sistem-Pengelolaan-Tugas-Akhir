@@ -120,7 +120,7 @@ class DashboardMhs extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: _buildPembimbingCard(
-                                  title: "Pembimbing utama",
+                                  title: "Pem. Utama",
                                   nama: mhsController.pembimbingUtama.value,
                                   nip: "NIP. ${mhsController.nipUtama.value}",
                                 ),
@@ -128,7 +128,7 @@ class DashboardMhs extends StatelessWidget {
                               const SizedBox(width: 8),
                               Expanded(
                                 child: _buildPembimbingCard(
-                                  title: "Pembimbing pendamping",
+                                  title: "Pem. Pendamping",
                                   nama: mhsController.pembimbingPendamping.value,
                                   nip: "NIP. ${mhsController.nipPendamping.value}",
                                 ),

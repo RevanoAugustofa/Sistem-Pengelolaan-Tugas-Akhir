@@ -5,6 +5,7 @@ import '../../../models/mahasiswa_model.dart';
 import 'package:intl/intl.dart';
 import '../../../helpers/constants.dart';
 import 'pdf_preview_page.dart';
+import '../../Pdf/form_catatan_revisi_proposal.dart';
 
 class TugasAkhirProposalTable extends StatefulWidget {
   final String searchQuery;
@@ -69,6 +70,9 @@ class _TugasAkhirProposalTableState extends State<TugasAkhirProposalTable> {
             ),
             const SizedBox(height: 16),
             _buildDashedButton("Lihat File Proposal", jadwal['mahasiswa']?['proposal']?['file_proposal']),
+            const SizedBox(height: 12),
+            if (isPenguji)
+              _buildCatatanRevisiButton(jadwal),
             const SizedBox(height: 20),
             const Text(
               "Nilai Seminar Proposal",
@@ -241,6 +245,45 @@ class _TugasAkhirProposalTableState extends State<TugasAkhirProposalTable> {
           filePath != null ? "Lihat File Proposal" : "File tidak tersedia",
           textAlign: TextAlign.center,
           style: const TextStyle(color: Colors.black87, fontSize: 14),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCatatanRevisiButton(Map<dynamic, dynamic> jadwal) {
+    String formattedDate = "-";
+    if (jadwal['tanggal'] != null) {
+      DateTime date = DateTime.parse(jadwal['tanggal']);
+      formattedDate = DateFormat('d MMMM yyyy', 'id_ID').format(date);
+    }
+
+    return SizedBox(
+      width: double.infinity,
+      height: 48,
+      child: OutlinedButton.icon(
+        onPressed: () {
+          Get.to(() => FormCatatanRevisiView(
+                dataJadwal: {
+                  'nama_mahasiswa': jadwal['mahasiswa']?['nama_mahasiswa'],
+                  'npm': jadwal['mahasiswa']?['nim'],
+                  'judul_proposal': jadwal['mahasiswa']?['proposal']?['judul_proposal'],
+                  'tanggal': formattedDate,
+                  'nama_penguji': (jadwal['id_penguji_utama'] == controller.idDosenLoggedIn.value)
+                      ? (jadwal['penguji_utama']?['nama_dosen'] ?? "-")
+                      : (jadwal['penguji_pendamping']?['nama_dosen'] ?? "-"),
+                },
+              ));
+        },
+        icon: const Icon(Icons.edit_note, color: Color(0xFF4A89FF)),
+        label: const Text(
+          "Catatan Revisi Proposal",
+          style: TextStyle(color: Color(0xFF4A89FF), fontWeight: FontWeight.bold),
+        ),
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: Color(0xFF4A89FF)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
       ),
     );

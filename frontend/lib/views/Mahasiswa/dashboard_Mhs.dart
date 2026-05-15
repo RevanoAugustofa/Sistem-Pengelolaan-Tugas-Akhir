@@ -181,7 +181,7 @@ class DashboardMhs extends StatelessWidget {
   // --- WIDGET HELPERS ---
 
   Widget _buildProfileCard() {
-    return Container(
+    return Obx(() => Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -191,33 +191,36 @@ class DashboardMhs extends StatelessWidget {
       child: Row(
         children: [
           Image.asset('assets/img/profile.png', height: 70),
-          // Container(height: 70, width: 70, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10))),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Revano Augustofa",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                Text(
+                  mhsController.mhsName.value.isNotEmpty 
+                      ? mhsController.mhsName.value 
+                      : "Memuat nama...",
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                const Text(
-                  "NPM. 03929833",
-                  style: TextStyle(color: Colors.black87),
+                Text(
+                  "NPM. ${mhsController.mhsNpm.value.isNotEmpty ? mhsController.mhsNpm.value : '-'}",
+                  style: const TextStyle(color: Colors.black87),
                 ),
               ],
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              border: Border.all(color: Color.fromARGB(255, 0, 149, 255)),
+              border: Border.all(color: const Color.fromARGB(255, 0, 149, 255)),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Text(
-              "Angkatan 2023",
+            child: Text(
+              mhsController.mhsAngkatan.value.isNotEmpty 
+                  ? "${mhsController.mhsAngkatan.value}" 
+                  : "-",
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: Color.fromARGB(255, 0, 149, 255),
@@ -226,7 +229,7 @@ class DashboardMhs extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 
   Widget _buildDosenCard() {

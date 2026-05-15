@@ -29,6 +29,11 @@ class MhsController extends GetxController {
   var proposalTitle = "".obs;
   var proposalFile = "".obs;
 
+  // Mahasiswa Personal Info
+  var mhsName = "".obs;
+  var mhsNpm = "".obs;
+  var mhsAngkatan = "".obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -112,6 +117,16 @@ class MhsController extends GetxController {
       isLoadingDashboard(true);
       var data = await _service.getDashboardData();
       
+      // Update Personal Info
+      if (data['user'] != null && data['user']['mahasiswa'] != null) {
+        var mhsData = data['user']['mahasiswa'];
+        mhsName.value = mhsData['nama_mahasiswa'] ?? "";
+        mhsNpm.value = mhsData['nim'] ?? "";
+        if (mhsData['tahun_ajar'] != null) {
+          mhsAngkatan.value = mhsData['tahun_ajar']['tahun_ajar'] ?? "";
+        }
+      }
+
       // Update Pengajuan Data
       if (data['pengajuan'] != null) {
         if (data['pengajuan']['pembimbing_utama'] != null) {

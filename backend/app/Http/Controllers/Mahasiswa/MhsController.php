@@ -17,7 +17,7 @@ class MhsController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user();
+        $user = $request->user()->load('mahasiswa.tahunAjar');
         $pengajuan = null;
         $proposal = null;
         
@@ -33,6 +33,7 @@ class MhsController extends Controller
         return response()->json([
             'message' => 'Welcome to Mahasiswa Dashboard',
             'role' => 'mahasiswa',
+            'user' => $user,
             'pengajuan' => $pengajuan,
             'proposal' => $proposal,
         ]);

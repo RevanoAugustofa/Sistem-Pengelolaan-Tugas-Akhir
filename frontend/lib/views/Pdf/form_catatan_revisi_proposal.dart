@@ -44,6 +44,8 @@ class _FormCatatanRevisiViewState extends State<FormCatatanRevisiView> {
       ruangan: widget.dataJadwal['ruangan'] ?? '-',
       catatanRevisi: catatan,
       namaPenguji: widget.dataJadwal['nama_penguji'] ?? '-',
+      jabatanPenguji: widget.dataJadwal['jabatan_penguji'] ?? '-',
+      nidnPenguji: widget.dataJadwal['nidn_penguji'] ?? '-',
     );
 
     Get.to(() => PdfPreviewPage(
@@ -54,6 +56,8 @@ class _FormCatatanRevisiViewState extends State<FormCatatanRevisiView> {
 
   @override
   Widget build(BuildContext context) {
+    final String jabatan = widget.dataJadwal['jabatan_penguji'] ?? '-';
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -72,10 +76,11 @@ class _FormCatatanRevisiViewState extends State<FormCatatanRevisiView> {
           children: [
             _buildInfoRow("Mahasiswa", widget.dataJadwal['nama_mahasiswa']),
             _buildInfoRow("NPM", widget.dataJadwal['npm']),
+            _buildInfoRow("Peran Anda", "Dosen $jabatan Penguji"),
             const Divider(height: 30),
-            const Text(
-              "Catatan Revisi:",
-              style: TextStyle(
+            Text(
+              "Catatan Revisi ($jabatan):",
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF283D70),

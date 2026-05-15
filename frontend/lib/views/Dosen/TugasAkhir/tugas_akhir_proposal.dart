@@ -273,6 +273,12 @@ class _TugasAkhirProposalTableState extends State<TugasAkhirProposalTable> {
                   'nama_penguji': (jadwal['id_penguji_utama'] == controller.idDosenLoggedIn.value)
                       ? (jadwal['penguji_utama']?['nama_dosen'] ?? "-")
                       : (jadwal['penguji_pendamping']?['nama_dosen'] ?? "-"),
+                  'jabatan_penguji': (jadwal['id_penguji_utama'] == controller.idDosenLoggedIn.value)
+                      ? "Ketua"
+                      : "Anggota",
+                  'nidn_penguji': (jadwal['id_penguji_utama'] == controller.idDosenLoggedIn.value)
+                      ? (jadwal['penguji_utama']?['nidn'] ?? "-")
+                      : (jadwal['penguji_pendamping']?['nidn'] ?? "-"),
                 },
               ));
         },

@@ -15,6 +15,8 @@ class ProposalRevisionPdf {
     required String ruangan,
     required List<String> catatanRevisi,
     required String namaPenguji,
+    required String jabatanPenguji,
+    required String nidnPenguji,
   }) async {
     final pdf = pw.Document();
 
@@ -153,7 +155,7 @@ class ProposalRevisionPdf {
                         ),
                       ),
                       child: pw.Text(
-                        'Hasil Revisi',
+                        'Hasil Revisi ($jabatanPenguji)',
                         style: pw.TextStyle(
                           fontWeight: pw.FontWeight.bold,
                           fontSize: 9,
@@ -203,7 +205,7 @@ class ProposalRevisionPdf {
                     pw.SizedBox(height: 5),
 
                     pw.Text(
-                      'Dosen Ketua Penguji Proposal',
+                      'Dosen $jabatanPenguji Penguji Proposal',
                       style: const pw.TextStyle(fontSize: 10),
                     ),
 
@@ -220,7 +222,7 @@ class ProposalRevisionPdf {
                     pw.SizedBox(height: 3),
 
                     pw.Text(
-                      'NIDN. 199508282024061003',
+                      'NIDN. $nidnPenguji',
                       style: const pw.TextStyle(fontSize: 9),
                     ),
                   ],

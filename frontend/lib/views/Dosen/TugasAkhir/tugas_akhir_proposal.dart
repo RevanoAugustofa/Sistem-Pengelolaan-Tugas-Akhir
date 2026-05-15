@@ -263,7 +263,9 @@ class _TugasAkhirProposalTableState extends State<TugasAkhirProposalTable> {
       child: OutlinedButton.icon(
         onPressed: () {
           Get.to(() => FormCatatanRevisiView(
+                idMahasiswa: mahasiswa.id!,
                 dataJadwal: {
+                  'id_jadwal_sempro': jadwal['id'],
                   'nama_mahasiswa': jadwal['mahasiswa']?['nama_mahasiswa'],
                   'npm': jadwal['mahasiswa']?['nim'],
                   'judul_proposal': jadwal['mahasiswa']?['proposal']?['judul_proposal'],

@@ -24,6 +24,7 @@ class DosenController extends GetxController {
   // Sempro state
   var jadwalSempro = {}.obs;
   var hasilSempro = {}.obs;
+  var catatanRevisi = {}.obs;
   var isPengujiSempro = false.obs;
   var isLoadingSempro = false.obs;
   
@@ -52,6 +53,7 @@ class DosenController extends GetxController {
       var data = await _service.getJadwalSempro(idMahasiswa);
       jadwalSempro.value = data['jadwal'] ?? {};
       hasilSempro.value = data['hasil'] ?? {};
+      catatanRevisi.value = data['catatan'] ?? {};
       isPengujiSempro.value = data['is_penguji'] ?? false;
       idDosenLoggedIn.value = data['id_dosen_logged_in'] ?? 0;
 
@@ -82,6 +84,25 @@ class DosenController extends GetxController {
       }
     } catch (e) {
       Get.snackbar("Error", e.toString());
+    } finally {
+      isLoadingSempro(false);
+    }
+  }
+
+  Future<bool> submitCatatanRevisi(Map<String, dynamic> data) async {
+    try {
+      isLoadingSempro(true);
+      bool success = await _service.storeCatatanRevisi(data);
+      if (success) {
+        fetchJadwalSempro(data['id_mahasiswa_temp']); // Refresh
+        Get.snackbar("Sukses", "Catatan revisi berhasil disimpan",
+            backgroundColor: Colors.green, colorText: Colors.white);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+      return false;
     } finally {
       isLoadingSempro(false);
     }

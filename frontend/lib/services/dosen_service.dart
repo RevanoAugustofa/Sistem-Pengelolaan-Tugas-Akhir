@@ -68,6 +68,26 @@ class DosenService {
     }
   }
 
+  Future<bool> storeCatatanRevisi(Map<String, dynamic> data) async {
+    final token = await _getToken();
+    final response = await http.post(
+      Uri.parse("$baseUrl/dosen/catatan-revisi-sempro"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      final body = json.decode(response.body);
+      throw Exception(body['message'] ?? "Gagal menyimpan catatan revisi");
+    }
+  }
+
   Future<List<LogbookBimbingan>> getLogbookMahasiswa(int idMahasiswa) async {
     final token = await _getToken();
     final response = await http.get(

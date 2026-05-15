@@ -57,12 +57,52 @@ class MahasiswaController extends Controller
 
         $isPenguji = ($jadwal->id_penguji_utama == $dosen->id || $jadwal->id_penguji_pendamping == $dosen->id);
 
+        $catatan = \App\Models\CatatanRevisiSempro::where('id_jadwal_sempro', $jadwal->id)
+            ->where('id_dosen', $dosen->id)
+            ->first();
+
         return response()->json([
             'jadwal' => $jadwal,
             'hasil' => $hasil,
             'is_penguji' => $isPenguji,
-            'id_dosen_logged_in' => $dosen->id
+            'id_dosen_logged_in' => $dosen->id,
+            'catatan' => $catatan
         ]);
+    }
+
+    public function storeCatatanRevisi(Request $request)
+    {
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            'id_jadwal_sempro' => 'required|exists:jadwal_sempro,id',
+            'catatan_revisi' => 'required|array',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user = Auth::user();
+        $dosen = $user->dosen;
+
+        $catatan = \App\Models\CatatanRevisiSempro::updateOrCreate(
+            [
+                'id_jadwal_sempro' => $request->id_jadwal_sempro,
+                'id_dosen' => $dosen->id,
+            ],
+            [
+                'catatan_revisi' => $request->catatan_revisi,
+                'update_at' => now(),
+            ]
+        );
+
+        if (!$catatan->wasRecentlyCreated) {
+            $catatan->update_at = now();
+        } else {
+            $catatan->created_at = now();
+        }
+        $catatan->save();
+
+        return response()->json(['message' => 'Catatan revisi berhasil disimpan', 'catatan' => $catatan]);
     }
 
     public function storeHasilSempro(Request $request)

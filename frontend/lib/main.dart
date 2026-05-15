@@ -53,6 +53,7 @@ import 'package:frontend/views/Profile/dataDiri_page.dart';
 import 'package:frontend/views/Profile/profile_page.dart';
 import 'package:frontend/views/Profile/ubah_password.dart';
 import 'package:frontend/views/Mahasiswa/TugasAkhir/tugas_akhir_mhs.dart';
+import 'package:frontend/views/Mahasiswa/TugasAkhir/form_daftar_sidang_ta.dart';
 import 'package:frontend/views/Mahasiswa/dashboard_Mhs.dart';
 import 'package:frontend/views/login_page.dart';
 import 'package:frontend/views/splash_page.dart';
@@ -135,6 +136,7 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/kuota_pembimbing', page: () => KuotaPembimbing() ),
         GetPage(name: '/data_pembimbing', page: () => PembimbingPage() ),
         GetPage(name: '/pendaftaranDosen', page: () => const DaftarDosenPembimbingMhsPage() ),
+        GetPage(name: '/formDaftarSidangMhs', page: () => const FormDaftarSidangView() ),
 
         //koordinator prodi
         GetPage(name: '/dashboardKp', page: () => DashboardKp() ),

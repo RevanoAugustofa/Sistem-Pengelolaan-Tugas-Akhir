@@ -232,4 +232,60 @@ class MhsService {
 
     return jsonDecode(response.body);
   }
+
+  Future<Map<String, dynamic>> storeDaftarSidang(Map<String, Uint8List?> fileBytes, Map<String, String?> fileNames) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('${AppConstants.baseUrl}/mahasiswa/daftar-sidang'),
+    );
+
+    request.headers.addAll({
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    // Add files
+    if (fileBytes['tugas_akhir'] != null) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'file_tugas_akhir',
+        fileBytes['tugas_akhir']!,
+        filename: fileNames['tugas_akhir'],
+      ));
+    }
+    if (fileBytes['bebas_pinjaman'] != null) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'file_bebas_pinjaman_administrasi',
+        fileBytes['bebas_pinjaman']!,
+        filename: fileNames['bebas_pinjaman'],
+      ));
+    }
+    if (fileBytes['slip_pembayaran'] != null) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'file_slip_pembayaran_semester_akhir',
+        fileBytes['slip_pembayaran']!,
+        filename: fileNames['slip_pembayaran'],
+      ));
+    }
+    if (fileBytes['transkip'] != null) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'file_transkip_sementara',
+        fileBytes['transkip']!,
+        filename: fileNames['transkip'],
+      ));
+    }
+    if (fileBytes['pembayaran_sidang'] != null) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'file_bukti_pembayaran_sidang_ta',
+        fileBytes['pembayaran_sidang']!,
+        filename: fileNames['pembayaran_sidang'],
+      ));
+    }
+
+    final response = await request.send();
+    final responseData = await response.stream.bytesToString();
+    return jsonDecode(responseData);
+  }
 }

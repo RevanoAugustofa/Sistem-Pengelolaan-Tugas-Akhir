@@ -211,4 +211,35 @@ class MhsController extends GetxController {
       isLoadingAction(false);
     }
   }
+
+  Future<void> daftarSidang({
+    required Map<String, Uint8List?> fileBytes,
+    required Map<String, String?> fileNames,
+  }) async {
+    try {
+      isLoadingAction(true);
+      final result = await _service.storeDaftarSidang(fileBytes, fileNames);
+      
+      if (result['success'] == true) {
+        Get.back(); // Close form page
+        Get.snackbar(
+          "Sukses",
+          result['message'] ?? "Pendaftaran sidang berhasil diajukan",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
+        Get.snackbar(
+          "Gagal",
+          result['message'] ?? "Gagal mengajukan pendaftaran sidang",
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Terjadi kesalahan: ${e.toString()}");
+    } finally {
+      isLoadingAction(false);
+    }
+  }
 }

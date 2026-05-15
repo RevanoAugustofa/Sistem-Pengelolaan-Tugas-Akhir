@@ -268,6 +268,8 @@ class _TugasAkhirProposalTableState extends State<TugasAkhirProposalTable> {
                   'npm': jadwal['mahasiswa']?['nim'],
                   'judul_proposal': jadwal['mahasiswa']?['proposal']?['judul_proposal'],
                   'tanggal': formattedDate,
+                  'waktu': "${jadwal['waktu_mulai'] ?? '00:00'} - ${jadwal['waktu_selesai'] ?? '00:00'} WIB",
+                  'ruangan': jadwal['ruangan']?['nama_ruangan'] ?? "-",
                   'nama_penguji': (jadwal['id_penguji_utama'] == controller.idDosenLoggedIn.value)
                       ? (jadwal['penguji_utama']?['nama_dosen'] ?? "-")
                       : (jadwal['penguji_pendamping']?['nama_dosen'] ?? "-"),

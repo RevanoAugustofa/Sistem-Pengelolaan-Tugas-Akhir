@@ -11,6 +11,8 @@ class ProposalRevisionPdf {
     required String npm,
     required String judulProposal,
     required String tanggal,
+    required String waktu,
+    required String ruangan,
     required List<String> catatanRevisi,
     required String namaPenguji,
   }) async {
@@ -124,8 +126,8 @@ class ProposalRevisionPdf {
               _buildRow('NPM', npm),
               _buildRow('Judul Tugas Akhir', judulProposal),
               _buildRow('Hari / Tanggal', tanggal),
-              _buildRow('Waktu', '08.00-10.00'),
-              _buildRow('Ruang', 'R.3.7'),
+              _buildRow('Waktu', waktu),
+              _buildRow('Ruang', ruangan),
 
               pw.SizedBox(height: 20),
 

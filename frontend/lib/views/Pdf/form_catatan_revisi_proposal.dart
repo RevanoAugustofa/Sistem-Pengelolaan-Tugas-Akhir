@@ -40,6 +40,8 @@ class _FormCatatanRevisiViewState extends State<FormCatatanRevisiView> {
       npm: widget.dataJadwal['npm'] ?? '-',
       judulProposal: widget.dataJadwal['judul_proposal'] ?? '-',
       tanggal: widget.dataJadwal['tanggal'] ?? '-',
+      waktu: widget.dataJadwal['waktu'] ?? '-',
+      ruangan: widget.dataJadwal['ruangan'] ?? '-',
       catatanRevisi: catatan,
       namaPenguji: widget.dataJadwal['nama_penguji'] ?? '-',
     );

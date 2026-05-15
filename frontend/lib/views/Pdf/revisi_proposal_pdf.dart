@@ -1,7 +1,9 @@
 import 'dart:typed_data';
+import 'package:flutter/services.dart';
+
+import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:intl/intl.dart';
 
 class ProposalRevisionPdf {
   static Future<Uint8List> generate({
@@ -14,113 +16,250 @@ class ProposalRevisionPdf {
   }) async {
     final pdf = pw.Document();
 
+    // Load logo from assets using rootBundle for web compatibility
+    final ByteData bytes = await rootBundle.load('img/logo_pnc.png');
+    final Uint8List logoBytes = bytes.buffer.asUint8List();
+    final logoImage = pw.MemoryImage(logoBytes);
+
     pdf.addPage(
-      pw.MultiPage(
+      pw.Page(
         pageFormat: PdfPageFormat.a4,
-        margin: const pw.EdgeInsets.all(32),
-        build: (pw.Context context) {
-          return [
-            pw.Header(
-              level: 0,
-              child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.center,
+        margin: const pw.EdgeInsets.symmetric(
+          horizontal: 40,
+          vertical: 30,
+        ),
+        build: (context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              // ================= HEADER =================
+              pw.Row(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  pw.Text(
-                    'CATATAN REVISI SEMINAR PROPOSAL',
-                    style: pw.TextStyle(
-                      fontSize: 18,
-                      fontWeight: pw.FontWeight.bold,
+                  pw.Container(
+                    width: 70,
+                    height: 70,
+                    child: pw.Image(logoImage),
+                  ),
+
+                  pw.SizedBox(width: 15),
+
+                  pw.Expanded(
+                    child: pw.Column(
+                      children: [
+                        pw.Text(
+                          'KEMENTERIAN PENDIDIKAN, KEBUDAYAAN,',
+                          style: const pw.TextStyle(fontSize: 12),
+                          textAlign: pw.TextAlign.center,
+                        ),
+                        pw.Text(
+                          'RISET, DAN TEKNOLOGI',
+                          style: const pw.TextStyle(fontSize: 12),
+                          textAlign: pw.TextAlign.center,
+                        ),
+                        pw.Text(
+                          'POLITEKNIK NEGERI CILACAP',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                          textAlign: pw.TextAlign.center,
+                        ),
+                        pw.SizedBox(height: 4),
+
+                        pw.Text(
+                          'Jalan Dr. Soetomo No. 1, Sidakaya - CILACAP 53212 Jawa Tengah',
+                          style: const pw.TextStyle(fontSize: 9),
+                          textAlign: pw.TextAlign.center,
+                        ),
+
+                        pw.Text(
+                          'Telepon: (0282) 533329 , Fax: (0282) 537992',
+                          style: const pw.TextStyle(fontSize: 9),
+                          textAlign: pw.TextAlign.center,
+                        ),
+
+                        pw.Text(
+                          'Website:www.pnc.ac.id, Email: sekretariat@pnc.ac.id',
+                          style: const pw.TextStyle(fontSize: 9),
+                          textAlign: pw.TextAlign.center,
+                        ),
+                      ],
                     ),
                   ),
-                  pw.SizedBox(height: 10),
-                  pw.Divider(),
                 ],
               ),
-            ),
-            pw.SizedBox(height: 20),
-            
-            // Student Info
-            pw.Row(
-              children: [
-                pw.Container(width: 120, child: pw.Text('Nama Mahasiswa')),
-                pw.Text(': $namaMahasiswa'),
-              ],
-            ),
-            pw.SizedBox(height: 8),
-            pw.Row(
-              children: [
-                pw.Container(width: 120, child: pw.Text('NPM')),
-                pw.Text(': $npm'),
-              ],
-            ),
-            pw.SizedBox(height: 8),
-            pw.Row(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Container(width: 120, child: pw.Text('Judul Proposal')),
-                pw.Expanded(child: pw.Text(': $judulProposal')),
-              ],
-            ),
-            pw.SizedBox(height: 8),
-            pw.Row(
-              children: [
-                pw.Container(width: 120, child: pw.Text('Tanggal Seminar')),
-                pw.Text(': $tanggal'),
-              ],
-            ),
-            
-            pw.SizedBox(height: 30),
-            pw.Text(
-              'Catatan / Materi Revisi:',
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-            ),
-            pw.SizedBox(height: 10),
-            
-            // Revision List
-            ...catatanRevisi.asMap().entries.map((entry) {
-              return pw.Padding(
-                padding: const pw.EdgeInsets.only(bottom: 8),
-                child: pw.Row(
+
+              pw.SizedBox(height: 10),
+
+              pw.Divider(
+                thickness: 1.5,
+                color: PdfColors.black,
+              ),
+
+              pw.SizedBox(height: 25),
+
+              // ================= TITLE =================
+              pw.Center(
+                child: pw.Text(
+                  'FORM REVISI SIDANG PROPOSAL TUGAS AKHIR',
+                  style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+
+              pw.SizedBox(height: 20),
+
+              pw.Text(
+                'Hasil Revisi Sidang Proposal Tugas Akhir Untuk Mahasiswa:',
+                style: const pw.TextStyle(fontSize: 10),
+              ),
+
+              pw.SizedBox(height: 15),
+
+              // ================= BIODATA =================
+              _buildRow('Nama', namaMahasiswa),
+              _buildRow('NPM', npm),
+              _buildRow('Judul Tugas Akhir', judulProposal),
+              _buildRow('Hari / Tanggal', tanggal),
+              _buildRow('Waktu', '08.00-10.00'),
+              _buildRow('Ruang', 'R.3.7'),
+
+              pw.SizedBox(height: 20),
+
+              // ================= BOX REVISI =================
+              pw.Container(
+                width: double.infinity,
+                height: 280,
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(
+                    color: PdfColors.black,
+                    width: 1,
+                  ),
+                ),
+                child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
-                    pw.Text('${entry.key + 1}. '),
-                    pw.Expanded(child: pw.Text(entry.value)),
-                  ],
-                ),
-              );
-            }).toList(),
-            
-            if (catatanRevisi.isEmpty)
-              pw.Text('- Tidak ada catatan revisi -', style: pw.TextStyle(fontStyle: pw.FontStyle.italic)),
+                    pw.Container(
+                      width: double.infinity,
+                      padding: const pw.EdgeInsets.all(6),
+                      decoration: const pw.BoxDecoration(
+                        border: pw.Border(
+                          bottom: pw.BorderSide(),
+                        ),
+                      ),
+                      child: pw.Text(
+                        'Hasil Revisi',
+                        style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold,
+                          fontSize: 9,
+                        ),
+                      ),
+                    ),
 
-            pw.Spacer(),
-            
-            // Signature Section
-            pw.Row(
-              mainAxisAlignment: pw.MainAxisAlignment.end,
-              children: [
-                pw.Column(
-                  children: [
-                    pw.Text('Padang, ${DateFormat('d MMMM yyyy', 'id_ID').format(DateTime.now())}'),
-                    pw.SizedBox(height: 10),
-                    pw.Text('Dosen Penguji,'),
-                    pw.SizedBox(height: 60),
-                    pw.Text(
-                      namaPenguji,
-                      style: pw.TextStyle(
-                        fontWeight: pw.FontWeight.bold,
-                        decoration: pw.TextDecoration.underline,
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.all(10),
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: catatanRevisi.isNotEmpty
+                            ? catatanRevisi.asMap().entries.map((e) {
+                                return pw.Padding(
+                                  padding: const pw.EdgeInsets.only(bottom: 6),
+                                  child: pw.Text(
+                                    '${e.key + 1}. ${e.value}',
+                                    style: const pw.TextStyle(fontSize: 10),
+                                  ),
+                                );
+                              }).toList()
+                            : [
+                                pw.Text(
+                                  '-',
+                                  style: const pw.TextStyle(fontSize: 10),
+                                )
+                              ],
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
-          ];
+              ),
+
+              pw.Spacer(),
+
+              // ================= TTD =================
+              pw.Align(
+                alignment: pw.Alignment.centerRight,
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.center,
+                  children: [
+                    pw.Text(
+                      'Cilacap, ${DateFormat('d MMMM yyyy', 'id_ID').format(DateTime.now())}',
+                      style: const pw.TextStyle(fontSize: 10),
+                    ),
+
+                    pw.SizedBox(height: 5),
+
+                    pw.Text(
+                      'Dosen Ketua Penguji Proposal',
+                      style: const pw.TextStyle(fontSize: 10),
+                    ),
+
+                    pw.SizedBox(height: 70),
+
+                    pw.Text(
+                      namaPenguji,
+                      style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold,
+                        fontSize: 10,
+                      ),
+                    ),
+
+                    pw.SizedBox(height: 3),
+
+                    pw.Text(
+                      'NIDN. 199508282024061003',
+                      style: const pw.TextStyle(fontSize: 9),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
         },
       ),
     );
 
     return pdf.save();
+  }
+
+  static pw.Widget _buildRow(String title, String value) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 5),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Container(
+            width: 120,
+            child: pw.Text(
+              title,
+              style: const pw.TextStyle(fontSize: 10),
+            ),
+          ),
+
+          pw.Text(
+            ': ',
+            style: const pw.TextStyle(fontSize: 10),
+          ),
+
+          pw.Expanded(
+            child: pw.Text(
+              value,
+              style: const pw.TextStyle(fontSize: 10),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

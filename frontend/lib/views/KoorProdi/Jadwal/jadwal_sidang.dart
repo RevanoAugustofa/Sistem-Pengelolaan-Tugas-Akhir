@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/koorprodi_controller.dart';
+import 'edit_jadwal_sidang.dart';
 
 class SidangTable extends StatefulWidget {
   const SidangTable({super.key});
@@ -173,6 +174,7 @@ class _SidangTableState extends State<SidangTable> {
                               DataColumn(label: Text('Penguji')),
                               DataColumn(label: Text('Ruangan')),
                               DataColumn(label: Text('Waktu')),
+                              DataColumn(label: Text('Aksi')),
                             ],
                             rows: List.generate(displayedData.length, (index) {
                               var item = displayedData[index];
@@ -218,6 +220,20 @@ class _SidangTableState extends State<SidangTable> {
                                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.blue)),
                                     ],
                                   )),
+                                  DataCell(
+                                    ElevatedButton(
+                                      onPressed: () => Get.to(() => EditJadwalSidangPage(jadwal: item)),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blue,
+                                        minimumSize: const Size(60, 30),
+                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                      ),
+                                      child: const Text("Edit", style: TextStyle(color: Colors.white, fontSize: 12)),
+                                    ),
+                                  ),
                                 ],
                               );
                             }),

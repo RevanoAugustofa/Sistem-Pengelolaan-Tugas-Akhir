@@ -103,6 +103,15 @@ class KoorProdiController extends GetxController {
     }
   }
 
+  Future<void> fetchJadwalProposalAsync() async {
+    try {
+      var data = await _service.getJadwal('proposal');
+      listJadwalProposal.assignAll(data);
+    } catch (e) {
+      print("Error fetching proposal: $e");
+    }
+  }
+
   void fetchJadwalSidang() async {
     try {
       isLoadingJadwal(true);
@@ -112,6 +121,15 @@ class KoorProdiController extends GetxController {
       Get.snackbar("Error", "Gagal mengambil data jadwal sidang: $e");
     } finally {
       isLoadingJadwal(false);
+    }
+  }
+
+  Future<void> fetchJadwalSidangAsync() async {
+    try {
+      var data = await _service.getJadwal('sidang');
+      listJadwalSidang.assignAll(data);
+    } catch (e) {
+      print("Error fetching sidang: $e");
     }
   }
 
@@ -135,6 +153,28 @@ class KoorProdiController extends GetxController {
       }
     } catch (e) {
       throw e;
+    }
+  }
+
+  Future<void> updateJadwal(int id, Map<String, dynamic> data) async {
+    try {
+      isLoadingJadwal(true);
+      bool success = await _service.updateJadwal(id, data);
+      if (success) {
+        await fetchJadwalProposalAsync();
+        await fetchJadwalSidangAsync();
+        Get.back();
+        Get.snackbar("Sukses", "Jadwal berhasil diperbarui",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      } else {
+        Get.snackbar("Error", "Gagal memperbarui jadwal. Silakan cek data Anda.",
+            backgroundColor: Colors.red, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString(),
+          backgroundColor: Colors.red, colorText: Colors.white);
+    } finally {
+      isLoadingJadwal(false);
     }
   }
 

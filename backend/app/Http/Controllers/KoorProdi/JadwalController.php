@@ -46,4 +46,38 @@ class JadwalController extends Controller
             'data' => $jadwal
         ], 201);
     }
+
+    public function update(Request $request, $id)
+    {
+        $jenisSidang = $request->input('jenis_sidang');
+
+        if ($jenisSidang === 'proposal') {
+            $jadwal = JadwalSempro::findOrFail($id);
+        } elseif ($jenisSidang === 'bimbingan') {
+            $jadwal = JadwalBimbingan::findOrFail($id);
+        } elseif (in_array($jenisSidang, ['sidang', 'sidang_reguler', 'ulang'])) {
+            $jadwal = JadwalSidangTA::findOrFail($id);
+        } else {
+            // Fallback attempt to find in both if type is unclear
+            $jadwal = JadwalSempro::find($id);
+            if (!$jadwal) {
+                $jadwal = JadwalSidangTA::find($id);
+            }
+            
+            if (!$jadwal) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Jadwal tidak ditemukan atau jenis tidak valid'
+                ], 404);
+            }
+        }
+
+        $jadwal->update($request->all());
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Jadwal berhasil diperbarui',
+            'data' => $jadwal
+        ]);
+    }
 }

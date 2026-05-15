@@ -80,6 +80,20 @@ class KoorProdiService {
     return response.statusCode == 201;
   }
 
+  Future<bool> updateJadwal(int id, Map<String, dynamic> data) async {
+    final token = await _getToken();
+    final response = await http.put(
+      Uri.parse("$baseUrl/koorprodi/jadwal/$id"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    return response.statusCode == 200;
+  }
+
   // Existing methods ... (will be kept by replace)
 
   Future<List<Mahasiswa>> getMahasiswa() async {

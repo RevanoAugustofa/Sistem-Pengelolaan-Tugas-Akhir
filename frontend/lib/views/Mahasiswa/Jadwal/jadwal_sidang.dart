@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/mhs_controller.dart';
+import '../../../models/jadwal_model.dart';
+import '../Modals/detail_jadwal_sidang_modal.dart';
 
 class JadwalSidangList extends StatelessWidget {
   final String searchQuery;
@@ -30,12 +32,7 @@ class JadwalSidangList extends StatelessWidget {
         itemCount: filteredList.length,
         itemBuilder: (context, index) {
           final jadwal = filteredList[index];
-          String nama = jadwal.mahasiswa?.namaMahasiswa ?? "Tidak ada nama";
-          String npm = jadwal.mahasiswa?.npm ?? "-";
-          String tanggal = jadwal.tanggal ?? "-";
-          String jam = "${_formatTime(jadwal.waktuMulai)} - ${_formatTime(jadwal.waktuSelesai)} WIB";
-          
-          return _buildJadwalCard(nama, npm, tanggal, jam);
+          return _buildJadwalCard(context, jadwal);
         },
       );
     });
@@ -50,7 +47,12 @@ class JadwalSidangList extends StatelessWidget {
     return time;
   }
 
-  Widget _buildJadwalCard(String nama, String npm, String tanggal, String jam) {
+  Widget _buildJadwalCard(BuildContext context, JadwalModel jadwal) {
+    String nama = jadwal.mahasiswa?.namaMahasiswa ?? "Tidak ada nama";
+    String npm = jadwal.mahasiswa?.npm ?? "-";
+    String tanggal = jadwal.tanggal ?? "-";
+    String jam = "${_formatTime(jadwal.waktuMulai)} - ${_formatTime(jadwal.waktuSelesai)} WIB";
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -88,7 +90,27 @@ class JadwalSidangList extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const Icon(Icons.more_horiz, color: Colors.grey, size: 20),
+              TextButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => DetailJadwalSidangModal(jadwal: jadwal),
+                  );
+                },
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  foregroundColor: const Color(0xFF4A89FF),
+                ),
+                child: const Text(
+                  "Detail",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+              ),
+              const SizedBox(height: 4),
               Text(tanggal, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
               Text(jam, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
             ],

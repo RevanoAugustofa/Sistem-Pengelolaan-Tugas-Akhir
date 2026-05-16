@@ -52,6 +52,11 @@ class KoorProdiController extends GetxController {
   var listRekap = <dynamic>[].obs;
   var isLoadingRekap = false.obs;
 
+  // Hasil Akhir states
+  var listHasilSempro = <dynamic>[].obs;
+  var listHasilSidang = <dynamic>[].obs;
+  var isLoadingHasilAkhir = false.obs;
+
   // Pagination states
   int currentPage = 1;
   int lastPage = 1;
@@ -628,6 +633,20 @@ class KoorProdiController extends GetxController {
       Get.snackbar("Error", e.toString());
     } finally {
       isLoadingDaftarSidang(false);
+    }
+  }
+
+  void fetchHasilAkhir() async {
+    try {
+      isLoadingHasilAkhir(true);
+      var sempro = await _service.getHasilSempro();
+      var sidang = await _service.getHasilSidang();
+      listHasilSempro.assignAll(sempro);
+      listHasilSidang.assignAll(sidang);
+    } catch (e) {
+      Get.snackbar("Error", "Gagal mengambil data hasil akhir: $e");
+    } finally {
+      isLoadingHasilAkhir(false);
     }
   }
 }

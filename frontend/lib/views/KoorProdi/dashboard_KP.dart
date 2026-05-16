@@ -57,6 +57,7 @@ class _DashboardKpState extends State<DashboardKp> {
                 _buildMenuItem(Icons.people_outline, 'User', onTap: () =>  Get.toNamed('/dataUserKp')),
                 _buildMenuItem(Icons.settings_outlined, 'Ruangan', onTap: () =>  Get.toNamed('/dataRuanganKp')),
                 _buildMenuItem(Icons.settings_outlined, 'Pendaftaran Sidang', onTap: () =>  Get.toNamed('/pendaftaranSidangKp')),
+                _buildMenuItem(Icons.settings_outlined, 'Hasil Akhir', onTap: () =>  Get.toNamed('/hasilKp')),
                 _buildMenuItem(Icons.settings_outlined, 'Rekap Pembimbing & Penguji', onTap: () =>  Get.toNamed('/rekapPembimbingPengujiKp')),
                 _buildMenuItem(Icons.settings_outlined, 'Profil', onTap: () =>  Get.toNamed('/profil', arguments: {'activeRole': 'koorprodi'})),
                 

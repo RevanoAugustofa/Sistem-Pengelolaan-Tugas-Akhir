@@ -142,6 +142,10 @@ Route::middleware('auth:sanctum', 'role:koorprodi')->group(function () {
 
     // Daftar Sidang for KoorProdi
     Route::get('/koorprodi/daftar-sidang', [KoorProdiController::class, 'daftarSidang']);
+
+    // Hasil Akhir for KoorProdi
+    Route::get('/koorprodi/hasil-sempro', [KoorProdiController::class, 'getHasilSempro']);
+    Route::get('/koorprodi/hasil-sidang', [KoorProdiController::class, 'getHasilSidang']);
 });
 
 

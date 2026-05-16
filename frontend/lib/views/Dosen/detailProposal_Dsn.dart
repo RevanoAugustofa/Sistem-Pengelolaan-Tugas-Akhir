@@ -9,7 +9,7 @@ class DetailProposalDosenPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E3475), // Biru Navy
+        backgroundColor: const Color.fromARGB(255, 0, 149, 255), // Biru Navy
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.chevron_left, color: Colors.white, size: 30),

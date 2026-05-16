@@ -116,9 +116,9 @@ class _FormCatatanRevisiViewState extends State<FormCatatanRevisiView> {
       appBar: AppBar(
         title: const Text(
           "Input Catatan Revisi",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        backgroundColor: const Color(0xFF283D70),
+        backgroundColor: const Color.fromARGB(255, 0, 149, 255),
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
       ),

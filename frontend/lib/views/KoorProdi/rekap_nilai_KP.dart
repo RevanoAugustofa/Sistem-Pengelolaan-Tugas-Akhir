@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/koorprodi_controller.dart';
+import '../../helpers/rekap_export_helper.dart';
 
 class RekapNilaiKPPage extends StatefulWidget {
   const RekapNilaiKPPage({super.key});
@@ -15,6 +16,14 @@ class _RekapNilaiKPPageState extends State<RekapNilaiKPPage> {
   int _rowsPerPage = 5;
   int _currentPage = 0;
   String searchQuery = "";
+
+  Future<void> _exportToExcel() async {
+    try {
+      await RekapExportHelper.exportToExcel(controller.listRekap);
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    }
+  }
 
   @override
   void initState() {
@@ -114,6 +123,18 @@ class _RekapNilaiKPPageState extends State<RekapNilaiKPPage> {
                           ),
                           Row(
                             children: [
+                              ElevatedButton.icon(
+                                onPressed: _exportToExcel,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                ),
+                                icon: const Icon(Icons.file_download, size: 18),
+                                label: const Text("Export Excel", style: TextStyle(fontSize: 12)),
+                              ),
+                              const SizedBox(width: 10),
                               const Text("Show ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -151,18 +172,61 @@ class _RekapNilaiKPPageState extends State<RekapNilaiKPPage> {
                       child: ConstrainedBox(
                         constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width - 72),
                         child: DataTable(
+                          headingRowHeight: 60,
                           headingRowColor: WidgetStateProperty.all(const Color.fromARGB(255, 110, 110, 110)),
                           headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
                           columnSpacing: 20,
                           horizontalMargin: 15,
-                          columns: const [
-                            DataColumn(label: Text('No')),
-                            DataColumn(label: Text('NPM')),
-                            DataColumn(label: Text('Nama')),
-                            DataColumn(label: Text('Prodi')),
-                            DataColumn(label: Text('Angka')),
-                            DataColumn(label: Text('Huruf')),
-                            DataColumn(label: Text('Keterangan')),
+                          columns: [
+                            DataColumn(label: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('', style: TextStyle(fontSize: 10)),
+                                const Text('No'),
+                              ],
+                            )),
+                            DataColumn(label: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('', style: TextStyle(fontSize: 10)),
+                                const Text('NPM'),
+                              ],
+                            )),
+                            DataColumn(label: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('', style: TextStyle(fontSize: 10)),
+                                const Text('Nama'),
+                              ],
+                            )),
+                            DataColumn(label: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('', style: TextStyle(fontSize: 10)),
+                                const Text('Prodi'),
+                              ],
+                            )),
+                            DataColumn(label: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('', style: TextStyle(fontSize: 10)),
+                                const Text('Angka'),
+                              ],
+                            )),
+                            DataColumn(label: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text('Nilai', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
+                                const Text('Huruf'),
+                              ],
+                            )),
+                            DataColumn(label: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('', style: TextStyle(fontSize: 10)),
+                                const Text('Keterangan'),
+                              ],
+                            )),
                           ],
                           rows: List.generate(displayedData.length, (index) {
                             var item = displayedData[index];

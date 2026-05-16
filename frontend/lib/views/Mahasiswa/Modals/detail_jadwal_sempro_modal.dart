@@ -33,17 +33,17 @@ class DetailJadwalSemproModal extends StatelessWidget {
     String tanggal = _formatDate(jadwal.tanggal);
     String jam = "${_formatTime(jadwal.waktuMulai)} - ${_formatTime(jadwal.waktuSelesai)} WIB";
     String ruangan = jadwal.ruangan?.namaRuangan ?? "-";
-    String penguji = "Penguji\n${jadwal.pengujiUtama?.namaDosen ?? '-'} \n${jadwal.pengujiPendamping?.namaDosen ?? '-'}";
-    
-    // Logika pemilihan judul: prioritas revisi_judul_proposal
+
+    // Logika pemilihan judul
     String? judulAsli = jadwal.mahasiswa?.proposal?.judulProposal;
     String? judulRevisi = jadwal.mahasiswa?.proposal?.revisiJudulProposal;
     String judulFinal = (judulRevisi != null && judulRevisi.isNotEmpty) ? judulRevisi : (judulAsli ?? 'Belum ada judul');
-    
-    String judul = "Judul proposal\n$judulFinal";
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.85,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -51,142 +51,290 @@ class DetailJadwalSemproModal extends StatelessWidget {
           topRight: Radius.circular(28),
         ),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Handle bar for bottom sheet
-            Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: 20),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(2),
-              ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Handle bar
+          Container(
+            width: 40,
+            height: 4,
+            margin: const EdgeInsets.only(bottom: 24),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(2),
             ),
-            
-            // TITLE
-            const Text(
-              "Detail Jadwal",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF283D70),
-              ),
-            ),
+          ),
 
-            const SizedBox(height: 10),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // HEADER SECTION
+                  Center(
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF4A89FF).withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.event_note_rounded,
+                            color: Color(0xFF4A89FF),
+                            size: 32,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          "Detail Jadwal Sempro",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF283D70),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
-            Text(
-              nama,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              "NPM: $npm",
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
+                  const SizedBox(height: 32),
 
-            const SizedBox(height: 25),
+                  // MAHASISWA CARD
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey.shade200),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Mahasiswa",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          nama,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF283D70),
+                          ),
+                        ),
+                        Text(
+                          "NPM: $npm",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
-            // DETAIL ITEM
-            _buildDetailItem(
-              Icons.calendar_today_outlined,
-              tanggal,
-            ),
+                  const SizedBox(height: 24),
 
-            const SizedBox(height: 20),
+                  // JUDUL PROPOSAL
+                  const Text(
+                    "Judul Proposal",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF283D70),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade200),
+                    ),
+                    child: Text(
+                      judulFinal,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        height: 1.5,
+                        color: Colors.black87,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
 
-            _buildDetailItem(
-              Icons.access_time_outlined,
-              jam,
-            ),
+                  const SizedBox(height: 24),
 
-            const SizedBox(height: 20),
+                  // WAKTU & TEMPAT
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildInfoBox(
+                          "Tanggal",
+                          tanggal,
+                          Icons.calendar_today_rounded,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _buildInfoBox(
+                          "Waktu",
+                          jam,
+                          Icons.access_time_rounded,
+                        ),
+                      ),
+                    ],
+                  ),
 
-            _buildDetailItem(
-              Icons.location_on_outlined,
-              ruangan,
-            ),
+                  const SizedBox(height: 12),
 
-            const SizedBox(height: 20),
+                  _buildInfoBox(
+                    "Ruangan",
+                    ruangan,
+                    Icons.location_on_rounded,
+                    width: double.infinity,
+                  ),
 
-            _buildDetailItem(
-              Icons.edit_square,
-              penguji,
-            ),
+                  const SizedBox(height: 24),
 
-            const SizedBox(height: 20),
+                  // DOSEN PENGUJI
+                  const Text(
+                    "Dosen Penguji",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF283D70),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildDosenItem("Penguji Utama", jadwal.pengujiUtama?.namaDosen ?? "-"),
+                  const SizedBox(height: 8),
+                  _buildDosenItem("Penguji Pendamping", jadwal.pengujiPendamping?.namaDosen ?? "-"),
 
-            _buildDetailItem(
-              Icons.article_outlined,
-              judul,
-            ),
-
-            const SizedBox(height: 35),
-
-            // BUTTON
-            SizedBox(
+                  const SizedBox(height: 32),
+                  ],
+                  ),
+                  ),
+                  ),
+          // ACTION BUTTON
+          Padding(
+            padding: const EdgeInsets.only(top: 16, bottom: 8),
+            child: SizedBox(
               width: double.infinity,
               height: 52,
               child: ElevatedButton(
                 onPressed: () => Get.back(),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey.shade400,
+                  backgroundColor: const Color(0xFF283D70),
+                  foregroundColor: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 child: const Text(
                   "Tutup",
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildDetailItem(IconData icon, String text) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(
-          icon,
-          size: 26,
-          color: Colors.grey.shade700,
-        ),
-
-        const SizedBox(width: 14),
-
-        Expanded(
-          child: Text(
-            text,
+  Widget _buildInfoBox(String label, String value, IconData icon, {double? width}) {
+    return Container(
+      width: width,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 16, color: const Color(0xFF4A89FF)),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            value,
             style: const TextStyle(
-              fontSize: 15,
-              height: 1.3,
-              color: Colors.black87,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF283D70),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
-}
+
+  Widget _buildDosenItem(String role, String name) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade100),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 18,
+            backgroundColor: const Color(0xFF4A89FF).withOpacity(0.1),
+            child: const Icon(Icons.person_outline, size: 20, color: Color(0xFF4A89FF)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  role,
+                  style: const TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF283D70),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  }

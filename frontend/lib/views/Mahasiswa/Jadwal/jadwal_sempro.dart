@@ -90,8 +90,8 @@ class JadwalSemproList extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              GestureDetector(
-                onTap: () {
+              TextButton(
+                onPressed: () {
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
@@ -99,8 +99,18 @@ class JadwalSemproList extends StatelessWidget {
                     builder: (context) => DetailJadwalSemproModal(jadwal: jadwal),
                   );
                 },
-                child: const Icon(Icons.more_horiz, color: Colors.grey, size: 20),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  foregroundColor: const Color(0xFF4A89FF),
+                ),
+                child: const Text(
+                  "Detail",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                ),
               ),
+              const SizedBox(height: 4),
               Text(tanggal, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
               Text(jam, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
             ],

@@ -25,7 +25,7 @@ class _TugasAkhirProposalTableState extends State<TugasAkhirProposalTable> {
   void initState() {
     super.initState();
     mahasiswa = Get.arguments as Mahasiswa;
-    controller.fetchJadwalSempro(mahasiswa.id!);
+    // Data sudah di-fetch oleh parent (tugasAkhir_Dsn.dart) saat cek akses
     
     _worker = ever(controller.currentGrade, (String grade) {
       if (grade.isNotEmpty) {

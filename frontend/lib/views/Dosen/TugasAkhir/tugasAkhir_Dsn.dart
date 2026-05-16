@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/controllers/dosen_controller.dart';
 import 'package:get/get.dart';
 import '../../../models/mahasiswa_model.dart';
 import 'tugas_akhir_proposal.dart';
@@ -22,6 +23,11 @@ class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
   void initState() {
     super.initState();
     mahasiswa = Get.arguments as Mahasiswa;
+    
+    // Fetch data awal untuk menentukan hak akses (isPenguji, isPembimbing, dll)
+    final controller = Get.find<DosenController>();
+    controller.fetchJadwalSempro(mahasiswa.id!);
+    controller.fetchJadwalSidangTA(mahasiswa.id!);
   }
 
   @override
@@ -194,13 +200,68 @@ class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
 
   // --- SWITCH KONTEN ---
   Widget _buildContent() {
+    final controller = Get.find<DosenController>();
+    
     if (selectedTab == "Proposal") {
-      return TugasAkhirProposalTable(searchQuery: searchQuery);
+      return Obx(() {
+        if (controller.isLoadingSempro.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        // Hanya Penguji yang bisa melihat tab Proposal
+        if (controller.isPengujiSempro.value) {
+          return TugasAkhirProposalTable(searchQuery: searchQuery);
+        } else {
+          return _buildAccessDenied();
+        }
+      });
     } else if (selectedTab == "Bimbingan") {
-      return TugasAkhirBimbinganTable(searchQuery: searchQuery);
+      // Hanya Dosen Pembimbing yang bisa melihat tab Bimbingan
+      if (mahasiswa.kategori_dosen == "bimbingan") {
+        return TugasAkhirBimbinganTable(searchQuery: searchQuery);
+      } else {
+        return _buildAccessDenied();
+      }
     } else {
-      return TugasAkhirSidangTable(searchQuery: searchQuery);
+      // Tab Sidang bisa diakses oleh Penguji maupun Pembimbing Sidang
+      return Obx(() {
+        if (controller.isLoadingSidang.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (controller.isPengujiSidang.value || controller.isPembimbingSidang.value) {
+          return TugasAkhirSidangTable(searchQuery: searchQuery);
+        } else {
+          return _buildAccessDenied();
+        }
+      });
     }
+  }
+
+  Widget _buildAccessDenied() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Icon(Icons.lock_outline, size: 80, color: Colors.grey.shade400),
+          // const SizedBox(height: 16),
+          Text(
+            "Maaf, halaman tidak tersedia",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Anda tidak memiliki akses ke tab ini.",
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey.shade500,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   //  BOTTOM NAVIGATION BAR ==================================================

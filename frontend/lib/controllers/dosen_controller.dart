@@ -59,7 +59,16 @@ class DosenController extends GetxController {
   void fetchJadwalSempro(int idMahasiswa) async {
     try {
       isLoadingSempro(true);
+      // Reset state
+      jadwalSempro.value = {};
+      hasilSempro.value = {};
+      catatanRevisi.value = {};
+      isPengujiSempro.value = false;
+      currentGrade.value = "";
+
       var data = await _service.getJadwalSempro(idMahasiswa);
+      if (data.isEmpty) return;
+
       jadwalSempro.value = data['jadwal'] ?? {};
       hasilSempro.value = data['hasil'] ?? {};
       catatanRevisi.value = data['catatan'] ?? {};
@@ -72,8 +81,6 @@ class DosenController extends GetxController {
         } else {
           currentGrade.value = hasilSempro['nilai_penguji_pendamping']?.toString() ?? "";
         }
-      } else {
-        currentGrade.value = "";
       }
     } catch (e) {
       print("Error fetching sempro: $e");
@@ -120,7 +127,16 @@ class DosenController extends GetxController {
   void fetchJadwalSidangTA(int idMahasiswa) async {
     try {
       isLoadingSidang(true);
+      // Reset state
+      jadwalSidangTA.value = {};
+      hasilSidangTA.value = {};
+      isPengujiSidang.value = false;
+      isPembimbingSidang.value = false;
+      currentGrade.value = "";
+
       var data = await _service.getJadwalSidang(idMahasiswa);
+      if (data.isEmpty) return;
+
       jadwalSidangTA.value = data['jadwal'] ?? {};
       hasilSidangTA.value = data['hasil'] ?? {};
       isPengujiSidang.value = data['is_penguji'] ?? false;
@@ -137,8 +153,6 @@ class DosenController extends GetxController {
         } else if (jadwalSidangTA['id_pembimbing_pendamping'] == idDosenLoggedIn.value) {
           currentGrade.value = hasilSidangTA['nilai_pembimbing_pendamping']?.toString() ?? "";
         }
-      } else {
-        currentGrade.value = "";
       }
     } catch (e) {
       print("Error fetching sidang TA: $e");

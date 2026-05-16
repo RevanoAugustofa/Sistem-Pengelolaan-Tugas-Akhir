@@ -19,16 +19,24 @@ class _TugasAkhirSidangTableState extends State<TugasAkhirSidangTable> {
   late Mahasiswa mahasiswa;
   final TextEditingController nilaiController = TextEditingController();
   final TextEditingController catatanController = TextEditingController();
+  Worker? _worker;
 
   @override
   void initState() {
     super.initState();
     mahasiswa = Get.arguments as Mahasiswa;
-    controller.fetchJadwalSidangTA(mahasiswa.id!);
+    // Data sudah di-fetch oleh parent saat cek akses
+    
+    _worker = ever(controller.currentGrade, (String grade) {
+      if (grade.isNotEmpty) {
+        nilaiController.text = grade;
+      }
+    });
   }
 
   @override
   void dispose() {
+    _worker?.dispose();
     nilaiController.dispose();
     catatanController.dispose();
     super.dispose();
@@ -44,11 +52,6 @@ class _TugasAkhirSidangTableState extends State<TugasAkhirSidangTable> {
       var jadwal = controller.jadwalSidangTA;
       if (jadwal.isEmpty) {
         return const Center(child: Text("Belum ada jadwal sidang TA"));
-      }
-
-      // Sync grade from controller
-      if (nilaiController.text.isEmpty && controller.currentGrade.value.isNotEmpty) {
-        nilaiController.text = controller.currentGrade.value;
       }
 
       String formattedDate = "-";

@@ -102,7 +102,23 @@ class _RekapNilaiKPPageState extends State<RekapNilaiKPPage> {
                 ),
               ),
               const SizedBox(height: 15),
-              Text("Filter - All (Total: ${filteredData.length})", style: const TextStyle(color: Colors.grey, fontSize: 13)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Filter - All (Total: ${filteredData.length})", style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                  ElevatedButton.icon(
+                    onPressed: _exportToExcel,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    icon: const Icon(Icons.file_download, size: 20),
+                    label: const Text("Export Excel", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
               const SizedBox(height: 20),
 
               Card(
@@ -123,18 +139,6 @@ class _RekapNilaiKPPageState extends State<RekapNilaiKPPage> {
                           ),
                           Row(
                             children: [
-                              ElevatedButton.icon(
-                                onPressed: _exportToExcel,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green,
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                ),
-                                icon: const Icon(Icons.file_download, size: 18),
-                                label: const Text("Export Excel", style: TextStyle(fontSize: 12)),
-                              ),
-                              const SizedBox(width: 10),
                               const Text("Show ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color.fromARGB(255, 79, 79, 79))),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8),

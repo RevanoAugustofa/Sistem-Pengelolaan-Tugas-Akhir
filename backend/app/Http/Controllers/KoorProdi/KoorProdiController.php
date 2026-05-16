@@ -140,7 +140,8 @@ class KoorProdiController extends Controller
             'jadwalSempro.pengujiUtama',
             'jadwalSempro.pengujiPendamping',
             'jadwalSidang.pengujiUtama',
-            'jadwalSidang.pengujiPendamping'
+            'jadwalSidang.pengujiPendamping',
+            'hasilAkhir'
         ]);
 
         if ($idProdi) {

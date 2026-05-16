@@ -62,4 +62,9 @@ class Mahasiswa extends Model
     {
         return $this->hasOne(DaftarSidangTA::class, 'id_mahasiswa')->latestOfMany();
     }
+
+    public function hasilAkhir()
+    {
+        return $this->hasOne(HasilAkhirTA::class, 'id_mahasiswa');
+    }
 }

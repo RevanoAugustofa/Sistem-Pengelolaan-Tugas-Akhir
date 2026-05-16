@@ -164,8 +164,8 @@ class _ImportDataMahasiswaPageState extends State<ImportDataMahasiswaPage> with 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FB), 
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(16, 168, 229, 1),
-        title: const Text("Import Mahasiswa", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: Color.fromARGB(255, 0, 149, 255),
+        title: const Text("Import Mahasiswa", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
         centerTitle: true,
         leading: IconButton(icon: const Icon(Icons.chevron_left, color: Colors.white, size: 30), onPressed: () => Get.back()),
       ),

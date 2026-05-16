@@ -290,7 +290,7 @@ class PdfPreviewPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        backgroundColor: const Color.fromRGBO(16, 168, 229, 1),
+        backgroundColor: Color.fromARGB(255, 0, 149, 255),
       ),
       body: Center(
         child: Column(

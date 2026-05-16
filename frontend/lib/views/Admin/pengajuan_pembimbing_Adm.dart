@@ -22,7 +22,7 @@ class _PengajuanPembimbingAdminPageState extends State<PengajuanPembimbingAdminP
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(16, 168, 229, 1),
+        backgroundColor: Color.fromARGB(255, 0, 149, 255),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.chevron_left, color: Colors.white, size: 30),

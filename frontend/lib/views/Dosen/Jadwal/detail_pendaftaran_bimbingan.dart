@@ -23,7 +23,7 @@ class DetailPendaftaranBimbinganView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Detail Pendaftaran Bimbingan"),
-        backgroundColor: const Color(0xFF1E3475),
+        backgroundColor: const Color.fromARGB(255, 0, 149, 255),
         foregroundColor: Colors.white,
       ),
       body: Obx(() {
@@ -40,7 +40,7 @@ class DetailPendaftaranBimbinganView extends StatelessWidget {
               const SizedBox(height: 24),
               const Text(
                 "Daftar Mahasiswa Mendaftar",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,),
               ),
               const SizedBox(height: 12),
               if (controller.listPendaftaranBimbingan.isEmpty)

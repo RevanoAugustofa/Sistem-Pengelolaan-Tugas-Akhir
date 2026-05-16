@@ -36,7 +36,7 @@ class DosenService {
   Future<List<TahunAjar>> getTahunAjar() async {
     final token = await _getToken();
     final response = await http.get(
-      Uri.parse("$baseUrl/admin/tahun-ajar"), // Reusing admin endpoint if possible, or we might need to add /dosen/tahun-ajar
+      Uri.parse("$baseUrl/dosen/tahun-ajar"),
       headers: {
         'Authorization': 'Bearer $token',
         'Accept': 'application/json',

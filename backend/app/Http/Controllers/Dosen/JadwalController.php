@@ -25,20 +25,21 @@ class JadwalController extends Controller
         }
 
         $jenisSidang = $request->query('jenis_sidang');
+        $prodiIds = $dosen->prodi->pluck('id');
 
         if ($jenisSidang === 'proposal') {
             $data = JadwalSempro::with(['mahasiswa.proposal', 'pengujiUtama', 'pengujiPendamping', 'ruangan'])
-                ->where('id_penguji_utama', $dosen->id)
-                ->orWhere('id_penguji_pendamping', $dosen->id)
+                ->whereHas('mahasiswa', function ($query) use ($prodiIds) {
+                    $query->whereIn('id_prodi', $prodiIds);
+                })
                 ->get();
         } elseif ($jenisSidang === 'bimbingan') {
             $data = JadwalBimbingan::where('id_dosen', $dosen->id)->get();
         } else {
-            $data = JadwalSidangTA::with(['mahasiswa.proposal', 'pengujiUtama', 'pengujiPendamping', 'ruangan'])
-                ->where('id_penguji_utama', $dosen->id)
-                ->orWhere('id_penguji_pendamping', $dosen->id)
-                ->orWhere('id_pembimbing_utama', $dosen->id)
-                ->orWhere('id_pembimbing_pendamping', $dosen->id)
+            $data = JadwalSidangTA::with(['mahasiswa.proposal', 'pengujiUtama', 'pengujiPendamping', 'pembimbingUtama', 'pembimbingPendamping', 'ruangan'])
+                ->whereHas('mahasiswa', function ($query) use ($prodiIds) {
+                    $query->whereIn('id_prodi', $prodiIds);
+                })
                 ->get();
         }
 

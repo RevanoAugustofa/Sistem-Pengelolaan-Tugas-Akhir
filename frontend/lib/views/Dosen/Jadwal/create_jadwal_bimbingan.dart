@@ -25,7 +25,7 @@ class _CreateJadwalBimbinganPageState extends State<CreateJadwalBimbinganPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(16, 168, 229, 1),
+        backgroundColor: const Color.fromARGB(255, 0, 149, 255),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.chevron_left, color: Colors.white, size: 30),
@@ -33,7 +33,7 @@ class _CreateJadwalBimbinganPageState extends State<CreateJadwalBimbinganPage> {
         ),
         title: const Text(
           "Tambah Jadwal Bimbingan",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),
@@ -202,7 +202,7 @@ class _CreateJadwalBimbinganPageState extends State<CreateJadwalBimbinganPage> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1E3475),
+                    backgroundColor: const Color.fromARGB(255, 45, 167, 255),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                   child: controller.isLoadingJadwal.value

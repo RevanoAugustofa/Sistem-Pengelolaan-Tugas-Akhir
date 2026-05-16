@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/dosen_controller.dart';
 import '../../../models/mahasiswa_model.dart';
+import 'widgets/filter_mahasiswa_modal.dart';
 
 class ListMahasiswaPage extends StatefulWidget {
   const ListMahasiswaPage({super.key});
@@ -61,25 +62,48 @@ class _ListMahasiswaPageState extends State<ListMahasiswaPage> {
                       onChanged: (value) {
                         controller.searchMahasiswa(value);
                       },
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: "Cari Mahasiswa...",
-                        hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                        prefixIcon: Icon(Icons.search, color: Colors.grey),
-                        suffixIcon: Icon(Icons.tune, color: Color(0xFF10A8E5)),
-                        contentPadding: EdgeInsets.symmetric(vertical: 14),
+                        hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+                        prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.tune, color: Color(0xFF10A8E5)),
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) => const FilterMahasiswaModal(),
+                            );
+                          },
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
                         border: InputBorder.none,
                       ),
                     ),
                   ),
                   const SizedBox(height: 15),
-                  const Text(
-                    "Menampilkan Mahasiswa Bimbingan",
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  Obx(() {
+                    String statusText = "Menampilkan Semua Mahasiswa";
+                    if (controller.selectedKategori.value == "bimbingan") {
+                      statusText = "Menampilkan Mahasiswa Bimbingan";
+                    } else if (controller.selectedKategori.value == "diuji") {
+                      statusText = "Menampilkan Mahasiswa Diuji";
+                    }
+
+                    if (controller.selectedTahunAjar.value.isNotEmpty) {
+                      statusText += " • TA ${controller.selectedTahunAjar.value}";
+                    }
+
+                    return Text(
+                      statusText,
+                      style: const TextStyle(
+                        color: Colors.black54,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),

@@ -5,6 +5,7 @@ import '../services/dosen_service.dart';
 import '../models/mahasiswa_model.dart';
 import '../models/logbook_model.dart';
 import '../models/daftar_bimbingan_model.dart';
+import '../models/tahun_ajar_model.dart';
 
 class DosenController extends GetxController {
   final DosenService _service = DosenService();
@@ -15,11 +16,18 @@ class DosenController extends GetxController {
   var listPendaftaranBimbingan = <DaftarBimbinganModel>[].obs;
   var listMahasiswa = <Mahasiswa>[].obs;
   var filteredMahasiswa = <Mahasiswa>[].obs;
+  var listTahunAjar = <TahunAjar>[].obs;
   var listLogbook = <LogbookBimbingan>[].obs;
   var isLoadingJadwal = false.obs;
   var isLoadingMahasiswa = false.obs;
   var isLoadingLogbook = false.obs;
   var isLoadingPendaftaran = false.obs;
+  var isLoadingTahunAjar = false.obs;
+
+  // Filter states
+  var searchQuery = "".obs;
+  var selectedKategori = "".obs; // 'bimbingan' or 'diuji'
+  var selectedTahunAjar = "".obs;
 
   // Sempro state
   var jadwalSempro = {}.obs;
@@ -45,6 +53,7 @@ class DosenController extends GetxController {
     fetchJadwalSidang();
     fetchJadwalBimbingan();
     fetchMahasiswa();
+    fetchTahunAjar();
   }
 
   void fetchJadwalSempro(int idMahasiswa) async {
@@ -159,7 +168,7 @@ class DosenController extends GetxController {
       isLoadingMahasiswa(true);
       var data = await _service.getMahasiswaBimbingan();
       listMahasiswa.assignAll(data);
-      filteredMahasiswa.assignAll(data);
+      applyFilter();
     } catch (e) {
       print("Error fetching mahasiswa: $e");
     } finally {
@@ -167,14 +176,49 @@ class DosenController extends GetxController {
     }
   }
 
-  void searchMahasiswa(String query) {
-    if (query.isEmpty) {
-      filteredMahasiswa.assignAll(listMahasiswa);
-    } else {
-      filteredMahasiswa.assignAll(listMahasiswa.where((m) =>
-          m.namaMahasiswa!.toLowerCase().contains(query.toLowerCase()) ||
-          m.npm!.toLowerCase().contains(query.toLowerCase())));
+  void fetchTahunAjar() async {
+    try {
+      isLoadingTahunAjar(true);
+      var data = await _service.getTahunAjar();
+      listTahunAjar.assignAll(data);
+    } catch (e) {
+      print("Error fetching tahun ajar: $e");
+    } finally {
+      isLoadingTahunAjar(false);
     }
+  }
+
+  void searchMahasiswa(String query) {
+    searchQuery.value = query;
+    applyFilter();
+  }
+
+  void setFilter({String? kategori, String? tahunAjar}) {
+    if (kategori != null) selectedKategori.value = kategori;
+    if (tahunAjar != null) selectedTahunAjar.value = tahunAjar;
+    applyFilter();
+  }
+
+  void resetFilter() {
+    selectedKategori.value = "";
+    selectedTahunAjar.value = "";
+    applyFilter();
+  }
+
+  void applyFilter() {
+    var filtered = listMahasiswa.where((m) {
+      bool matchesSearch = searchQuery.isEmpty ||
+          m.namaMahasiswa!.toLowerCase().contains(searchQuery.value.toLowerCase()) ||
+          m.npm!.toLowerCase().contains(searchQuery.value.toLowerCase());
+
+      bool matchesKategori = selectedKategori.isEmpty || m.kategori_dosen == selectedKategori.value;
+
+      bool matchesTahunAjar = selectedTahunAjar.isEmpty || m.angkatan == selectedTahunAjar.value;
+
+      return matchesSearch && matchesKategori && matchesTahunAjar;
+    }).toList();
+
+    filteredMahasiswa.assignAll(filtered);
   }
 
   void fetchJadwalProposal() async {

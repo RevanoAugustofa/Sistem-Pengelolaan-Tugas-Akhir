@@ -20,6 +20,7 @@ class MahasiswaController extends Controller
             ], 404);
         }
 
+        // Mahasiswa Bimbingan
         $mahasiswaBimbingan = PengajuanPembimbing::with(['mahasiswa.prodi', 'mahasiswa.tahunAjar', 'mahasiswa.user'])
             ->where(function ($query) use ($dosen) {
                 $query->where('id_pembimbing_utama', $dosen->id)
@@ -30,10 +31,38 @@ class MahasiswaController extends Controller
             ->map(function ($pengajuan) use ($dosen) {
                 $mahasiswa = $pengajuan->mahasiswa;
                 $mahasiswa->role_pembimbing = $pengajuan->id_pembimbing_utama == $dosen->id ? 'Utama' : 'Pendamping';
+                $mahasiswa->kategori_dosen = 'bimbingan';
                 return $mahasiswa;
             });
 
-        return response()->json($mahasiswaBimbingan);
+        // Mahasiswa Diuji (Sempro)
+        $mahasiswaDiujiSempro = \App\Models\JadwalSempro::with(['mahasiswa.prodi', 'mahasiswa.tahunAjar', 'mahasiswa.user'])
+            ->where('id_penguji_utama', $dosen->id)
+            ->orWhere('id_penguji_pendamping', $dosen->id)
+            ->get()
+            ->map(function ($jadwal) {
+                $mahasiswa = $jadwal->mahasiswa;
+                $mahasiswa->kategori_dosen = 'diuji';
+                return $mahasiswa;
+            });
+
+        // Mahasiswa Diuji (Sidang TA)
+        $mahasiswaDiujiSidang = \App\Models\JadwalSidangTA::with(['mahasiswa.prodi', 'mahasiswa.tahunAjar', 'mahasiswa.user'])
+            ->where('id_penguji_utama', $dosen->id)
+            ->orWhere('id_penguji_pendamping', $dosen->id)
+            ->get()
+            ->map(function ($jadwal) {
+                $mahasiswa = $jadwal->mahasiswa;
+                $mahasiswa->kategori_dosen = 'diuji';
+                return $mahasiswa;
+            });
+
+        // Merge and remove duplicates by student ID
+        $allMahasiswa = $mahasiswaBimbingan->concat($mahasiswaDiujiSempro)->concat($mahasiswaDiujiSidang);
+        
+        $uniqueMahasiswa = $allMahasiswa->unique('id')->values();
+
+        return response()->json($uniqueMahasiswa);
     }
 
     public function getJadwalSempro($id_mahasiswa)

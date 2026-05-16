@@ -12,6 +12,7 @@ class Mahasiswa {
   final String? jenisKelamin;
   final String? alamat;
   final String? role_pembimbing;
+  final String? kategori_dosen;
   final Proposal? proposal;
 
   var tahunAjar;
@@ -30,6 +31,7 @@ class Mahasiswa {
     this.jenisKelamin,
     this.alamat,
     this.role_pembimbing,
+    this.kategori_dosen,
     this.proposal,
   });
 
@@ -48,6 +50,7 @@ class Mahasiswa {
       jenisKelamin: json['jenis_kelamin'],
       alamat: json['alamat'],
       role_pembimbing: json['role_pembimbing'],
+      kategori_dosen: json['kategori_dosen'],
       proposal: json['proposal'] != null ? Proposal.fromJson(json['proposal']) : null,
     );
   }

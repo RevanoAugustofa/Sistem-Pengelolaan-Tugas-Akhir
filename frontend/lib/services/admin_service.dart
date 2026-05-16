@@ -11,6 +11,7 @@ import '../models/rubrik_nilai_model.dart';
 import '../models/proposal_model.dart';
 import '../models/pengajuan_pembimbing_model.dart';
 import '../models/jadwal_model.dart';
+import '../models/logbook_model.dart';
 import '../helpers/constants.dart';
 
 class AdminService {
@@ -369,6 +370,24 @@ class AdminService {
       return data.map((e) => PengajuanPembimbingModel.fromJson(e)).toList();
     }
     throw Exception("Gagal mengambil data pengajuan pembimbing");
+  }
+
+  // --- LOGBOOK ---
+  Future<List<LogbookBimbingan>> getLogbookMahasiswa(int idMahasiswa) async {
+    final token = await _getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/dosen/mahasiswa/$idMahasiswa/logbook"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body);
+      return data.map((e) => LogbookBimbingan.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data logbook");
   }
 
   // --- JADWAL ---

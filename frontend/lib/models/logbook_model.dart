@@ -1,3 +1,5 @@
+import 'dosen_model.dart';
+
 class LogbookBimbingan {
   final int? id;
   final int? idMahasiswa;
@@ -62,13 +64,15 @@ class DaftarBimbingan {
 class JadwalBimbinganDetail {
   final int? id;
   final String? waktuTanggal;
+  final Dosen? dosen;
 
-  JadwalBimbinganDetail({this.id, this.waktuTanggal});
+  JadwalBimbinganDetail({this.id, this.waktuTanggal, this.dosen});
 
   factory JadwalBimbinganDetail.fromJson(Map<String, dynamic> json) {
     return JadwalBimbinganDetail(
       id: json['id'],
       waktuTanggal: json['waktu_tanggal'],
+      dosen: json['dosen'] != null ? Dosen.fromJson(json['dosen']) : null,
     );
   }
 }

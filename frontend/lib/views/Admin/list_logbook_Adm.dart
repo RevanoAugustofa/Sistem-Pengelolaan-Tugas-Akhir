@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/admin_controller.dart';
 import '../../../models/mahasiswa_model.dart';
+import 'detail_logbook_Adm.dart';
 
 class LogbookAdminPage extends StatefulWidget {
   const LogbookAdminPage({super.key});
@@ -189,9 +190,7 @@ class _LogbookAdminPageState extends State<LogbookAdminPage> {
                                     DataCell(Text(mhs.angkatan ?? "-")),
                                     DataCell(
                                       ElevatedButton(
-                                        onPressed: () {
-                                          // TODO: Navigate to detail page
-                                        },
+                                        onPressed: () => Get.to(() => DetailLogbookAdminPage(mahasiswa: mhs)),
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.blue,
                                           minimumSize: const Size(70, 30),

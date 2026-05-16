@@ -10,6 +10,7 @@ import '../models/rubrik_nilai_model.dart';
 import '../models/proposal_model.dart';
 import '../models/pengajuan_pembimbing_model.dart';
 import '../models/jadwal_model.dart';
+import '../models/logbook_model.dart';
 import '../services/admin_service.dart';
 
 class AdminController extends GetxController {
@@ -38,6 +39,9 @@ class AdminController extends GetxController {
 
   var isLoadingProposal = false.obs;
   var listProposal = <ProposalWithMahasiswa>[].obs;
+
+  var isLoadingLogbook = false.obs;
+  var listLogbook = <LogbookBimbingan>[].obs;
 
   // --- REKAP ---
   var isLoadingRekap = false.obs;
@@ -448,6 +452,18 @@ class AdminController extends GetxController {
       print("Error fetchProposal: $e");
     } finally {
       isLoadingProposal(false);
+    }
+  }
+
+  void fetchLogbookMahasiswa(int idMahasiswa) async {
+    try {
+      isLoadingLogbook(true);
+      var data = await _service.getLogbookMahasiswa(idMahasiswa);
+      listLogbook.assignAll(data);
+    } catch (e) {
+      print("Error fetchLogbookMahasiswa: $e");
+    } finally {
+      isLoadingLogbook(false);
     }
   }
 }

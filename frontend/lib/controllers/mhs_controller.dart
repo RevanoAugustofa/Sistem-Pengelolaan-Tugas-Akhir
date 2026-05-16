@@ -29,6 +29,7 @@ class MhsController extends GetxController {
   var proposalTitle = "".obs;
   var proposalFile = "".obs;
   var listRevisi = <dynamic>[].obs;
+  var hasilSempro = {}.obs;
 
   // Mahasiswa Personal Info
   var mhsName = "".obs;
@@ -159,6 +160,13 @@ class MhsController extends GetxController {
         listRevisi.assignAll(data['revisi']);
       } else {
         listRevisi.clear();
+      }
+
+      // Update Sempro Result Data
+      if (data['hasil_sempro'] != null) {
+        hasilSempro.value = data['hasil_sempro'];
+      } else {
+        hasilSempro.value = {};
       }
     } catch (e) {
       print(e);

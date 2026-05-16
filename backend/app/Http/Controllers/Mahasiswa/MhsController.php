@@ -7,6 +7,7 @@ use App\Models\Dosen;
 use App\Models\PengajuanPembimbing;
 use App\Models\Proposal;
 use App\Models\JadwalSempro;
+use App\Models\HasilSempro;
 use App\Models\CatatanRevisiSempro;
 use App\Models\JadwalSidangTA;
 use App\Models\JadwalBimbingan;
@@ -22,6 +23,7 @@ class MhsController extends Controller
         $pengajuan = null;
         $proposal = null;
         $revisi = [];
+        $hasilSempro = null;
         
         if ($user->mahasiswa) {
             $pengajuan = PengajuanPembimbing::with([
@@ -37,6 +39,9 @@ class MhsController extends Controller
                 $revisi = CatatanRevisiSempro::with('dosen.user')
                     ->where('id_jadwal_sempro', $jadwalSempro->id)
                     ->get();
+
+                // Get Sempro Result
+                $hasilSempro = HasilSempro::where('id_jadwal_sempro', $jadwalSempro->id)->first();
             }
         }
 
@@ -47,6 +52,7 @@ class MhsController extends Controller
             'pengajuan' => $pengajuan,
             'proposal' => $proposal,
             'revisi' => $revisi,
+            'hasil_sempro' => $hasilSempro,
         ]);
     }
 

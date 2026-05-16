@@ -142,6 +142,97 @@ class TugasAkhirProposalMhsView extends StatelessWidget {
 
             const SizedBox(height: 20),
 
+            /// CARD HASIL SEMPRO
+            Obx(() {
+              var hasil = controller.hasilSempro;
+              if (hasil.isEmpty) return const SizedBox.shrink();
+
+              String status = hasil['status'] ?? "-";
+              String nilaiTotal = hasil['nilai_total']?.toString() ?? "0";
+              
+              Color statusColor = status.toLowerCase() == 'lulus' 
+                  ? Colors.green.shade700 
+                  : (status.toLowerCase() == 'tidak lulus' ? Colors.red.shade700 : Colors.orange.shade700);
+
+              return Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(18),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "Hasil Seminar Proposal",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: statusColor.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: statusColor),
+                                ),
+                                child: Text(
+                                  status.toUpperCase(),
+                                  style: TextStyle(
+                                    color: statusColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          const Divider(),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Nilai Total", style: TextStyle(color: Colors.grey)),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    "Berdasarkan akumulasi nilai penguji",
+                                    style: TextStyle(fontSize: 11, color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                              const Spacer(),
+                              Text(
+                                nilaiTotal,
+                                style: const TextStyle(
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF4A89FF),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+
             /// CARD CATATAN REVISI
             Obx(() {
               var listRevisi = controller.listRevisi;

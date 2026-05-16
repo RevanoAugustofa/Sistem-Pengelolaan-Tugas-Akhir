@@ -398,55 +398,107 @@ class TugasAkhirProposalMhsView extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            /// BERITA ACARA
-            const Center(
-              child: Text(
-                "Berita Acara Seminar Proposal",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
+            /// CARD AKSI (DOWNLOAD)
+            Obx(() {
+              var listRevisi = controller.listRevisi;
+              // Check if we have results or revisions to show these buttons
+              if (listRevisi.isEmpty && controller.hasilSempro.isEmpty) {
+                return const SizedBox.shrink();
+              }
 
-            const SizedBox(height: 14),
-
-            Container(
-              height: 320,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade500,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: const Center(
-                child: Text(
-                  "preview Berita Acara",
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+              return Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.grey.shade300),
                 ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4A89FF),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Dokumen & Catatan",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    // Button Catatan Revisi Penguji Utama
+                    _buildActionButton(
+                      label: "Catatan Revisi Penguji Utama",
+                      icon: Icons.description_outlined,
+                      onPressed: () {
+                        // Logic to download/view primary examiner revision
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    
+                    // Button Catatan Revisi Penguji Pendamping
+                    _buildActionButton(
+                      label: "Catatan Revisi Penguji Pendamping",
+                      icon: Icons.description_outlined,
+                      onPressed: () {
+                        // Logic to download/view secondary examiner revision
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    
+                    // Button Berita Acara
+                    _buildActionButton(
+                      label: "Berita Acara Seminar Proposal",
+                      icon: Icons.picture_as_pdf_outlined,
+                      color: const Color(0xFF4A89FF),
+                      isPrimary: true,
+                      onPressed: () {
+                        // Logic to download/view Berita Acara
+                      },
+                    ),
+                  ],
                 ),
-                child: const Text(
-                  "Unduh Berita Acara",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
+              );
+            }),
 
             const SizedBox(height: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required String label,
+    required IconData icon,
+    required VoidCallback onPressed,
+    Color? color,
+    bool isPrimary = false,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          backgroundColor: isPrimary ? (color ?? const Color(0xFF4A89FF)) : Colors.transparent,
+          side: BorderSide(color: color ?? (isPrimary ? Colors.transparent : Colors.grey.shade400)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 20, color: isPrimary ? Colors.white : (color ?? Colors.black87)),
+            const SizedBox(width: 5),
+            Text(
+              label,
+              style: TextStyle(
+                color: isPrimary ? Colors.white : (color ?? Colors.black87),
+                fontWeight: FontWeight.w500, fontSize: 12,
+              ),
+            ),
           ],
         ),
       ),

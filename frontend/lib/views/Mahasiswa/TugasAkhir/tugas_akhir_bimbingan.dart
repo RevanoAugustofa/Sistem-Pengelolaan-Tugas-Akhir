@@ -37,7 +37,7 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
               // ignore: unused_local_variable
               int logCount = controller.listLogbook.length;
               
-              if (controller.isLoadingJadwalBimbingan.value) {
+              if (controller.isLoadingJadwalBimbingan.value || controller.isLoadingDashboard.value) {
                 return const Center(
                   child: Padding(
                     padding: EdgeInsets.all(20.0),
@@ -46,9 +46,16 @@ class TugasAkhirBimbinganMhsView extends StatelessWidget {
                 );
               }
 
-              // Filter: Sembunyikan jadwal yang sudah lewat 24 jam
+              // Filter: Tampilkan hanya jadwal milik pembimbing mahasiswa & sembunyikan yang sudah lewat 24 jam
               final now = DateTime.now();
               final activeJadwal = controller.listJadwalBimbingan.where((jadwal) {
+                // Filter berdasarkan pembimbing (NIP)
+                bool isMySupervisor = (jadwal.dosen?.nip != null && 
+                  (jadwal.dosen?.nip == controller.nipUtama.value || 
+                   jadwal.dosen?.nip == controller.nipPendamping.value));
+                
+                if (!isMySupervisor) return false;
+
                 if (jadwal.waktuTanggal == null) return true;
                 try {
                   final scheduledTime = DateTime.parse(jadwal.waktuTanggal!);

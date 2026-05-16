@@ -25,14 +25,11 @@ class _JadwalBimbinganDosenTableState extends State<JadwalBimbinganDosenTable> {
         return const Center(child: CircularProgressIndicator());
       }
 
-      var filteredData = controller.listJadwalBimbingan.where((item) {
-        final query = widget.searchQuery.toLowerCase();
-        return (item.tempatLink?.toLowerCase().contains(query) ?? false) ||
-               (item.metodeBimbingan?.toLowerCase().contains(query) ?? false);
-      }).toList();
+      var filteredData = controller.filteredJadwalBimbingan;
 
       // Sort descending by ID (newest first)
-      filteredData.sort((a, b) => (b.id ?? 0).compareTo(a.id ?? 0));
+      // Note: We might want to do this in the controller's filter logic, but keeping it here for now if needed.
+      // However, it's better to sort listJadwalBimbingan when fetching.
       
       int startIndex = _currentPage * _rowsPerPage;
       int endIndex = startIndex + _rowsPerPage;

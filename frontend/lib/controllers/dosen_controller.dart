@@ -6,6 +6,7 @@ import '../models/mahasiswa_model.dart';
 import '../models/logbook_model.dart';
 import '../models/daftar_bimbingan_model.dart';
 import '../models/tahun_ajar_model.dart';
+import '../models/ruangan_model.dart';
 
 class DosenController extends GetxController {
   final DosenService _service = DosenService();
@@ -13,21 +14,35 @@ class DosenController extends GetxController {
   var listJadwalProposal = <JadwalModel>[].obs;
   var listJadwalSidang = <JadwalModel>[].obs;
   var listJadwalBimbingan = <JadwalModel>[].obs;
+  
+  var filteredJadwalProposal = <JadwalModel>[].obs;
+  var filteredJadwalSidang = <JadwalModel>[].obs;
+  var filteredJadwalBimbingan = <JadwalModel>[].obs;
+
   var listPendaftaranBimbingan = <DaftarBimbinganModel>[].obs;
   var listMahasiswa = <Mahasiswa>[].obs;
   var filteredMahasiswa = <Mahasiswa>[].obs;
   var listTahunAjar = <TahunAjar>[].obs;
+  var listRuangan = <Ruangan>[].obs;
   var listLogbook = <LogbookBimbingan>[].obs;
+  
   var isLoadingJadwal = false.obs;
   var isLoadingMahasiswa = false.obs;
   var isLoadingLogbook = false.obs;
   var isLoadingPendaftaran = false.obs;
   var isLoadingTahunAjar = false.obs;
+  var isLoadingRuangan = false.obs;
 
   // Filter states
   var searchQuery = "".obs;
   var selectedKategori = "".obs; // 'bimbingan' or 'diuji'
   var selectedTahunAjar = "".obs;
+  
+  // Schedule Filter states
+  var filterScheduleSearchQuery = "".obs;
+  var filterScheduleDate = "".obs;
+  var filterScheduleRuangan = "".obs;
+  var filterScheduleTahunAjar = "".obs;
 
   // Sempro state
   var jadwalSempro = {}.obs;
@@ -54,6 +69,7 @@ class DosenController extends GetxController {
     fetchJadwalBimbingan();
     fetchMahasiswa();
     fetchTahunAjar();
+    fetchRuangan();
   }
 
   void fetchJadwalSempro(int idMahasiswa) async {
@@ -235,11 +251,76 @@ class DosenController extends GetxController {
     filteredMahasiswa.assignAll(filtered);
   }
 
+  void fetchRuangan() async {
+    try {
+      isLoadingRuangan(true);
+      var data = await _service.getRuangan();
+      listRuangan.assignAll(data);
+    } catch (e) {
+      print("Error fetching ruangan: $e");
+    } finally {
+      isLoadingRuangan(false);
+    }
+  }
+
+  void searchSchedule(String query) {
+    filterScheduleSearchQuery.value = query;
+    applyScheduleFilter();
+  }
+
+  void setScheduleFilter({String? date, String? ruangan}) {
+    if (date != null) filterScheduleDate.value = date;
+    if (ruangan != null) filterScheduleRuangan.value = ruangan;
+    applyScheduleFilter();
+  }
+
+  void resetScheduleFilter() {
+    filterScheduleDate.value = "";
+    filterScheduleRuangan.value = "";
+    applyScheduleFilter();
+  }
+
+  void applyScheduleFilter() {
+    String query = filterScheduleSearchQuery.value.toLowerCase();
+
+    // Filter Proposal
+    filteredJadwalProposal.assignAll(listJadwalProposal.where((j) {
+      bool matchesSearch = query.isEmpty ||
+          (j.mahasiswa?.namaMahasiswa?.toLowerCase().contains(query) ?? false) ||
+          (j.mahasiswa?.npm?.toLowerCase().contains(query) ?? false);
+      bool matchesDate = filterScheduleDate.isEmpty || j.tanggal == filterScheduleDate.value;
+      bool matchesRuangan = filterScheduleRuangan.isEmpty || j.ruangan?.namaRuangan == filterScheduleRuangan.value;
+      bool matchesTahunAjar = filterScheduleTahunAjar.isEmpty || (j.mahasiswa?.angkatan == filterScheduleTahunAjar.value);
+      return matchesSearch && matchesDate && matchesRuangan && matchesTahunAjar;
+    }).toList());
+
+    // Filter Sidang
+    filteredJadwalSidang.assignAll(listJadwalSidang.where((j) {
+      bool matchesSearch = query.isEmpty ||
+          (j.mahasiswa?.namaMahasiswa?.toLowerCase().contains(query) ?? false) ||
+          (j.mahasiswa?.npm?.toLowerCase().contains(query) ?? false);
+      bool matchesDate = filterScheduleDate.isEmpty || j.tanggal == filterScheduleDate.value;
+      bool matchesRuangan = filterScheduleRuangan.isEmpty || j.ruangan?.namaRuangan == filterScheduleRuangan.value;
+      bool matchesTahunAjar = filterScheduleTahunAjar.isEmpty || (j.mahasiswa?.angkatan == filterScheduleTahunAjar.value);
+      return matchesSearch && matchesDate && matchesRuangan && matchesTahunAjar;
+    }).toList());
+
+    // Filter Bimbingan
+    filteredJadwalBimbingan.assignAll(listJadwalBimbingan.where((j) {
+      bool matchesSearch = query.isEmpty ||
+          (j.tempatLink?.toLowerCase().contains(query) ?? false) ||
+          (j.metodeBimbingan?.toLowerCase().contains(query) ?? false);
+      bool matchesDate = filterScheduleDate.isEmpty || (j.waktuTanggal != null && j.waktuTanggal!.startsWith(filterScheduleDate.value));
+      return matchesSearch && matchesDate;
+    }).toList());
+  }
+
   void fetchJadwalProposal() async {
     try {
       isLoadingJadwal(true);
       var data = await _service.getJadwal('proposal');
       listJadwalProposal.assignAll(data);
+      applyScheduleFilter();
     } catch (e) {
       print("Error fetching jadwal proposal: $e");
     } finally {
@@ -252,6 +333,7 @@ class DosenController extends GetxController {
       isLoadingJadwal(true);
       var data = await _service.getJadwal('sidang');
       listJadwalSidang.assignAll(data);
+      applyScheduleFilter();
     } catch (e) {
       print("Error fetching jadwal sidang: $e");
     } finally {
@@ -264,6 +346,7 @@ class DosenController extends GetxController {
       isLoadingJadwal(true);
       var data = await _service.getJadwal('bimbingan');
       listJadwalBimbingan.assignAll(data);
+      applyScheduleFilter();
     } catch (e) {
       print("Error fetching jadwal bimbingan: $e");
     } finally {

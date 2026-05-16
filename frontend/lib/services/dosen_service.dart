@@ -7,6 +7,7 @@ import '../models/mahasiswa_model.dart';
 import '../models/logbook_model.dart';
 import '../models/daftar_bimbingan_model.dart';
 import '../models/tahun_ajar_model.dart';
+import '../models/ruangan_model.dart';
 
 class DosenService {
   final String baseUrl = AppConstants.baseUrl;
@@ -48,6 +49,23 @@ class DosenService {
       return data.map((e) => TahunAjar.fromJson(e)).toList();
     }
     throw Exception("Gagal mengambil data tahun ajar");
+  }
+
+  Future<List<Ruangan>> getRuangan() async {
+    final token = await _getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/dosen/ruangan"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((e) => Ruangan.fromJson(e)).toList();
+    }
+    throw Exception("Gagal mengambil data ruangan");
   }
 
   Future<Map<String, dynamic>> getJadwalSempro(int idMahasiswa) async {

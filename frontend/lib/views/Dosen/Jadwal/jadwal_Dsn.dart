@@ -4,6 +4,7 @@ import '../../../controllers/dosen_controller.dart';
 import 'jadwal_proposal.dart';
 import 'jadwal_bimbingan.dart';
 import 'jadwal_sidang.dart';
+import 'widgets/filter_jadwal_modal.dart';
 
 class JadwalDosenPage extends StatefulWidget {
   const JadwalDosenPage({super.key});
@@ -16,14 +17,13 @@ class _JadwalDosenPageState extends State<JadwalDosenPage> {
   final DosenController controller = Get.put(DosenController());
   final TextEditingController searchController = TextEditingController();
   String selectedTab = "Proposal";
-  String searchQuery = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
-        backgroundColor: Color(0xFF2196F3),
+        backgroundColor: const Color(0xFF2196F3),
         automaticallyImplyLeading: false,
         elevation: 0,
         
@@ -59,21 +59,37 @@ class _JadwalDosenPageState extends State<JadwalDosenPage> {
               height: 50,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade400),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey.shade300),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: TextField(
                 controller: searchController,
                 onChanged: (value) {
-                  setState(() {
-                    searchQuery = value;
-                  });
+                  controller.searchSchedule(value);
                 },
-                decoration: const InputDecoration(
-                  hintText: "Cari Mahasiswa",
-                  hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                  suffixIcon: Icon(Icons.tune, color: Colors.blue),
-                  contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                decoration: InputDecoration(
+                  hintText: "Cari Mahasiswa...",
+                  hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.tune, color: Color(0xFF10A8E5)),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => FilterJadwalModal(selectedTab: selectedTab),
+                      );
+                    },
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
                   border: InputBorder.none,
                 ),
               ),
@@ -82,12 +98,30 @@ class _JadwalDosenPageState extends State<JadwalDosenPage> {
 
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 15, 20, 10),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Jadwal - $selectedTab TA",
-                style: const TextStyle(color: Colors.grey, fontSize: 13),
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Jadwal - $selectedTab TA",
+                  style: const TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.w500),
+                ),
+                Obx(() {
+                  if (controller.filterScheduleDate.value.isNotEmpty || controller.filterScheduleRuangan.value.isNotEmpty) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        "Filter Aktif",
+                        style: TextStyle(color: Colors.blue.shade700, fontSize: 10, fontWeight: FontWeight.bold),
+                      ),
+                    );
+                  }
+                  return const SizedBox();
+                }),
+              ],
             ),
           ),
 
@@ -107,11 +141,14 @@ class _JadwalDosenPageState extends State<JadwalDosenPage> {
 
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => selectedTab = title),
+        onTap: () {
+          setState(() => selectedTab = title);
+          controller.resetScheduleFilter();
+        },
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isActive ? Color.fromARGB(74, 0, 0, 0): Colors.transparent,
+            color: isActive ? Colors.black12 : Colors.transparent,
             borderRadius: BorderRadius.circular(25),
           ),
           child: Text(
@@ -130,11 +167,11 @@ class _JadwalDosenPageState extends State<JadwalDosenPage> {
   // --- SWITCH KONTEN ---
   Widget _buildTable() {
     if (selectedTab == "Proposal") {
-      return JadwalProposalDosenTable(searchQuery: searchQuery);
+      return const JadwalProposalDosenTable(searchQuery: "");
     } else if (selectedTab == "Bimbingan") {
-      return JadwalBimbinganDosenTable(searchQuery: searchQuery);
+      return const JadwalBimbinganDosenTable(searchQuery: "");
     } else {
-      return JadwalSidangDosenTable(searchQuery: searchQuery);
+      return const JadwalSidangDosenTable(searchQuery: "");
     }
   }
 

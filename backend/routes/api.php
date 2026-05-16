@@ -147,6 +147,7 @@ Route::middleware('auth:sanctum', 'role:koorprodi')->group(function () {
 
 Route::middleware('auth:sanctum', 'role:dosen')->group(function () {
     Route::get('/dosen/tahun-ajar', [TahunAjarController::class, 'index']);
+    Route::get('/dosen/ruangan', [RuanganController::class, 'index']);
     Route::get('/dosen/jadwal', [\App\Http\Controllers\Dosen\JadwalController::class, 'index']);
     Route::post('/dosen/jadwal', [\App\Http\Controllers\Dosen\JadwalController::class, 'store']);
     Route::get('/dosen/jadwal-bimbingan/{id}/pendaftaran', [\App\Http\Controllers\Dosen\JadwalController::class, 'pendaftaran']);

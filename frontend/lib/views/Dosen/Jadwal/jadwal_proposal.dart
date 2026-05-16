@@ -23,12 +23,7 @@ class _JadwalProposalDosenTableState extends State<JadwalProposalDosenTable> {
         return const Center(child: CircularProgressIndicator());
       }
 
-      var filteredData = controller.listJadwalProposal.where((item) {
-        final query = widget.searchQuery.toLowerCase();
-        return (item.mahasiswa?.namaMahasiswa?.toLowerCase().contains(query) ?? false) ||
-               (item.mahasiswa?.npm?.toLowerCase().contains(query) ?? false) ||
-               (item.ruangan?.namaRuangan?.toLowerCase().contains(query) ?? false);
-      }).toList();
+      var filteredData = controller.filteredJadwalProposal;
       
       int startIndex = _currentPage * _rowsPerPage;
       int endIndex = startIndex + _rowsPerPage;

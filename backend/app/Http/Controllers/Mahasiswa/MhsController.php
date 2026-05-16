@@ -64,7 +64,14 @@ class MhsController extends Controller
 
     public function jadwalSidang()
     {
-        $data = JadwalSidangTA::with(['mahasiswa.proposal', 'ruangan', 'pengujiUtama.user', 'pengujiPendamping.user'])->get();
+        $data = JadwalSidangTA::with([
+            'mahasiswa.proposal', 
+            'ruangan', 
+            'pengujiUtama.user', 
+            'pengujiPendamping.user',
+            'pembimbingUtama.user',
+            'pembimbingPendamping.user'
+        ])->get();
         return response()->json(['data' => $data]);
     }
 

@@ -67,9 +67,11 @@ class _JadwalMhsPageState extends State<JadwalMhsPage> {
                   });
                 },
                 decoration: const InputDecoration(
-                  hintText: "Cari nama mahasiswa...",
+                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                  hintText: "Cari jadwal...",
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                  suffixIcon: Icon(Icons.tune, color: Color(0xFF283D70)),
+                  
+                  // suffixIcon: Icon(Icons.tune, color: Color(0xFF283D70)),
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                   border: InputBorder.none,
@@ -78,16 +80,8 @@ class _JadwalMhsPageState extends State<JadwalMhsPage> {
             ),
           ),
 
-          const Padding(
-            padding: EdgeInsets.fromLTRB(20, 15, 20, 10),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Filter - All",
-                style: TextStyle(color: Colors.grey, fontSize: 13),
-              ),
-            ),
-          ),
+          const SizedBox(height: 20),
+
 
           // 3. Content Area
           Expanded(

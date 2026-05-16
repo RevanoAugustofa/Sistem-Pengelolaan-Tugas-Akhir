@@ -252,7 +252,7 @@ class DetailJadwalSidangModal extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () => Get.back(),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF283D70),
+                  backgroundColor: const Color.fromARGB(255, 81, 133, 255),
                   foregroundColor: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(

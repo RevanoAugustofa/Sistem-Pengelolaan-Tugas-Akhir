@@ -25,4 +25,14 @@ class CatatanRevisiSempro extends Model
     protected $casts = [
         'catatan_revisi' => 'array', // Automatically cast JSON to array
     ];
+
+    public function dosen()
+    {
+        return $this->belongsTo(Dosen::class, 'id_dosen');
+    }
+
+    public function jadwalSempro()
+    {
+        return $this->belongsTo(JadwalSempro::class, 'id_jadwal_sempro');
+    }
 }

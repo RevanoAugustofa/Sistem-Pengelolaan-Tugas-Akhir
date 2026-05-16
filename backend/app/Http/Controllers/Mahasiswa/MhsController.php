@@ -7,6 +7,7 @@ use App\Models\Dosen;
 use App\Models\PengajuanPembimbing;
 use App\Models\Proposal;
 use App\Models\JadwalSempro;
+use App\Models\CatatanRevisiSempro;
 use App\Models\JadwalSidangTA;
 use App\Models\JadwalBimbingan;
 use App\Models\DaftarBimbingan;
@@ -20,6 +21,7 @@ class MhsController extends Controller
         $user = $request->user()->load('mahasiswa.tahunAjar');
         $pengajuan = null;
         $proposal = null;
+        $revisi = [];
         
         if ($user->mahasiswa) {
             $pengajuan = PengajuanPembimbing::with([
@@ -28,6 +30,14 @@ class MhsController extends Controller
             ])->where('id_mahasiswa', $user->mahasiswa->id)->first();
             
             $proposal = $user->mahasiswa->proposal;
+
+            // Get Revision Notes
+            $jadwalSempro = JadwalSempro::where('id_mahasiswa', $user->mahasiswa->id)->first();
+            if ($jadwalSempro) {
+                $revisi = CatatanRevisiSempro::with('dosen.user')
+                    ->where('id_jadwal_sempro', $jadwalSempro->id)
+                    ->get();
+            }
         }
 
         return response()->json([
@@ -36,6 +46,7 @@ class MhsController extends Controller
             'user' => $user,
             'pengajuan' => $pengajuan,
             'proposal' => $proposal,
+            'revisi' => $revisi,
         ]);
     }
 

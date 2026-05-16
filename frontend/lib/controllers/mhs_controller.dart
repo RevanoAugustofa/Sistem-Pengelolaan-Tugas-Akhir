@@ -28,6 +28,7 @@ class MhsController extends GetxController {
   var nipPendamping = "".obs;
   var proposalTitle = "".obs;
   var proposalFile = "".obs;
+  var listRevisi = <dynamic>[].obs;
 
   // Mahasiswa Personal Info
   var mhsName = "".obs;
@@ -151,6 +152,13 @@ class MhsController extends GetxController {
       } else {
         proposalTitle.value = "";
         proposalFile.value = "";
+      }
+
+      // Update Revision Data
+      if (data['revisi'] != null) {
+        listRevisi.assignAll(data['revisi']);
+      } else {
+        listRevisi.clear();
       }
     } catch (e) {
       print(e);

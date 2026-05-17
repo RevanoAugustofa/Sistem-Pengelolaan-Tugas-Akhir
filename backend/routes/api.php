@@ -137,6 +137,9 @@ Route::middleware('auth:sanctum', 'role:koorprodi')->group(function () {
     Route::post('/koorprodi/jadwal', [JadwalController::class, 'store']);
     Route::put('/koorprodi/jadwal/{id}', [JadwalController::class, 'update']);
 
+    // Rekap for KoorProdi
+    Route::get('/koorprodi/rekap', [KoorProdiController::class, 'rekap']);
+
     // Daftar Sidang for KoorProdi
     Route::get('/koorprodi/daftar-sidang', [KoorProdiController::class, 'daftarSidang']);
 

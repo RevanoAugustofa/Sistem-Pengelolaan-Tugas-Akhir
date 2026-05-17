@@ -9,6 +9,7 @@ import '../models/mahasiswa_model.dart';
 import '../models/tahun_ajar_model.dart';
 import '../models/prodi_model.dart';
 import '../models/daftar_sidang_model.dart';
+import '../models/logbook_model.dart';
 import '../services/koorprodi_service.dart';
 
 class KoorProdiController extends GetxController {
@@ -56,6 +57,10 @@ class KoorProdiController extends GetxController {
   var listHasilSempro = <dynamic>[].obs;
   var listHasilSidang = <dynamic>[].obs;
   var isLoadingHasilAkhir = false.obs;
+
+  // Logbook states
+  var listLogbook = <LogbookBimbingan>[].obs;
+  var isLoadingLogbook = false.obs;
 
   // Pagination states
   int currentPage = 1;
@@ -647,6 +652,18 @@ class KoorProdiController extends GetxController {
       Get.snackbar("Error", "Gagal mengambil data hasil akhir: $e");
     } finally {
       isLoadingHasilAkhir(false);
+    }
+  }
+
+  void fetchLogbookMahasiswa(int idMahasiswa) async {
+    try {
+      isLoadingLogbook(true);
+      var data = await _service.getLogbookMahasiswa(idMahasiswa);
+      listLogbook.assignAll(data);
+    } catch (e) {
+      print("Error fetchLogbookMahasiswa: $e");
+    } finally {
+      isLoadingLogbook(false);
     }
   }
 }

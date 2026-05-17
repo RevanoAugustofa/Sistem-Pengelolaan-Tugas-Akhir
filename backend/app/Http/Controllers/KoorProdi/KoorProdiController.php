@@ -212,4 +212,37 @@ class KoorProdiController extends Controller
 
         return response()->json(['data' => $data]);
     }
+
+    public function rekap(Request $request)
+    {
+        $user = $request->user();
+        if (!$user->dosen) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $idProdi = $user->dosen->prodi()->first()?->id;
+
+        $query = \App\Models\Mahasiswa::with(['prodi', 'hasilAkhir']);
+
+        if ($idProdi) {
+            $query->where('id_prodi', $idProdi);
+        }
+
+        $mahasiswa = $query->get();
+
+        $data = $mahasiswa->map(function ($item) {
+            return [
+                'nim' => $item->nim,
+                'nama_mahasiswa' => $item->nama_mahasiswa,
+                'prodi' => [
+                    'nama_prodi' => $item->prodi->nama_prodi ?? '-',
+                ],
+                'hasil_akhir' => $item->hasilAkhir ? [
+                    'nilai_total' => $item->hasilAkhir->nilai_total,
+                ] : null,
+            ];
+        });
+
+        return response()->json(['data' => $data]);
+    }
 }

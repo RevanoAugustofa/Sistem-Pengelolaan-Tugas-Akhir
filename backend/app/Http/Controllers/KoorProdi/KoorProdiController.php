@@ -5,6 +5,7 @@ namespace App\Http\Controllers\KoorProdi;
 use App\Http\Controllers\Controller;
 use App\Models\PengajuanPembimbing;
 use App\Models\Dosen;
+use App\Services\FcmService;
 use Illuminate\Http\Request;
 
 class KoorProdiController extends Controller
@@ -112,10 +113,20 @@ class KoorProdiController extends Controller
             'status' => 'required|in:disetujui,diajukan',
         ]);
 
-        $pengajuan = PengajuanPembimbing::findOrFail($id);
+        $pengajuan = PengajuanPembimbing::with('mahasiswa.user')->findOrFail($id);
         $pengajuan->update([
             'status' => $request->status
         ]);
+
+        // Kirim Notifikasi ke Mahasiswa jika disetujui
+        if ($request->status === 'disetujui') {
+            FcmService::sendNotification(
+                $pengajuan->mahasiswa->user->id,
+                'Pengajuan Pembimbing Disetujui',
+                'Selamat! Pengajuan dosen pembimbing Anda telah disetujui oleh Koorprodi.',
+                ['type' => 'pengajuan_pembimbing', 'id' => $id]
+            );
+        }
 
         return response()->json([
             'message' => 'Validasi berhasil diperbarui',

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:device_preview/device_preview.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:frontend/views/Admin/DataDosen/index_dosen.dart';
 import 'package:frontend/views/Admin/DataMahasiswa/index_mahasiswa.dart';
 import 'package:frontend/views/Admin/DataProdi/index_prodi.dart';
@@ -65,14 +65,9 @@ import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   await initializeDateFormatting('id_ID', null);
-  // runApp(const MainApp());
-  runApp(
-  DevicePreview(
-    enabled: true,
-    builder: (context) => const MainApp(),
-  ),
-);
+  runApp(const MainApp());
 }
 
 class MainApp extends StatelessWidget {
@@ -81,9 +76,6 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  GetMaterialApp(
-      useInheritedMediaQuery: true,
-      locale: DevicePreview.locale(context),
-      builder: DevicePreview.appBuilder,
       title: "sistem Informasi Pengelolaan Tugas Akhir",
       theme: ThemeData(
         textTheme: GoogleFonts.poppinsTextTheme(

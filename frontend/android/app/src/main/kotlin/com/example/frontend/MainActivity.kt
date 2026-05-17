@@ -1,4 +1,4 @@
-package com.example.frontend
+package com.sipta.pnc
 
 import io.flutter.embedding.android.FlutterActivity
 

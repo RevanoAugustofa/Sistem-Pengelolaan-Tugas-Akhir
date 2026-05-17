@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::post('/update-password', [AuthController::class, 'updatePassword']);
+    Route::post('/update-fcm-token', [AuthController::class, 'updateFcmToken']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 

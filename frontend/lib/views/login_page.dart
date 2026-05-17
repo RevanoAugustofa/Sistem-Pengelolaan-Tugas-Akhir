@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
+import '../services/fcm_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -249,6 +250,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _navigateToDashboard(String role) {
+    // Inisialisasi FCM setelah login berhasil dan sebelum pindah halaman
+    FcmService.init();
+
     switch (role) {
       case 'mahasiswa':
         Get.offAllNamed('/dashboardMhs');

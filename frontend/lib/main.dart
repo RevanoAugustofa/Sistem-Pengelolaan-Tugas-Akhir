@@ -39,6 +39,7 @@ import 'package:frontend/views/KoorProdi/User_Kp.dart';
 import 'package:frontend/views/KoorProdi/ValidasiPembimbing/pengajuanPembimbing.dart';
 import 'package:frontend/views/KoorProdi/Mahasiswa/index_mahasiswa.dart' as kp_mhs;
 import 'package:frontend/views/KoorProdi/Mahasiswa/import_mahasiswa.dart' as kp_import_mhs;
+import 'package:frontend/views/KoorProdi/Dosen/import_dosen.dart' as kp_import_dsn;
 import 'package:frontend/views/KoorProdi/Dosen/index_dosen.dart' as kp_dsn;
 import 'package:frontend/views/KoorProdi/Ruangan/index_ruangan.dart' as kp_ruangan;
 import 'package:frontend/views/KoorProdi/RubrikNilai/index_rubrik_nilai.dart' as kp_rubrik;
@@ -149,6 +150,7 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/proposalKp', page: () => const ProposalKoorPage() ),
         GetPage(name: '/logbookKp', page: () => const LogbookKoorPage() ),
         GetPage(name: '/importDataMahasiswaKp', page: () => const kp_import_mhs.ImportDataMahasiswaPage()),
+        GetPage(name: '/importDataDosenKp', page: () => const kp_import_dsn.ImportDataDosenPage()),
         GetPage(name: '/importJadwalProposalKp', page: () => const ImportJadwalProposalPage() ),
         GetPage(name: '/importJadwalSidangKp', page: () => const ImportJadwalSidangPage() ),
         GetPage(name: '/pendaftaranSidangKp', page: () => const IndexPendaftarSidangPage() ),

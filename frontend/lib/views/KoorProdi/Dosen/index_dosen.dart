@@ -100,16 +100,30 @@ class _IndexDosenPageState extends State<IndexDosenPage> {
                 ),
                 const SizedBox(height: 15),
 
-                // 2. Button Tambah
+                // 2. Button Tambah & Import
                 Row(
                   children: [
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: () => Get.to(() => const CreateDosenPage()),
                         icon: const Icon(Icons.post_add, color: Colors.white, size: 20),
-                        label: const Text("Tambah Dosen", style: TextStyle(color: Colors.white, fontSize: 14)),
+                        label: const Text("Tambah", style: TextStyle(color: Colors.white, fontSize: 14)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF4CAF50),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 15),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () => Get.toNamed('/importDataDosenKp'),
+                        icon: const Icon(Icons.upload_file, color: Colors.white, size: 20),
+                        label: const Text("Import", style: TextStyle(color: Colors.white, fontSize: 14)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF4285F4),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 12),

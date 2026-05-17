@@ -9,7 +9,6 @@ import 'package:frontend/views/KoorProdi/Jadwal/import_jadwal_sidang.dart';
 import 'package:frontend/views/KoorProdi/Jadwal/jadwal_koor.dart';
 import 'package:frontend/views/KoorProdi/Proposal_Kp.dart';
 import 'package:frontend/views/KoorProdi/Logbook_Kp.dart';
-import 'package:frontend/views/KoorProdi/rekap_pembimbing_penguji.dart';
 import 'package:frontend/views/KoorProdi/Jadwal/import_jadwal_proposal.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:frontend/views/Admin/Data/DataUser_Admin.dart';
@@ -24,7 +23,6 @@ import 'package:frontend/views/Admin/Penilaian/rekap_Adm.dart';
 import 'package:frontend/views/Admin/Penilaian/rubrik_Adm.dart';
 import 'package:frontend/views/Admin/proposal_Adm.dart';
 import 'package:frontend/views/Admin/DosenProdi/index_dosen_prodi.dart';
-import 'package:frontend/views/Admin/rekapPembimbingPenguji_Adm.dart';
 import 'package:frontend/views/Admin/dashboard_Adm.dart';
 import 'package:frontend/views/Dosen/dashboard_Dsn.dart';
 import 'package:frontend/views/Dosen/detailProposal_Dsn.dart';
@@ -111,7 +109,6 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/pendaftaranSidangAdm', page: () => PendaftaranSidangAdminPage() ),
         GetPage(name: '/importDataMahasiswaAdm', page: () => ImportDataMahasiswaPage()),
         GetPage(name: '/importDataDosenAdm', page: () => ImportDataDosenPage()),
-        GetPage(name: '/rekapPembimbingPengujiAdm', page: () => const RekapPembimbingPengujiAdminPage()),
         GetPage(name: '/jadwalAdm', page: () => JadwalAdminPage()),
         GetPage(name: '/tahunAjaranAdm', page: () => const IndexTahunAjarPage() ),
         GetPage(name: '/dosenProdiAdm', page: () => const IndexDosenProdiPage() ),
@@ -151,7 +148,6 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/jadwalKp', page: () => const JadwalKoorPage() ),
         GetPage(name: '/proposalKp', page: () => const ProposalKoorPage() ),
         GetPage(name: '/logbookKp', page: () => const LogbookKoorPage() ),
-        GetPage(name: '/rekapPembimbingPengujiKp', page: () => const RekapPembimbingPengujiPage() ),
         GetPage(name: '/importDataMahasiswaKp', page: () => const kp_import_mhs.ImportDataMahasiswaPage()),
         GetPage(name: '/importJadwalProposalKp', page: () => const ImportJadwalProposalPage() ),
         GetPage(name: '/importJadwalSidangKp', page: () => const ImportJadwalSidangPage() ),

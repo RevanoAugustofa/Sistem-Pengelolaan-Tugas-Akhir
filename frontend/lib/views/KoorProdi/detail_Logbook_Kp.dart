@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const MaterialApp(
-    home: DetailLogbookPage(),
-    debugShowCheckedModeBanner: false,
-  ));
-}
+import 'package:get/get.dart';
+import '../../models/mahasiswa_model.dart';
+import '../../controllers/koorprodi_controller.dart';
 
 class DetailLogbookPage extends StatefulWidget {
-  const DetailLogbookPage({super.key});
+  final Mahasiswa mahasiswa;
+  const DetailLogbookPage({super.key, required this.mahasiswa});
 
   @override
   State<DetailLogbookPage> createState() => _DetailLogbookPageState();
@@ -16,11 +13,29 @@ class DetailLogbookPage extends StatefulWidget {
 
 class _DetailLogbookPageState extends State<DetailLogbookPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final KoorProdiController controller = Get.find<KoorProdiController>();
+  var logbookData = <dynamic>[].obs;
+  var isLoading = true.obs;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _fetchLogbook();
+  }
+
+  void _fetchLogbook() async {
+    try {
+      isLoading(true);
+      // Asumsi ada service untuk mengambil logbook berdasarkan ID mahasiswa
+      // Untuk sementara kita gunakan dummy atau placeholder jika service belum ada
+      // var data = await controller.fetchLogbookMahasiswa(widget.mahasiswa.id!);
+      // logbookData.assignAll(data);
+    } catch (e) {
+      print("Error fetch logbook: $e");
+    } finally {
+      isLoading(false);
+    }
   }
 
   @override
@@ -38,14 +53,14 @@ class _DetailLogbookPageState extends State<DetailLogbookPage> with SingleTicker
       appBar: AppBar(
         title: const Text(
           "Detail Logbook",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 0, 149, 255),
         elevation: 0,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1.0),
-          child: Container(color: Colors.grey.shade300, height: 1.0),
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, color: Colors.white, size: 30),
+          onPressed: () => Get.back(),
         ),
       ),
       body: SingleChildScrollView(
@@ -54,13 +69,13 @@ class _DetailLogbookPageState extends State<DetailLogbookPage> with SingleTicker
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // --- Section Info Mahasiswa ---
-            _buildInfoRow("nama mahasiswa", "Revano Augustofa"),
-            _buildInfoRow("NPM", "230102072"),
-            _buildInfoRow("Judul TA", "Sistem Informasi Pengelolaan Tugas Akhir"),
+            _buildInfoRow("nama mahasiswa", widget.mahasiswa.namaMahasiswa ?? "-"),
+            _buildInfoRow("NPM", widget.mahasiswa.npm ?? "-"),
+            _buildInfoRow("Judul TA", widget.mahasiswa.judulTa),
             
             const SizedBox(height: 12),
             
-            // Badge Belum Direkomendasikan
+            // Badge Status (Contoh: Menggunakan data dari mahasiswa)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
@@ -69,7 +84,7 @@ class _DetailLogbookPageState extends State<DetailLogbookPage> with SingleTicker
                 border: Border.all(color: primaryBlue.withOpacity(0.3)),
               ),
               child: const Text(
-                "Belum Direkomendasikan",
+                "Sedang Berjalan",
                 style: TextStyle(color: primaryBlue, fontSize: 12),
               ),
             ),
@@ -100,7 +115,7 @@ class _DetailLogbookPageState extends State<DetailLogbookPage> with SingleTicker
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Text(
-                "Total bimbingan : 3",
+                "Pilih tab untuk melihat riwayat bimbingan",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
@@ -108,10 +123,13 @@ class _DetailLogbookPageState extends State<DetailLogbookPage> with SingleTicker
 
             const SizedBox(height: 20),
 
-            // --- List Logbook Entries ---
-            _buildLogItem("Jumat 23 Juli 2026"),
-            _buildLogItem("Jumat 23 Juli 2026"),
-            _buildLogItem("Jumat 23 Juli 2026"),
+            // --- List Logbook Entries (Placeholder) ---
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Text("Data bimbingan detail akan muncul di sini", style: TextStyle(color: Colors.grey)),
+              ),
+            ),
           ],
         ),
       ),
@@ -130,57 +148,6 @@ class _DetailLogbookPageState extends State<DetailLogbookPage> with SingleTicker
             TextSpan(text: value),
           ],
         ),
-      ),
-    );
-  }
-
-  // Widget Helper untuk Item Logbook
-  Widget _buildLogItem(String date) {
-    const primaryBlue = Color(0xFF2196F3);
-    
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                date,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-              ),
-              OutlinedButton(
-                onPressed: () {},
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: primaryBlue),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                child: const Text(
-                  "lihat file",
-                  style: TextStyle(color: primaryBlue, fontSize: 12),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          // Box Konten Log (TextField/Area Kosong)
-          Container(
-            height: 60,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.shade200),
-            ),
-          ),
-        ],
       ),
     );
   }

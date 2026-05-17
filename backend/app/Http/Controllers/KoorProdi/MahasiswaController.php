@@ -28,7 +28,14 @@ class MahasiswaController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $mahasiswa = Mahasiswa::with(['user', 'prodi', 'tahunAjar', 'proposal'])
+        $mahasiswa = Mahasiswa::with([
+            'user', 
+            'prodi', 
+            'tahunAjar', 
+            'proposal', 
+            'pengajuanPembimbing.pembimbingUtama', 
+            'pengajuanPembimbing.pembimbingPendamping'
+        ])
             ->where('id_prodi', $idProdi)
             ->get();
         return response()->json(['data' => $mahasiswa]);

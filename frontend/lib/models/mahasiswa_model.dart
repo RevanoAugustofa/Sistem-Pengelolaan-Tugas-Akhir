@@ -14,6 +14,7 @@ class Mahasiswa {
   final String? role_pembimbing;
   final String? kategori_dosen;
   final Proposal? proposal;
+  final dynamic pengajuanPembimbing;
 
   var tahunAjar;
 
@@ -33,6 +34,7 @@ class Mahasiswa {
     this.role_pembimbing,
     this.kategori_dosen,
     this.proposal,
+    this.pengajuanPembimbing,
   });
 
   factory Mahasiswa.fromJson(Map<String, dynamic> json) {
@@ -52,8 +54,13 @@ class Mahasiswa {
       role_pembimbing: json['role_pembimbing'],
       kategori_dosen: json['kategori_dosen'],
       proposal: json['proposal'] != null ? Proposal.fromJson(json['proposal']) : null,
+      pengajuanPembimbing: json['pengajuan_pembimbing'],
     );
   }
+
+  String get pembimbingUtama => pengajuanPembimbing?['pembimbing_utama']?['nama_dosen'] ?? "-";
+  String get pembimbingPendamping => pengajuanPembimbing?['pembimbing_pendamping']?['nama_dosen'] ?? "-";
+  String get judulTa => proposal?.judulProposal ?? "-";
 
   Map<String, dynamic> toJson() {
     return {

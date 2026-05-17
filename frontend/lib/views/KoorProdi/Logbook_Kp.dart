@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/koorprodi_controller.dart';
+import 'detail_Logbook_Kp.dart';
 
 class LogbookKoorPage extends StatefulWidget {
   const LogbookKoorPage({super.key});
@@ -129,15 +130,12 @@ class _LogbookKoorPageState extends State<LogbookKoorPage> {
                                 DataCell(Text("${startIndex + index + 1}")),
                                 DataCell(Text(mhs.npm ?? "-")),
                                 DataCell(Text(mhs.namaMahasiswa ?? "-")),
-                                DataCell(Text(mhs.namaMahasiswa ?? "-")),
-                                DataCell(Text(mhs.namaMahasiswa ?? "-")),
+                                DataCell(Text(mhs.pembimbingUtama)),
+                                DataCell(Text(mhs.pembimbingPendamping)),
                                 DataCell(Text(mhs.prodi ?? "-")),
                                 DataCell(
                                   ElevatedButton(
-                                    onPressed: () {
-                                      // Logika untuk melihat detail logbook mahasiswa tertentu
-                                      Get.snackbar("Info", "Fitur Detail Logbook ${mhs.namaMahasiswa} sedang dikembangkan");
-                                    },
+                                    onPressed: () => Get.to(() => DetailLogbookPage(mahasiswa: mhs)),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.blue,
                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),

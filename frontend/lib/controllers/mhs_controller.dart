@@ -36,6 +36,15 @@ class MhsController extends GetxController {
   var mhsNpm = "".obs;
   var mhsAngkatan = "".obs;
 
+  bool get isEligibleForSidang {
+    return listLogbook.any((log) => 
+      log.rekomPembimbingUtama != null && 
+      log.rekomPembimbingUtama!.isNotEmpty &&
+      log.rekomPembimbingPendamping != null && 
+      log.rekomPembimbingPendamping!.isNotEmpty
+    );
+  }
+
   @override
   void onInit() {
     super.onInit();

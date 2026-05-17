@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../controllers/mhs_controller.dart';
 import 'form_daftar_sidang_ta.dart';
 
 class TugasAkhirSidangMhsView extends StatelessWidget {
@@ -7,6 +8,8 @@ class TugasAkhirSidangMhsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MhsController controller = Get.find<MhsController>();
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -44,29 +47,67 @@ class TugasAkhirSidangMhsView extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Get.to(() => const FormDaftarSidangView());
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF4A89FF),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                Obx(() {
+                  bool isEligible = controller.isEligibleForSidang;
+                  
+                  return Column(
+                    children: [
+                      if (!isEligible)
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.shade50,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.orange.shade200),
+                          ),
+                          child: const Row(
+                            children: [
+                              Icon(Icons.info_outline, color: Colors.orange, size: 20),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  "Anda belum mendapatkan rekomendasi sidang dari Pembimbing Utama dan Pendamping.",
+                                  style: TextStyle(fontSize: 12, color: Colors.orange, fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: isEligible
+                              ? () => Get.to(() => const FormDaftarSidangView())
+                              : () {
+                                  Get.snackbar(
+                                    "Akses Ditolak",
+                                    "Anda harus mendapatkan rekomendasi dari kedua pembimbing di logbook bimbingan terlebih dahulu.",
+                                    backgroundColor: Colors.red.withOpacity(0.8),
+                                    colorText: Colors.white,
+                                    margin: const EdgeInsets.all(20),
+                                  );
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isEligible ? const Color(0xFF4A89FF) : Colors.grey.shade400,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text(
+                            "Daftar Sidang TA",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    child: const Text(
-                      "Daftar Sidang TA",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
+                    ],
+                  );
+                }),
               ],
             ),
           ),

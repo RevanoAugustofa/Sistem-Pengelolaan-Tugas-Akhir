@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/koorprodi_controller.dart';
 import '../../../models/pengajuan_pembimbing_model.dart';
+import '../../../helpers/rekap_export_helper.dart';
 import 'components/filter_pengajuan.dart';
 
 class PengajuanPembimbing extends StatefulWidget {
@@ -192,9 +193,21 @@ class _VPengajuanPembimbingState extends State<PengajuanPembimbing> {
                         ],
                       ),
                       TextButton.icon(
-                        onPressed: () {
-                          Get.snackbar("Info", "Fitur Eksport sedang disiapkan",
-                              backgroundColor: Colors.blue.withOpacity(0.8), colorText: Colors.white);
+                        onPressed: () async {
+                          if (controller.listPengajuan.isEmpty) {
+                            Get.snackbar("Info", "Tidak ada data untuk dieksport",
+                                backgroundColor: Colors.orange.withOpacity(0.8), colorText: Colors.white);
+                            return;
+                          }
+                          try {
+                            Get.snackbar("Info", "Sedang menyiapkan data excel...",
+                                backgroundColor: Colors.blue.withOpacity(0.8), colorText: Colors.white,
+                                duration: const Duration(seconds: 1));
+                            await RekapExportHelper.exportPengajuanPembimbing(controller.listPengajuan);
+                          } catch (e) {
+                            Get.snackbar("Error", "Gagal export excel: $e",
+                                backgroundColor: Colors.red, colorText: Colors.white);
+                          }
                         },
                         icon: const Icon(Icons.download, size: 18, color: Colors.green),
                         label: const Text(

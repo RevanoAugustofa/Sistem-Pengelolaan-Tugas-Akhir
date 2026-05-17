@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/koorprodi_controller.dart';
+import '../../../helpers/rekap_export_helper.dart';
 import 'edit_jadwal_sidang.dart';
 
 class SidangTable extends StatefulWidget {
@@ -78,23 +79,55 @@ class _SidangTableState extends State<SidangTable> {
               ),
               const SizedBox(height: 15),
 
-              // 2. Button Import
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton.icon(
-                  onPressed: () => Get.toNamed('/importJadwalSidangKp'),
-                  icon: const Icon(Icons.upload_file, color: Colors.white, size: 20),
-                  label: const Text(
-                    "Import Jadwal Sidang",
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+              // 2. Buttons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      if (filteredData.isEmpty) {
+                        Get.snackbar("Info", "Tidak ada data untuk dieksport",
+                            backgroundColor: Colors.orange.withOpacity(0.8), colorText: Colors.white);
+                        return;
+                      }
+                      try {
+                        Get.snackbar("Info", "Sedang menyiapkan data excel...",
+                            backgroundColor: Colors.blue.withOpacity(0.8), colorText: Colors.white,
+                            duration: const Duration(seconds: 1));
+                        await RekapExportHelper.exportJadwalSidang(filteredData);
+                      } catch (e) {
+                        Get.snackbar("Error", "Gagal export excel: $e",
+                            backgroundColor: Colors.red, colorText: Colors.white);
+                      }
+                    },
+                    icon: const Icon(Icons.download, color: Colors.white, size: 20),
+                    label: const Text(
+                      "Export",
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  const SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    onPressed: () => Get.toNamed('/importJadwalSidangKp'),
+                    icon: const Icon(Icons.upload_file, color: Colors.white, size: 20),
+                    label: const Text(
+                      "Import",
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    ),
                   ),
-                ),
+                ],
               ),
               const SizedBox(height: 20),
 

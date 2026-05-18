@@ -50,12 +50,9 @@ class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
       body: Column(
         children: [
 
-          _buildInfoMahasiswa(),
-
-
           // --- TAB BAR ---
           Container(
-            margin: const EdgeInsets.all(20),
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
               color: const Color.fromARGB(255, 0, 149, 255),
@@ -70,105 +67,12 @@ class _TugasAkhirDosenPageState extends State<TugasAkhirDosenPage> {
             ),
           ),
 
-          // 1. Search Bar
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 20),
-          //   child: Container(
-          //     height: 50,
-          //     decoration: BoxDecoration(
-          //       color: Colors.white,
-          //       borderRadius: BorderRadius.circular(8),
-          //       border: Border.all(color: Colors.grey.shade400),
-          //     ),
-          //     child: TextField(
-          //       controller: searchController,
-          //       onChanged: (value) {
-          //         setState(() {
-          //           searchQuery = value;
-          //         });
-          //       },
-          //       decoration: const InputDecoration(
-          //         hintText: "Cari Mahasiswa",
-          //         hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-          //         suffixIcon: Icon(Icons.tune, color: Colors.blue),
-          //         contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-          //         border: InputBorder.none,
-          //       ),
-          //     ),
-          //   ),
-          // ),
-
-          // const Padding(
-          //   padding: EdgeInsets.fromLTRB(20, 15, 20, 10),
-          //   child: Align(
-          //     alignment: Alignment.centerLeft,
-          //     child: Text(
-          //       "Filter - All",
-          //       style: TextStyle(color: Colors.grey, fontSize: 13),
-          //     ),
-          //   ),
-          // ),
-
           // --- TABLE / LIST AREA ---
           Expanded(
             child: _buildContent(),
           ),
         ],
       ),
-      // bottomNavigationBar: _buildBottomNav(),
-    );
-  }
-
-  // --- WIDGET BARU: INFO MAHASISWA ---
-  Widget _buildInfoMahasiswa() {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Column(
-        children: [
-          _buildDetailRow("NPM", mahasiswa.npm ?? "-"),
-          const SizedBox(height: 10),
-          _buildDetailRow("Nama", mahasiswa.namaMahasiswa ?? "-"),
-          const SizedBox(height: 10),
-          // Khusus untuk Judul TA, kita buat Row manual agar teksnya bisa underline dan multiline dengan baik
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 80, // Lebar tetap untuk label
-                child: Text("Judul TA", style: TextStyle(color: Colors.grey.shade800)),
-              ),
-              Expanded(
-                child: Text(
-                  mahasiswa.proposal?.judulProposal ?? "Belum ada judul",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline, // Menambahkan garis bawah (underline)
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Widget Helper untuk Baris Info Mahasiswa biasa
-  Widget _buildDetailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 80, // Memberikan lebar tetap (fixed width) untuk kolom Label agar rapi
-          child: Text(label, style: TextStyle(color: Colors.grey.shade800)),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
     );
   }
 

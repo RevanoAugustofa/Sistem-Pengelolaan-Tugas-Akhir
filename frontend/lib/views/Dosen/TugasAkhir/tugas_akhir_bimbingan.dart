@@ -41,10 +41,14 @@ class _TugasAkhirBimbinganTableState extends State<TugasAkhirBimbinganTable> {
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              _buildInfoMahasiswa(),
+              // const SizedBox(height: 24),
+              // const Divider(thickness: 1, color: Colors.grey),
+              const SizedBox(height: 20),
               const Text(
                 "Logbook",
                 style: TextStyle(
@@ -330,6 +334,100 @@ class _TugasAkhirBimbinganTableState extends State<TugasAkhirBimbinganTable> {
       );
     }
   }
+
+Widget _buildInfoMahasiswa() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Bagian Atas: Avatar, Nama, dan NPM
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 24,
+                  backgroundColor: const Color(0xFF6CB5FF), // Warna biru muda sesuai gambar
+                  // Opsional: Jika ingin menampilkan inisial nama jika avatar kosong
+                  // child: Text(
+                  //   mahasiswa.namaMahasiswa?.isNotEmpty == true
+                  //       ? mahasiswa.namaMahasiswa![0].toUpperCase()
+                  //       : "-",
+                  //   style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  // ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        mahasiswa.namaMahasiswa ?? "-",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        mahasiswa.npm ?? "-",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Bagian Bawah: Judul Proposal
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200, // Latar belakang abu-abu untuk judul
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(12),
+                bottomRight: Radius.circular(12),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Judul Proposal",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  mahasiswa.proposal?.judulProposal ?? "Belum ada judul",
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black87,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
 
   void _showEditPermasalahanDialog(int idLog, {String? existingCatatan}) {
     final TextEditingController catatanController = TextEditingController(

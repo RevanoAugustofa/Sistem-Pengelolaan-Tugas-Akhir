@@ -60,6 +60,8 @@ class _TugasAkhirProposalTableState extends State<TugasAkhirProposalTable> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _buildInfoMahasiswa(),
+            const SizedBox(height: 20),
             _buildJadwalCard(jadwal),
             const SizedBox(height: 24),
             const Divider(thickness: 1, color: Colors.grey),
@@ -296,6 +298,53 @@ class _TugasAkhirProposalTableState extends State<TugasAkhirProposalTable> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildInfoMahasiswa() {
+    return Column(
+      children: [
+        _buildDetailRow("NPM", mahasiswa.npm ?? "-"),
+        const SizedBox(height: 10),
+        _buildDetailRow("Nama", mahasiswa.namaMahasiswa ?? "-"),
+        const SizedBox(height: 10),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 80,
+              child: Text("Judul TA", style: TextStyle(color: Colors.grey.shade800)),
+            ),
+            Expanded(
+              child: Text(
+                mahasiswa.proposal?.judulProposal ?? "Belum ada judul",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 80,
+          child: Text(label, style: TextStyle(color: Colors.grey.shade800)),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
     );
   }
 

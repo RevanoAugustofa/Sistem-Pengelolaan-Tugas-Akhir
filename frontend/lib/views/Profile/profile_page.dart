@@ -42,40 +42,54 @@ class ProfilPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 40),
-            // 1. Header Profil (Foto & Nama)
-            Center(
-              child: Column(
+            const SizedBox(height: 10),
+            // 1. Header Profil (Foto & Nama) - Horizontal Layout
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              child: Row(
                 children: [
                   CircleAvatar(
-                    radius: 50,
+                    radius: 40,
                     backgroundColor: Colors.grey.shade300,
                     child: const Icon(
                       Icons.person,
-                      size: 50,
+                      size: 40,
                       color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  Obx(
-                    () => Text(
-                      controller.userName.value,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Obx(
-                    () => Text(
-                      controller.userId.value,
-                      style: const TextStyle(color: Colors.grey, fontSize: 14),
+                  const SizedBox(width: 15),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Obx(
+                          () => Text(
+                            controller.userName.value,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF283D70),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Obx(
+                          () => Text(
+                            controller.userId.value,
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 14,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 40),
+            Divider(color: Colors.grey.shade200, thickness: 2),
 
             // 2. Daftar Menu Profil
             _buildMenuItem(

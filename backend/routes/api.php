@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Enums\UserRole;
+use App\Http\Controllers\Api\NotifikasiController;
 use App\Http\Controllers\Mahasiswa\MhsController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TahunAjarController;
@@ -23,6 +24,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-password', [AuthController::class, 'updatePassword']);
     Route::post('/update-fcm-token', [AuthController::class, 'updateFcmToken']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/notifications', [NotifikasiController::class, 'index']);
+    Route::delete('/notifications/{id}', [NotifikasiController::class, 'destroy']);
 });
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {

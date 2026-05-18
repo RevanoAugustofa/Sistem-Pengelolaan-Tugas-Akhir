@@ -7,6 +7,8 @@ use App\Models\JadwalSempro;
 use App\Models\JadwalSidangTA;
 use App\Models\JadwalBimbingan;
 use App\Models\DaftarBimbingan;
+use App\Models\PengajuanPembimbing;
+use App\Services\FcmService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -62,6 +64,26 @@ class JadwalController extends Controller
         $data['id_dosen'] = $dosen->id;
 
         $jadwal = JadwalBimbingan::create($data);
+
+        // Kirim Notifikasi ke Mahasiswa Bimbingan
+        $pembimbingan = PengajuanPembimbing::where(function($query) use ($dosen) {
+            $query->where('id_pembimbing_utama', $dosen->id)
+                  ->orWhere('id_pembimbing_pendamping', $dosen->id);
+        })
+        ->where('status', 'disetujui')
+        ->with('mahasiswa.user')
+        ->get();
+
+        foreach ($pembimbingan as $p) {
+            if ($p->mahasiswa && $p->mahasiswa->user) {
+                FcmService::sendNotification(
+                    $p->mahasiswa->user->id,
+                    'Jadwal Bimbingan Baru',
+                    "Dosen {$dosen->nama_dosen} telah menambahkan jadwal bimbingan baru untuk tanggal " . \Carbon\Carbon::parse($jadwal->waktu_tanggal)->format('d M Y H:i'),
+                    ['type' => 'jadwal_bimbingan', 'id_jadwal' => $jadwal->id]
+                );
+            }
+        }
 
         return response()->json([
             'status' => 'success',

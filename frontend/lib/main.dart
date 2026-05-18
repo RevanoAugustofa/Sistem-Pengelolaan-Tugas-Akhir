@@ -59,6 +59,7 @@ import 'package:frontend/views/Mahasiswa/dashboard_Mhs.dart';
 import 'package:frontend/views/login_page.dart';
 import 'package:frontend/views/splash_page.dart';
 import 'package:frontend/views/KoorProdi/pendaftar_sidang.dart';
+import 'package:frontend/services/fcm_service.dart';
 import 'package:get/get.dart';
 
 import 'package:intl/date_symbol_data_local.dart';
@@ -66,6 +67,7 @@ import 'package:intl/date_symbol_data_local.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FcmService.init();
   await initializeDateFormatting('id_ID', null);
   runApp(const MainApp());
 }

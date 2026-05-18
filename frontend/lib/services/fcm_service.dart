@@ -11,7 +11,8 @@ class FcmService {
 
   static Future<void> init() async {
     print("FCM: Initializing...");
-    // 1. Request Permission
+    
+    // 1. Request Permission (iOS & Android 13+)
     NotificationSettings settings = await _messaging.requestPermission(
       alert: true,
       badge: true,
@@ -27,12 +28,51 @@ class FcmService {
         if (token != null) {
           print("FCM Token Found: $token");
           await _saveTokenToBackend(token);
-        } else {
-          print("FCM Token is NULL");
         }
       } catch (e) {
         print("FCM Error getting token: $e");
       }
+    }
+
+    // 3. Initialize Local Notifications (for Foreground)
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    
+    await _localNotifications.initialize(initializationSettings);
+
+    // 4. Listeners
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("FCM: Received message in foreground: ${message.notification?.title}");
+      _showLocalNotification(message);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("FCM: Notification clicked: ${message.notification?.title}");
+      // Navigate if needed: Get.toNamed('/notifikasi');
+    });
+  }
+
+  static void _showLocalNotification(RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+
+    if (notification != null && android != null) {
+      _localNotifications.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'high_importance_channel', // id
+            'High Importance Notifications', // title
+            importance: Importance.max,
+            priority: Priority.high,
+            icon: '@mipmap/ic_launcher',
+          ),
+        ),
+      );
     }
   }
 

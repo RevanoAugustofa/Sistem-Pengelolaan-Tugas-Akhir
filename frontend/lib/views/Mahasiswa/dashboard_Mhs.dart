@@ -2,15 +2,20 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../../controllers/profile_controller.dart';
 import '../../controllers/mhs_controller.dart';
+import '../../controllers/notification_controller.dart';
 
 class DashboardMhs extends StatelessWidget {
   DashboardMhs({super.key});
 
   final ProfileController profileController = Get.put(ProfileController());
   final MhsController mhsController = Get.put(MhsController());
+  final NotificationController notificationController = Get.put(NotificationController());
 
   @override
   Widget build(BuildContext context) {
+    // Refresh notifications every time dashboard is built/visited
+    notificationController.fetchNotifications();
+    
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FB),
       body: Stack(
@@ -54,17 +59,33 @@ class DashboardMhs extends StatelessWidget {
                                 color: Colors.blue,
                                 size: 20,
                               ),
-                              Positioned(
-                                right: -2,
-                                top: -2,
-                                child: Container(
-                                  width: 8,
-                                  height: 8,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.orange,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
+                              Obx(() => notificationController.unreadCount.value > 0
+                                ? Positioned(
+                                    right: -2,
+                                    top: -2,
+                                    child: Container(
+                                      width: 10,
+                                      height: 10,
+                                      decoration: BoxDecoration(
+                                        color: Colors.orange,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: Colors.white, width: 1.5),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          notificationController.unreadCount.value > 9 
+                                              ? '9+' 
+                                              : '${notificationController.unreadCount.value}',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 6,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox.shrink()
                               ),
                             ],
                           ),

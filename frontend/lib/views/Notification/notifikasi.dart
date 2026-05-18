@@ -17,7 +17,7 @@ class NotifikasiPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           "Notifikasi",
-          style: TextStyle(color: Color(0xFF283D70), fontWeight: FontWeight.bold),
+          style: TextStyle(color:Color.fromARGB(255, 4, 52, 87), fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
         centerTitle: true,
@@ -26,13 +26,13 @@ class NotifikasiPage extends StatelessWidget {
           Obx(() => controller.unreadCount.value > 0 
             ? IconButton(
                 tooltip: "Tandai semua dibaca",
-                icon: const Icon(Icons.done_all, color: Color(0xFF283D70), ),
+                icon: const Icon(Icons.done_all, color:Color.fromARGB(255, 68, 68, 68), ),
                 onPressed: () => controller.markAllAsRead(),
               )
             : const SizedBox.shrink()
           ),
           IconButton(
-            icon: const Icon(Icons.refresh, color: Color(0xFF283D70)),
+            icon: const Icon(Icons.refresh, color: Color.fromARGB(255, 95, 95, 95)),
             onPressed: () => controller.fetchNotifications(),
           ),
         ],
@@ -116,12 +116,12 @@ class NotifikasiPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: notification.isRead 
                           ? Colors.grey.withOpacity(0.1) 
-                          : const Color(0xFF283D70).withOpacity(0.1),
+                          : Color.fromARGB(255, 0, 149, 255).withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       notification.isRead ? Icons.notifications_none : Icons.notifications, 
-                      color: notification.isRead ? Colors.grey : const Color(0xFF283D70), 
+                      color: notification.isRead ? Colors.grey : Color.fromARGB(255, 0, 149, 255), 
                       size: 24
                     ),
                   ),
@@ -178,14 +178,70 @@ class NotifikasiPage extends StatelessWidget {
     );
   }
 
-  void _handleNotificationClick(NotificationModel notification) {
-    Get.defaultDialog(
-      title: notification.namaNotif ?? "Detail Notifikasi",
-      middleText: notification.isiNotif ?? "",
-      textConfirm: "OK",
-      confirmTextColor: Colors.white,
-      buttonColor: const Color(0xFF283D70),
-      onConfirm: () => Get.back(),
-    );
-  }
+void _handleNotificationClick(NotificationModel notification) {
+  Get.dialog(
+    Dialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(
+                  Icons.notifications_active,
+                  color: Color.fromARGB(255, 0, 149, 255),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    notification.namaNotif ?? "Detail Notifikasi",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            Text(
+              notification.isiNotif ?? "-",
+              style: const TextStyle(
+                fontSize: 15,
+                height: 1.5,
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 0, 149, 255),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () => Get.back(),
+                child: const Text(
+                  "Tutup",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
 }

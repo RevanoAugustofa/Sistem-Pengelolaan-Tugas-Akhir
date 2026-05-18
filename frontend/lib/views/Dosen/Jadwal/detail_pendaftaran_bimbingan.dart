@@ -21,8 +21,10 @@ class DetailPendaftaranBimbinganView extends StatelessWidget {
     });
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
-        title: const Text("Detail Pendaftaran Bimbingan"),
+        title: const Text("Detail Pendaftaran Bimbingan", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         backgroundColor: const Color.fromARGB(255, 0, 149, 255),
         foregroundColor: Colors.white,
       ),
@@ -69,12 +71,14 @@ class DetailPendaftaranBimbinganView extends StatelessWidget {
 
   Widget _buildInfoCard(JadwalModel jadwal) {
     return Card(
+      color: Colors.white,
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            
             _buildInfoRow("Metode", jadwal.metodeBimbingan?.toUpperCase() ?? "-"),
             const Divider(),
             _buildInfoRow(
@@ -133,6 +137,7 @@ class DetailPendaftaranBimbinganView extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
+      color: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(12),

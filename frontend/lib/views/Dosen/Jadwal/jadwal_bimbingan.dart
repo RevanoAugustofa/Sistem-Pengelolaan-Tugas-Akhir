@@ -225,7 +225,7 @@ class _JadwalBimbinganDosenTableState extends State<JadwalBimbinganDosenTable> {
                                   ElevatedButton(
                                     onPressed: () => Get.toNamed('/detailPendaftaranBimbinganDsn', arguments: item),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF1E3475),
+                                      backgroundColor:const Color(0xFF2196F3),
                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                                       minimumSize: const Size(60, 30),
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),

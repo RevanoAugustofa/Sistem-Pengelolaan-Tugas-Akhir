@@ -26,6 +26,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/notifications', [NotifikasiController::class, 'index']);
+    Route::put('/notifications/{id}/read', [NotifikasiController::class, 'markAsRead']);
+    Route::put('/notifications/read-all', [NotifikasiController::class, 'markAllAsRead']);
     Route::delete('/notifications/{id}', [NotifikasiController::class, 'destroy']);
 });
 

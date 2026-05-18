@@ -17,14 +17,22 @@ class NotifikasiPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           "Notifikasi",
-          style: TextStyle(color: Color.fromARGB(255, 89, 89, 89), fontWeight: FontWeight.bold),
+          style: TextStyle(color: Color(0xFF283D70), fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
         actions: [
+          Obx(() => controller.unreadCount.value > 0 
+            ? IconButton(
+                tooltip: "Tandai semua dibaca",
+                icon: const Icon(Icons.done_all, color: Color(0xFF283D70), ),
+                onPressed: () => controller.markAllAsRead(),
+              )
+            : const SizedBox.shrink()
+          ),
           IconButton(
-            icon: const Icon(Icons.refresh, color: Color.fromARGB(255, 88, 88, 88)),
+            icon: const Icon(Icons.refresh, color: Color(0xFF283D70)),
             onPressed: () => controller.fetchNotifications(),
           ),
         ],
@@ -87,24 +95,51 @@ class NotifikasiPage extends StatelessWidget {
       },
       child: InkWell(
         onTap: () {
-          // Aksi saat notifikasi diklik, misalnya navigasi berdasarkan isi atau nama
+          if (!notification.isRead) {
+            controller.markAsRead(notification.id);
+          }
           _handleNotificationClick(notification);
         },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           decoration: BoxDecoration(
+            color: notification.isRead ? Colors.white : const Color(0xFFF0F7FF),
             border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 0, 149, 255).withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.notifications, color: Color.fromARGB(255, 0, 149, 255), size: 24),
+              Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: notification.isRead 
+                          ? Colors.grey.withOpacity(0.1) 
+                          : const Color(0xFF283D70).withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      notification.isRead ? Icons.notifications_none : Icons.notifications, 
+                      color: notification.isRead ? Colors.grey : const Color(0xFF283D70), 
+                      size: 24
+                    ),
+                  ),
+                  if (!notification.isRead)
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: Colors.orange,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                      ),
+                    ),
+                ],
               ),
               const SizedBox(width: 15),
               Expanded(
@@ -113,12 +148,19 @@ class NotifikasiPage extends StatelessWidget {
                   children: [
                     Text(
                       notification.namaNotif ?? "Pemberitahuan",
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      style: TextStyle(
+                        fontWeight: notification.isRead ? FontWeight.normal : FontWeight.bold, 
+                        fontSize: 15,
+                        color: notification.isRead ? Colors.grey[700] : Colors.black,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       notification.isiNotif ?? "",
-                      style: TextStyle(color: Colors.grey[800], fontSize: 13),
+                      style: TextStyle(
+                        color: notification.isRead ? Colors.grey[600] : Colors.grey[800], 
+                        fontSize: 13
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -137,8 +179,6 @@ class NotifikasiPage extends StatelessWidget {
   }
 
   void _handleNotificationClick(NotificationModel notification) {
-    // Logika navigasi berdasarkan tipe notifikasi bisa ditambahkan di sini
-    // Contoh sederhana: tunjukkan dialog detail
     Get.defaultDialog(
       title: notification.namaNotif ?? "Detail Notifikasi",
       middleText: notification.isiNotif ?? "",

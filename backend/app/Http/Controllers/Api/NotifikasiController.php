@@ -23,11 +23,32 @@ class NotifikasiController extends Controller
 
     public function markAsRead($id)
     {
-        // For now, let's just return success as there is no 'read_at' in the migration
-        // But if we want to add it later, we can.
+        $notification = Notifikasi::where('id_user', Auth::id())->find($id);
+
+        if (!$notification) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Notification not found'
+            ], 404);
+        }
+
+        $notification->update(['is_read' => true]);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Notification marked as read'
+        ]);
+    }
+
+    public function markAllAsRead()
+    {
+        Notifikasi::where('id_user', Auth::id())
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'All notifications marked as read'
         ]);
     }
 

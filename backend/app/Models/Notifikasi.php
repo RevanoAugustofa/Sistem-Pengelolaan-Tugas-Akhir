@@ -16,6 +16,11 @@ class Notifikasi extends Model
         'nama_notif',
         'isi_notif',
         'tgl_notif',
+        'is_read',
+    ];
+
+    protected $casts = [
+        'is_read' => 'boolean',
     ];
 
     public function user()
